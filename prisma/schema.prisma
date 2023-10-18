@@ -1,5 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 generator client {
   provider = "prisma-client-js"

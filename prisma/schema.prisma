@@ -73,6 +73,9 @@ model Parent {
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([id])
 }
 
 enum Status {

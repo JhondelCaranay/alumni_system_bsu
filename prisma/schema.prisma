@@ -157,8 +157,8 @@ model User {
   profile       Profile?
   course        Course?
   events        Event[]
-  Announcement  Announcement[]
-  Parent        Parent[]
+  announcements  Announcement[]
+  parents        Parent[]
 
   @@index([id])
   @@index([role])

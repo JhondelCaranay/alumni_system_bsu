@@ -23,16 +23,16 @@ enum GenderType {
 }
 
 model Course {
-  id    String @id @default(uuid())
-  name  String
-  image String
+  id        String   @id @default(uuid())
+  name      String
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  userId       String         @unique
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Announcement Announcement[]
+  announcements Announcement[]
+  profiles      Profile[]
 
   @@index([id])
-  @@index([userId])
 }
 
 // for events
@@ -68,16 +68,18 @@ model Announcement {
 }
 
 model Parent {
-  id           String @id @unique @default(uuid())
+  id           String   @id @unique @default(uuid())
   firstname    String
   lastName     String
   occupation   String
   relationShip String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id])
 
-  @@index([userId])
+  @@index([profileId])
   @@index([id])
 }
 
@@ -109,6 +111,9 @@ model Profile {
   bsu_email     String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  parents       Parent[]
+  courseId      String
+  course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -157,14 +162,14 @@ model User {
   emailVerified DateTime?
   image         String?
   archive       Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   accounts      Account[]
   sessions      Session[]
   role          Role
   profile       Profile?
-  course        Course?
   events        Event[]
-  announcements  Announcement[]
-  parents        Parent[]
+  announcements Announcement[]
 
   @@index([id])
   @@index([role])

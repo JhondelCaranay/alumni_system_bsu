@@ -23,6 +23,8 @@ model Course {
   id    String @id @default(uuid())
   name  String
   image String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   userId       String         @unique
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -70,6 +72,8 @@ model Parent {
   lastName     String
   occupation   String
   relationShip String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -154,6 +158,8 @@ model User {
   emailVerified DateTime?
   image         String?
   archive       Boolean        @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   accounts      Account[]
   sessions      Session[]
   role          Role
@@ -162,6 +168,7 @@ model User {
   events        Event[]
   announcements  Announcement[]
   parents        Parent[]
+  
 
   @@index([id])
   @@index([role])

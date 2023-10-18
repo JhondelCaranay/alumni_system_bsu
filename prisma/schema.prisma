@@ -7,11 +7,102 @@ generator client {
 
 datasource db {
   provider = "mysql"
-     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+}
+
+model Course {
+  id    String @id @default(uuid())
+  name  String
+  image String
+
+  userId       String         @unique
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Announcement Announcement[]
+
+  @@index([id])
+  @@index([userId])
+}
+
+// for events
+model Event {
+  id        String   @id @default(uuid())
+  title     String
+  timeStart DateTime
+  timeEnd   DateTime
+  allDay    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Announcement {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  fileUrl     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Parent {
+  id           String @id @unique @default(uuid())
+  firstname    String
+  lastName     String
+  occupation   String
+  relationShip String
+}
+
+enum Status {
+  UNDERGRADUATE
+  GRADUATE
+}
+
+model Profile {
+  id            String     @id @unique @default(uuid())
+  studentNumber String
+  firstname     String?
+  lastname      String?
+  middlename    String?
+  age           Int?
+  religion      String?
+  gender        GenderType
+  placeOfBirth  String?
+  dateOfBirth   String?
+  homeNo        String?
+  street        String?
+  barangay      String?
+  city          String?
+  cor           String?
+  province      String?
+  contactNo     String?
+  section       String?
+  status        Status     @default(UNDERGRADUATE)
+  bsu_email     String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
@@ -43,14 +134,30 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum Role {
+  ADMIN
+  ADMIN_ORG
+  STUDENT
+}
+
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?   @unique
+  username      String
+  email         String?        @unique
   emailVerified DateTime?
   image         String?
+  archive       Boolean        @default(false)
   accounts      Account[]
   sessions      Session[]
+  role          Role
+  profile       Profile?
+  course        Course?
+  events        Event[]
+  Announcement  Announcement[]
+
+  @@index([id])
+  @@index([role])
 }
 
 // Necessary for Next auth

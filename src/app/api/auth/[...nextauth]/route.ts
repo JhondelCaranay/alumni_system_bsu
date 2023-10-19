@@ -7,7 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { env } from "@/env.mjs";
-import prisma from "@/libs/prisma";
+import prisma from "@/lib/prisma";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -15,7 +15,7 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "email", type: "text" },
+        username: { label: "username", type: "text" },
         password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
@@ -28,28 +28,30 @@ export const authOptions: AuthOptions = {
           (i.e., the request IP address) 
         */
 
-        // if (!credentials?.email || !credentials?.password) {
-        //   throw new Error("Invalid credentials. Please fill in all fields");
-        // }
-        // const user = await prisma.user.findUnique({
-        //   where: {
-        //     email: credentials.email,
-        //   },
-        // });
-        // if (!user || !user?.hashedPassword) {
-        //   throw new Error("Invalid credentials");
-        // }
-        // const isCorrectPassword = await bcrypt.compare(credentials.password, user.hashedPassword);
-        // if (!isCorrectPassword) {
-        //   throw new Error("Invalid credentials");
-        // }
-        // return user;
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error("Invalid credentials. Please fill in all fields");
+        }
 
+        const user = await prisma.user.findFirst({
+          where: {
+            username: credentials.username,
+          },
+        });
+
+        if (!user || !user?.hashedPassword) {
+          throw new Error("Invalid credentials");
+        }
+
+        const isCorrectPassword = await bcrypt.compare(credentials.password, user.hashedPassword);
+        if (!isCorrectPassword) {
+          throw new Error("Invalid credentials");
+        }
+
+        return user;
         /* 
           If no error and we have user data, return it
           Return null if user data could not be retrieved
         */
-        return null;
       },
     }),
   ],

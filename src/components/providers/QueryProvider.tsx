@@ -3,7 +3,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 
-function Providers({ children }: React.PropsWithChildren) {
+function QueryProvider({ children }: React.PropsWithChildren) {
   const client = new QueryClient({
     defaultOptions: {
       queries: {
@@ -21,4 +21,4 @@ function Providers({ children }: React.PropsWithChildren) {
   );
 }
 
-export default Providers;
+export default QueryProvider;

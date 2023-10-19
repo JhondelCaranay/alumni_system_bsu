@@ -59,54 +59,83 @@ model Event {
   @@index([userId])
 }
 
-model Announcement {
-  id String @id @default(uuid())
+// model Announcement {
+//   id String @id @default(uuid())
 
-  title       String
-  description String @db.Text
+//   title       String
+//   description String @db.Text
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  // user who owns the announcement post
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+//   // user who owns the announcement post
+//   user   User   @relation(fields: [userId], references: [id])
+//   userId String
 
-  @@index([userId])
+//   @@index([userId])
+// }
+
+// model JobOpening {
+//   id String @id @default(uuid())
+
+//   title       String
+//   description String @db.Text
+//   company     String
+//   location    String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   comment Comment[]
+
+//   // user who owns the Job opening post
+//   user   User   @relation(fields: [userId], references: [id])
+//   userId String
+
+//   @@index([userId])
+// }
+
+// model Feed {
+//   id String @id @default(uuid())
+
+//   title       String
+//   description String @db.Text
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   comment Comment[]
+
+//   // user who owns the Job opening post
+//   user   User   @relation(fields: [userId], references: [id])
+//   userId String
+
+//   @@index([userId])
+// }
+
+enum PostType {
+  ANNOUNCEMENT
+  JOBS
+  FEED
 }
 
-model JobOpening {
-  id String @id @default(uuid())
-
-  title       String
-  description String @db.Text
-  company     String
-  location    String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  comment Comment[]
-
-  // user who owns the Job opening post
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  @@index([userId])
-}
-
-model Feed {
+model Post {
   id String @id @default(uuid())
 
   title       String
   description String @db.Text
 
+  company  String
+  location String
+
+  type PostType
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comment Comment[]
+  comments Comment[]
 
-  // user who owns the Job opening post
+  // user who owns the post
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
@@ -124,15 +153,11 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  feed   Feed   @relation(fields: [feedId], references: [id])
-  feedId String
-
-  jobOpening   JobOpening? @relation(fields: [jobOpeningId], references: [id])
-  jobOpeningId String?
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
 
   @@index([userId])
-  @@index([feedId])
-  @@index([jobOpeningId])
+  @@index([postId])
 }
 
 model Section {
@@ -238,21 +263,18 @@ model User {
 
   role Role
 
-  accounts      Account[]
-  sessions      Session[]
-  profile       Profile?
-  events        Event[]
-  announcements Announcement[]
-
-  comment    Comment[]
-  JobOpening JobOpening[]
-  Feed       Feed[]
+  accounts Account[]
+  sessions Session[]
+  profile  Profile?
+  events   Event[]
+  comment  Comment[]
 
   section   Section? @relation(fields: [sectionId], references: [id])
   sectionId String?
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
+  Post         Post[]
 
   @@index([sectionId])
   @@index([departmentId])

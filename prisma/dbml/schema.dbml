@@ -15,36 +15,16 @@ Table Event {
   userId String [not null]
 }
 
-Table Announcement {
-  id String [pk]
-  title String [not null]
-  description String [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  user User [not null]
-  userId String [not null]
-}
-
-Table JobOpening {
+Table Post {
   id String [pk]
   title String [not null]
   description String [not null]
   company String [not null]
   location String [not null]
+  type PostType [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  comment Comment [not null]
-  user User [not null]
-  userId String [not null]
-}
-
-Table Feed {
-  id String [pk]
-  title String [not null]
-  description String [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  comment Comment [not null]
+  comments Comment [not null]
   user User [not null]
   userId String [not null]
 }
@@ -56,10 +36,8 @@ Table Comment {
   updatedAt DateTime [not null]
   user User [not null]
   userId String [not null]
-  feed Feed [not null]
-  feedId String [not null]
-  jobOpening JobOpening
-  jobOpeningId String
+  post Post
+  postId String
 }
 
 Table Section {
@@ -117,6 +95,7 @@ Table User {
   emailVerified DateTime
   image String
   archive Boolean [not null, default: false]
+  hashedPassword String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   role Role [not null]
@@ -124,14 +103,12 @@ Table User {
   sessions Session [not null]
   profile Profile
   events Event [not null]
-  announcements Announcement [not null]
   comment Comment [not null]
-  JobOpening JobOpening [not null]
-  Feed Feed [not null]
   section Section
   sectionId String
   department Department
   departmentId String
+  Post Post [not null]
 }
 
 Table Account {
@@ -188,19 +165,19 @@ Enum Gender {
   FEMALE
 }
 
+Enum PostType {
+  ANNOUNCEMENT
+  JOBS
+  FEED
+}
+
 Ref: Event.userId > User.id
 
-Ref: Announcement.userId > User.id
-
-Ref: JobOpening.userId > User.id
-
-Ref: Feed.userId > User.id
+Ref: Post.userId > User.id
 
 Ref: Comment.userId > User.id
 
-Ref: Comment.feedId > Feed.id
-
-Ref: Comment.jobOpeningId > JobOpening.id
+Ref: Comment.postId > Post.id
 
 Ref: Section.departmentId > Department.id
 

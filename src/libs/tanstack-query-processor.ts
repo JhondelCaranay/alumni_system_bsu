@@ -1,13 +1,33 @@
-"use client"
-import axios, { AxiosResponse, AxiosError  } from "axios";
+"use client";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import qs from 'query-string'
+import qs from "query-string";
 const controller = new AbortController();
 export const apiClient = axios.create({
   baseURL: "http://localhost:3000/api",
   headers: { "Content-type": "application/json" },
 });
 
+export const queryFn = async <T>(
+  url: string,
+  queryParams: Record<string, any>,
+  headers = {}
+) => {
+  const newUrl = qs.stringifyUrl({
+    url,
+    query: {
+      ...queryParams,
+    },
+  });
+
+  const { data } = await apiClient.get<T>(newUrl, {
+    headers: {
+      ...headers,
+    },
+    signal: controller.signal,
+  });
+  return data;
+};
 export const query = <T>(
   url: string,
   queryParams: Record<string, any>,
@@ -17,30 +37,14 @@ export const query = <T>(
 ) => {
   return useQuery<T>({
     queryKey: key,
-    queryFn: async () => {
-
-      const newUrl = qs.stringifyUrl({
-        url,
-        query: {
-          ...queryParams
-        }
-      })
-
-      const { data } = await apiClient.get<T>(newUrl, {
-        headers: {
-          ...headers,
-        },
-        signal: controller.signal
-      });
-      return data;
-    },
+    queryFn: () => queryFn(url, queryParams, headers),
     ...options,
   });
 };
 
 type HttpMutationMethod = "DELETE" | "POST" | "PUT" | "PATCH";
 
-const mutationFn = async <T>(
+export const mutationFn = async <T>(
   url: string,
   queryParams: Record<string, any>,
   method: HttpMutationMethod,
@@ -50,16 +54,16 @@ const mutationFn = async <T>(
   const newUrl = qs.stringifyUrl({
     url,
     query: {
-      ...queryParams
-    }
-  })
+      ...queryParams,
+    },
+  });
   switch (method) {
     case "DELETE": {
       const { data } = await apiClient.delete<T>(newUrl, {
         headers: {
           ...headers,
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
       return data;
     }
@@ -69,7 +73,7 @@ const mutationFn = async <T>(
         headers: {
           ...headers,
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
       return data;
     }
@@ -78,7 +82,7 @@ const mutationFn = async <T>(
         headers: {
           ...headers,
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
       return data;
     }
@@ -87,7 +91,7 @@ const mutationFn = async <T>(
         headers: {
           ...headers,
         },
-        signal: controller.signal
+        signal: controller.signal,
       });
       return data;
     }
@@ -108,7 +112,8 @@ export const mutate = <T, K>(
 
   return useMutation({
     ...options,
-    mutationFn: async (value: T) => mutationFn<T>(url, queryParams, method, value, headers) as K,
+    mutationFn: async (value: T) =>
+      mutationFn<T>(url, queryParams, method, value, headers) as K,
     onMutate: (newData: T) => {
       const previousData = queryClient.getQueryData<T>(key);
       const isArray = Array.isArray(previousData);
@@ -136,16 +141,16 @@ export const mutate = <T, K>(
       // @ts-ignore
       // @ts-nocheck
       queryClient.setQueryData(key, context.previousData);
-      console.log(' 🚀 error mutate processor 🚀')
+      console.log(" 🚀 error mutate processor 🚀");
     },
     onSuccess(data, variables, context) {
-      console.log(' 🚀 success mutate processor 🚀')
+      console.log(" 🚀 success mutate processor 🚀");
     },
     onSettled: (data) => {
       queryClient.invalidateQueries({
-        queryKey: key
+        queryKey: key,
       });
-      console.log(' 🚀 settled mutate processor 🚀')
+      console.log(" 🚀 settled mutate processor 🚀");
     },
   });
 };

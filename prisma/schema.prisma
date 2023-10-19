@@ -33,6 +33,12 @@ enum Gender {
   FEMALE
 }
 
+enum PostType {
+  ANNOUNCEMENT
+  JOBS
+  FEED
+}
+
 // enum Relationship {
 //   FATHER
 //   MOTHER
@@ -57,66 +63,6 @@ model Event {
   userId String
 
   @@index([userId])
-}
-
-// model Announcement {
-//   id String @id @default(uuid())
-
-//   title       String
-//   description String @db.Text
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   // user who owns the announcement post
-//   user   User   @relation(fields: [userId], references: [id])
-//   userId String
-
-//   @@index([userId])
-// }
-
-// model JobOpening {
-//   id String @id @default(uuid())
-
-//   title       String
-//   description String @db.Text
-//   company     String
-//   location    String
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   comment Comment[]
-
-//   // user who owns the Job opening post
-//   user   User   @relation(fields: [userId], references: [id])
-//   userId String
-
-//   @@index([userId])
-// }
-
-// model Feed {
-//   id String @id @default(uuid())
-
-//   title       String
-//   description String @db.Text
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   comment Comment[]
-
-//   // user who owns the Job opening post
-//   user   User   @relation(fields: [userId], references: [id])
-//   userId String
-
-//   @@index([userId])
-// }
-
-enum PostType {
-  ANNOUNCEMENT
-  JOBS
-  FEED
 }
 
 model Post {

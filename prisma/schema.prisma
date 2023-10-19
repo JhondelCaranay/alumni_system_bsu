@@ -1,5 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -14,106 +17,245 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum GenderType {
+enum Role {
+  ADMIN // can control everything - can create group chat
+  FACULTY_MEMBER // normal faculty member
+  FACULTY_ADVISER // include in group chat per section
+  FACULTY_COORDINATOR // 7 programs 
+  FACULTY_AlUMNI // former student
+  FACULTY_STUDENT // current student
+  PESO // can post job openings , Public Employment Service Office
+  BULSU_PARTNER // can post job openings
+}
+
+enum Gender {
   MALE
   FEMALE
 }
 
-model Course {
-  id        String   @id @default(uuid())
-  name      String
-  image     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// enum Relationship {
+//   FATHER
+//   MOTHER
+//   GUARDIAN
+// }
 
-  announcements Announcement[]
-  profiles      Profile[]
-
-  @@index([id])
-}
-
-// for events
 model Event {
-  id        String   @id @default(uuid())
-  title     String
+  id String @id @default(uuid())
+
+  title       String
+  description String @db.Text
+
+  dateStart DateTime
   timeStart DateTime
   timeEnd   DateTime
-  allDay    Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId String
+  // user who owns the event post
   user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@index([userId])
 }
 
 model Announcement {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  fileUrl     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id String @id @default(uuid())
 
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id])
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
+  title       String
+  description String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // user who owns the announcement post
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@index([userId])
 }
 
-model Parent {
-  id           String   @id @unique @default(uuid())
-  firstname    String
-  lastName     String
-  occupation   String
-  relationShip String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model JobOpening {
+  id String @id @default(uuid())
 
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id])
+  title       String
+  description String @db.Text
+  company     String
+  location    String
 
-  @@index([profileId])
-  @@index([id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comment Comment[]
+
+  // user who owns the Job opening post
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@index([userId])
 }
 
-enum Status {
-  UNDERGRADUATE
-  GRADUATE
+model Feed {
+  id String @id @default(uuid())
+
+  title       String
+  description String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comment Comment[]
+
+  // user who owns the Job opening post
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@index([userId])
 }
+
+model Comment {
+  id String @id @default(uuid())
+
+  description String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  feed   Feed   @relation(fields: [feedId], references: [id])
+  feedId String
+
+  jobOpening   JobOpening? @relation(fields: [jobOpeningId], references: [id])
+  jobOpeningId String?
+
+  @@index([userId])
+  @@index([feedId])
+  @@index([jobOpeningId])
+}
+
+model Section {
+  id String @id @default(uuid())
+
+  name String
+  year Int
+
+  members User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // TODO: ADD GROUP CHAT PER SECTION
+
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+
+  @@index([departmentId])
+}
+
+// change course to department
+model Department {
+  id String @id @default(uuid())
+
+  name String
+
+  sections Section[]
+  users    User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// model Parent {
+//   id String @id @unique @default(uuid())
+
+//   firstname  String
+//   lastName   String
+//   occupation String
+
+//   relationShip Relationship
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   profileId String
+//   profile   Profile @relation(fields: [profileId], references: [id])
+
+//   @@index([profileId])
+// }
 
 model Profile {
-  id            String     @id @unique @default(uuid())
-  studentNumber String
-  firstname     String?
-  lastname      String?
-  middlename    String?
-  age           Int?
-  religion      String?
-  gender        GenderType
-  placeOfBirth  String?
-  dateOfBirth   String?
-  homeNo        String?
-  street        String?
-  barangay      String?
-  city          String?
-  cor           String?
-  province      String?
-  contactNo     String?
-  section       String?
-  status        Status     @default(UNDERGRADUATE)
-  bsu_email     String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  parents       Parent[]
-  courseId      String
-  course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id String @id @unique @default(uuid())
 
-  userId String @unique
+  studentNumber String?
+  yearEnrolled  DateTime?
+  yearGraduated DateTime?
+
+  alternative_email String? // personal email
+
+  firstname  String?
+  lastname   String?
+  middlename String?
+
+  age      Int?
+  religion String?
+  gender   Gender?
+
+  placeOfBirth String?
+  dateOfBirth  String?
+  homeNo       String?
+  street       String?
+  barangay     String?
+  city         String?
+  corUrl       String? @db.Text
+  province     String?
+  contactNo    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // parents Parent[]
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@index([userId])
+}
+
+model User {
+  id String @id @default(cuid())
+
+  name          String?
+  username      String
+  email         String?   @unique // bsu email format
+  emailVerified DateTime?
+  image         String?
+  archive       Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role Role
+
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  events        Event[]
+  announcements Announcement[]
+
+  comment    Comment[]
+  JobOpening JobOpening[]
+  Feed       Feed[]
+
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
+
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+
+  @@index([sectionId])
+  @@index([departmentId])
 }
 
 // Necessary for Next auth
@@ -143,33 +285,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum Role {
-  ADMIN
-  ADMIN_ORG
-  STUDENT
-}
-
-model User {
-  id            String         @id @default(cuid())
-  name          String?
-  username      String
-  email         String?        @unique
-  emailVerified DateTime?
-  image         String?
-  archive       Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  role          Role
-  profile       Profile?
-  events        Event[]
-  announcements Announcement[]
-
-  @@index([id])
-  @@index([role])
 }
 
 // Necessary for Next auth

@@ -1,8 +1,10 @@
 "use client";
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, {  } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import qs from "query-string";
+
 const controller = new AbortController();
+
 export const apiClient = axios.create({
   baseURL: "http://localhost:3000/api",
   headers: { "Content-type": "application/json" },

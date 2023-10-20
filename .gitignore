@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 
-/prisma/dbml
+/prisma/dbml/
 
 # testing
 /coverage

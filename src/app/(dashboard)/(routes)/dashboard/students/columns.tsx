@@ -18,7 +18,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <div className="text-[#003171] text-center">Name</div>
+      <div className="text-[#003171] text-center">Email</div>
     ),
     cell: ({ row }) => {
       const email = row.original.email;

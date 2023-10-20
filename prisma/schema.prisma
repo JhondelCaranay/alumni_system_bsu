@@ -109,8 +109,9 @@ model Comment {
 model Section {
   id String @id @default(uuid())
 
-  name String
-  year Int
+  name  String
+  year  Int
+  batch String // 2019-2020
 
   members User[]
 

@@ -2,8 +2,10 @@
   "name": "alumni_system_bsu",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "scripts": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} --transpile-only prisma/seed.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

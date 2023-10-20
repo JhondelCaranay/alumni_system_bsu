@@ -16,7 +16,6 @@ const Avatar = ({ src, className }: AvatarProps) => {
       width={"35"}
       alt="Avatar"
       src={src || "/images/placeholder.jpg"}
-      
     />
   );
 };

@@ -109,8 +109,9 @@ model Comment {
 model Section {
   id String @id @default(uuid())
 
-  name String
-  year Int
+  name  String
+  year  Int
+  batch String // 2019-2020
 
   members User[]
 
@@ -197,15 +198,14 @@ model Profile {
 model User {
   id String @id @default(cuid())
 
-  name          String?
-  username      String
-  email         String?   @unique // bsu email format
-  emailVerified DateTime?
-  image         String?
-  archive       Boolean   @default(false)
+  name           String?
+  email          String?   @unique // bsu email format
+  emailVerified  DateTime?
+  image          String?
+  archive        Boolean   @default(false)
   hashedPassword String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   role Role
 

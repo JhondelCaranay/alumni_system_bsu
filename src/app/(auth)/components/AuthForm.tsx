@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {Loader2} from 'lucide-react'
+import { Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
@@ -29,7 +29,6 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema> | FieldValues;
 
 const AuthForm = () => {
-
   const form = useForm({
     defaultValues: {
       username: "",
@@ -39,14 +38,14 @@ const AuthForm = () => {
     mode: "all",
   });
 
-  const isLoading = form.formState.isSubmitting
+  const isLoading = form.formState.isSubmitting;
 
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
     try {
-      const response = await signIn('credentials', {
+      const response = await signIn("credentials", {
         ...values,
         redirect: false,
-      })
+      });
 
       if (response?.error) {
         toast.error("invalid credentials");
@@ -55,9 +54,8 @@ const AuthForm = () => {
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
       }
-
     } catch (error) {
-      toast.error('Something went wrong.')
+      toast.error("Something went wrong.");
     }
   };
 
@@ -68,17 +66,10 @@ const AuthForm = () => {
         className="bg-[#ffffffc0] flex flex-col w-[90%] md:w-[30%] items-center p-7 rounded-md z-10"
       >
         <div className="h-[110px] w-[110px] relative">
-          <Image
-            src={`/assets/CIT.png`}
-            className="object-contain"
-            alt="logo"
-            fill
-          />
+          <Image src={`/assets/CIT.png`} className="object-contain" alt="logo" fill />
         </div>
 
-        <h1 className=" text-2xl font-semibold text-center mx-10">
-          Alumni System
-        </h1>
+        <h1 className=" text-2xl font-semibold text-center mx-10">Alumni System</h1>
 
         <div className="flex flex-col items-center  w-full gap-2">
           <FormField
@@ -91,7 +82,7 @@ const AuthForm = () => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                     placeholder={`Enter username`}
                     {...field}
@@ -113,7 +104,7 @@ const AuthForm = () => {
 
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                     placeholder={`Enter Password`}
                     type="password"
@@ -124,16 +115,16 @@ const AuthForm = () => {
               </FormItem>
             )}
           />
-          
         </div>
-        <button disabled={isLoading} className="bg-[#0D6EFD] p-1.5 w-full rounded-sm text-white text-md mt-5 flex justify-center disabled:cursor-not-allowed">
-          {
-            (() => {
-              if(isLoading) return <Loader2 className="animate-spin " />
+        <button
+          disabled={isLoading}
+          className="bg-[#0D6EFD] p-1.5 w-full rounded-sm text-white text-md mt-5 flex justify-center disabled:cursor-not-allowed"
+        >
+          {(() => {
+            if (isLoading) return <Loader2 className="animate-spin " />;
 
-              return 'Login'
-            })()
-          }
+            return "Login";
+          })()}
         </button>
       </form>
     </Form>

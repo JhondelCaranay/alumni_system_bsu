@@ -4,10 +4,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 // import GithubProvider from "next-auth/providers/github";
 // import GoogleProvider from "next-auth/providers/google";
 // import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 import { env } from "@/env.mjs";
-import prisma from "@/libs/prisma";
+import prisma from "@/lib/prisma";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -48,6 +49,7 @@ export const authOptions: AuthOptions = {
         }
 
         return user;
+        // return { ...user, role: user.role.toString() };
         /* 
           If no error and we have user data, return it
           Return null if user data could not be retrieved
@@ -58,11 +60,11 @@ export const authOptions: AuthOptions = {
   callbacks: {
     // Ref: https://authjs.dev/guides/basics/role-based-access-control#with-jwt
     jwt({ token, user }) {
-      // if (user) token.role = user.role;
+      if (user) token.role = user.role;
       return token;
     },
     session({ session, token }) {
-      // session.user.role = token.role;
+      session.user.role = token.role;
       return session;
     },
   },

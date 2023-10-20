@@ -24,8 +24,10 @@ export default async function getCurrentUser() {
       return null;
     }
 
+    const {hashedPassword, ...props} = currentUser
+
     return {
-      ...currentUser,
+      ...props,
       role: currentUser.role.toString(),
       createdAt: currentUser.createdAt.toISOString(),
       updatedAt: currentUser.updatedAt.toISOString(),

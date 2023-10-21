@@ -14,7 +14,6 @@ const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
         <ModalProvider />
           {children}
       </SessionProvider>
-        <SessionProvider>{children}</SessionProvider>
       </QueryProvider>
     </>
   );

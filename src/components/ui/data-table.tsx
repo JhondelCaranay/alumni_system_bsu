@@ -38,12 +38,13 @@ export function DataTable<TData, TValue>({
   data,
   tableLinks,
 }: DataTableProps<TData, TValue>) {
+  const [globalFilter, setGlobalFilter] = useState('');
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
   });
-  const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data,

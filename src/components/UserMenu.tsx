@@ -6,10 +6,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch"
 import { SafeUser } from "@/types/types";
 import { Button } from "./ui/button";
 import { AlignJustify } from "lucide-react";
 import Avatar from "./Avatar";
+import { ModeToggle } from "./ModeToggle";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -40,6 +42,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem><ModeToggle /></DropdownMenuItem>
         <DropdownMenuItem>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

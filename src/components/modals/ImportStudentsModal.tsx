@@ -31,23 +31,23 @@ export type formType = z.infer<typeof formSchema>;
 
 // type and validation for excel sheet to json
 export const excelToJsonSchema = z.array(
-    z.object({
-      name: z.string().min(1),
-      email: z.string().email(),
-      studentNumber: z.string().min(1),
-      yearEnrolled: z.string().min(1),
-      yearGraduated: z.string().min(1),
-      religion: z.string().min(1),
-      gender: z.string().min(1),
-      dateOfBirth: z.string().min(1),
-      placeOfBirth: z.string().min(1),
-      city: z.string().min(1),
-      province: z.string().min(1),
-      contactNo: z.string().min(1),
-    })
-  )
+  z.object({
+    name: z.string().min(1),
+    email: z.string().email(),
+    studentNumber: z.string().min(1),
+    yearEnrolled: z.string().min(1),
+    yearGraduated: z.string().min(1),
+    religion: z.string().min(1),
+    gender: z.string().min(1),
+    dateOfBirth: z.string().min(1),
+    placeOfBirth: z.string().min(1),
+    city: z.string().min(1),
+    province: z.string().min(1),
+    contactNo: z.string().min(1),
+  })
+);
 
-export type ExcelToJsonSchemaType = z.infer<typeof excelToJsonSchema>
+export type ExcelToJsonSchemaType = z.infer<typeof excelToJsonSchema>;
 
 const ImportStudentsModal = () => {
   const { isOpen, onClose, type } = useModal();
@@ -103,7 +103,6 @@ const ImportStudentsModal = () => {
 
     // callback pattern
     uploadData(data, (jsonData: ExcelToJsonSchemaType) => {
-      
       console.log("json data", jsonData);
 
       // api request here...
@@ -112,19 +111,19 @@ const ImportStudentsModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="bg-white text-black p-0 overflow-hidden dark:bg-[#020817] dark:text-white">
         <DialogHeader className="pt-3 px-6">
-          <DialogTitle className="text-2xl text-center font-bold m-2">
+          <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
             Import Students{" "}
           </DialogTitle>
 
-          <DialogDescription className="text-center text-zinc m-2 font-semibold">
+          <DialogDescription className="text-center text-zinc m-2 font-semibold dark:text-white">
             Import students using excel file.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-21">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-21 ">
             <div className="space-y-8 px-6">
               <div className="flex items-center justify-center text-center mt-5">
                 {(() => {
@@ -138,7 +137,7 @@ const ImportStudentsModal = () => {
                           <FormItem>
                             <label
                               htmlFor="upload"
-                              className="flex items-center w-full px-7 p-3 rounded-md cursor-pointer text-sm text-white bg-[#034FA1]"
+                              className="flex items-center w-full px-7 p-3 rounded-md cursor-pointer text-sm text-white bg-[#034FA1] "
                             >
                               Import <FileDown className=" text-green-400 " />
                             </label>
@@ -183,7 +182,7 @@ const ImportStudentsModal = () => {
               </div>
             </div>
             <DialogFooter className="px-6 py-4">
-              <Button variant={"default"}>
+              <Button variant={"default"} className=" dark:text-white">
                 {(() => {
                   if (isLoading)
                     return (

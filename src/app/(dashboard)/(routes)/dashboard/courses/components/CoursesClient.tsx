@@ -18,7 +18,7 @@ const CoursesClient = (props: CoursesClientProps) => {
   const tableLinks = (
     <div className="flex justify-end">
       <Link href="/departments/create">
-        <Button>
+        <Button className=" dark:text-white">
           <PlusCircle className="h-4 w-4 mr-2" />
           New departments
         </Button>

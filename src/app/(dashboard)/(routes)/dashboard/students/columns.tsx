@@ -1,7 +1,6 @@
 "use client";
-import { ArrowUpDown, MoreHorizontal, MoreVertical, ShieldEllipsis } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Avatar from "@/components/Avatar";
-import { Profile, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -9,10 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SafeProfile, SafeUser } from "@/types/types";
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-
-export const columns: ColumnDef<User & { profile: Profile }>[] = [
+export const columns: ColumnDef<SafeUser & { profile: SafeProfile }>[] = [
   {
     accessorKey: "email",
     header: ({ column }) => (
@@ -60,12 +60,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     ),
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
-      return (
-        <div className={`text-center flex items-center justify-center`}>
-          {" "}
-          {name}
-        </div>
-      );
+      return <div className={`text-center flex items-center justify-center`}> {name}</div>;
     },
   },
   {

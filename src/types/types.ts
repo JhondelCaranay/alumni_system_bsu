@@ -15,6 +15,17 @@ export type SafeUser = Omit<
   emailVerified: string | null;
 };
 
+export type SafeProfile = Omit<
+  Profile,
+  "createdAt" | "updatedAt" | "yearEnrolled" | "yearGraduated" | "gender"
+> & {
+  createdAt: string;
+  updatedAt: string;
+  yearEnrolled: string;
+  yearGraduated: string;
+  gender: string;
+};
+
 export type UserWithProfile = SafeUser & {
-  profile: Profile;
+  profile: SafeProfile;
 };

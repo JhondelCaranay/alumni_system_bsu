@@ -1,5 +1,5 @@
 "use client";
-import { MoreHorizontal, MoreVertical, ShieldEllipsis } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, MoreVertical, ShieldEllipsis } from "lucide-react";
 import Avatar from "@/components/Avatar";
 import { Profile, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,7 +17,14 @@ import {
 export const columns: ColumnDef<User & { profile: Profile }>[] = [
   {
     accessorKey: "email",
-    header: ({ column }) => <div className="text-[#003171] text-center">Email</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Email <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       const email = row.original.email;
       const image = row.original.image;
@@ -30,7 +37,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "username",
-    header: ({ column }) => <div className="text-[#003171] text-center">Student No.</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Student No. <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       const studentNo = row.getValue("username") as string;
       return <div className={`text-center`}>{studentNo}</div>;
@@ -38,7 +52,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => <div className="text-[#003171] text-center">Name</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
       return <div className={`text-center flex items-center justify-center`}> {name}</div>;
@@ -46,7 +67,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "profile.gender",
-    header: ({ column }) => <div className="text-[#003171] text-center">Gender</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Gender <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
       return <div className={`text-center`}>{"Male"}</div>;
@@ -55,7 +83,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
 
   {
     accessorKey: "courseId",
-    header: ({ column }) => <div className="text-[#003171] text-center">Course & Section</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Course & Section <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       //  const name = row.getValue('name') as string
 
@@ -64,7 +99,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "yearEnrolled",
-    header: ({ column }) => <div className="text-[#003171] text-center">Year Enrolled</div>,
+    header: ({ column }) => (
+      <div
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Year Enrolled <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
       return <div className={`text-center`}>{new Date().getFullYear()}</div>;
@@ -72,7 +114,9 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "id",
-    header: ({ column }) => <div className="text-[#003171] text-center"></div>,
+    header: ({ column }) => (
+      <div className="text-[#003171] text-center flex items-center justify-center cursor-pointer"></div>
+    ),
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
       return (

@@ -1,15 +1,19 @@
-"use client";
-import React from "react";
-import QueryProvider from "./QueryProvider";
-import ToastProvider from "./ToastProvider";
-import { SessionProvider } from "next-auth/react";
+"use client"
+import React from 'react'
+import QueryProvider from './QueryProvider'
+import ToastProvider from './ToastProvider'
+import { SessionProvider } from 'next-auth/react'
+import ModalProvider from './ModalProvider'
 
 const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       <ToastProvider />
       <QueryProvider>
-        <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <ModalProvider />
+          {children}
+      </SessionProvider>
       </QueryProvider>
     </>
   );

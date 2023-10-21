@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 type CoursesClientProps = {};
 const CoursesClient = (props: CoursesClientProps) => {
-  const { data: departmentsData } = useQuery({
+  const { data: departmentsData, } = useQuery({
     queryKey: ["departments"],
     queryFn: getDeparments,
   });
@@ -25,6 +25,7 @@ const CoursesClient = (props: CoursesClientProps) => {
       </Link>
     </div>
   );
+
 
   return (
     <div className="p-6">

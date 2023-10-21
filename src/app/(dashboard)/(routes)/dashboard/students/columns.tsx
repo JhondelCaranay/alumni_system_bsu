@@ -17,9 +17,7 @@ import {
 export const columns: ColumnDef<User & { profile: Profile }>[] = [
   {
     accessorKey: "email",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Email</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Email</div>,
     cell: ({ row }) => {
       const email = row.original.email;
       const image = row.original.image;
@@ -32,9 +30,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "username",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Student No.</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Student No.</div>,
     cell: ({ row }) => {
       const studentNo = row.getValue("username") as string;
       return <div className={`text-center`}>{studentNo}</div>;
@@ -42,24 +38,15 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Name</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Name</div>,
     cell: ({ row }) => {
       const name = row.getValue("name") as string;
-      return (
-        <div className={`text-center flex items-center justify-center`}>
-          {" "}
-          {name}
-        </div>
-      );
+      return <div className={`text-center flex items-center justify-center`}> {name}</div>;
     },
   },
   {
     accessorKey: "profile.gender",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Gender</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Gender</div>,
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
       return <div className={`text-center`}>{"Male"}</div>;
@@ -68,9 +55,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
 
   {
     accessorKey: "courseId",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Course & Section</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Course & Section</div>,
     cell: ({ row }) => {
       //  const name = row.getValue('name') as string
 
@@ -79,9 +64,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
   },
   {
     accessorKey: "yearEnrolled",
-    header: ({ column }) => (
-      <div className="text-[#003171] text-center">Year Enrolled</div>
-    ),
+    header: ({ column }) => <div className="text-[#003171] text-center">Year Enrolled</div>,
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
       return <div className={`text-center`}>{new Date().getFullYear()}</div>;
@@ -95,7 +78,9 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
       return (
         <div className={`text-center`}>
           <DropdownMenu>
-          <DropdownMenuTrigger><MoreHorizontal className="h-4 w-4 text-zinc-500" /></DropdownMenuTrigger>
+            <DropdownMenuTrigger>
+              <MoreHorizontal className="h-4 w-4 text-zinc-500" />
+            </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem className="text-xs">Update</DropdownMenuItem>
               <DropdownMenuItem className="text-xs">Delete</DropdownMenuItem>

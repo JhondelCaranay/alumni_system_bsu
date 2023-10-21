@@ -5,18 +5,19 @@ import ToastProvider from './ToastProvider'
 import { SessionProvider } from 'next-auth/react'
 import ModalProvider from './ModalProvider'
 
-const Provider:React.FC<React.PropsWithChildren>  = ({children}) => {
+const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
-    <ToastProvider />
+      <ToastProvider />
       <QueryProvider>
       <SessionProvider>
         <ModalProvider />
           {children}
       </SessionProvider>
+        <SessionProvider>{children}</SessionProvider>
       </QueryProvider>
     </>
-  )
-}
+  );
+};
 
-export default Provider
+export default Provider;

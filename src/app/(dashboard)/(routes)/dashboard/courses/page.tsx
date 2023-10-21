@@ -4,6 +4,8 @@ import { getDeparments } from "@/queries/department";
 
 type CoursesPageProps = {};
 const CoursesPage = async (props: CoursesPageProps) => {
+  // await new Promise((res) => setTimeout(res, 1000));
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({

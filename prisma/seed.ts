@@ -40,6 +40,7 @@ async function main() {
   users_roles.forEach(async (role) => {
     const user = await prisma.user.create({
       data: {
+        
         email: `${role.toLowerCase()}@bulsu.edu.ph`,
         hashedPassword: password,
         role: Role[role as keyof typeof Role],
@@ -79,6 +80,7 @@ async function main() {
 
     const user = await prisma.user.create({
       data: {
+
         email: `
         ${faker.person.firstName()}@bulsu.edu.ph
         `,

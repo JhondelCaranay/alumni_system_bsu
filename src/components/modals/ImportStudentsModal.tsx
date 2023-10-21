@@ -74,8 +74,6 @@ const ImportStudentsModal = () => {
 
   // converting sheet to json and api request
 
-
-
   const uploadData = (
     value: formType["excelFile"],
     callback: (json: ExcelToJsonSchemaType) => void

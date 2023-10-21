@@ -34,7 +34,7 @@ export const columns: ColumnDef<SafeUser & { profile: SafeProfile }>[] = [
     },
   },
   {
-    accessorKey: "username",
+    accessorKey: "profile.studentNumber",
     header: ({ column }) => (
       <div
         className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
@@ -44,7 +44,7 @@ export const columns: ColumnDef<SafeUser & { profile: SafeProfile }>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const studentNo = row.getValue("username") as string;
+      const studentNo = row.original.profile.studentNumber as string;
       return <div className={`text-center`}>{studentNo}</div>;
     },
   },
@@ -59,7 +59,8 @@ export const columns: ColumnDef<SafeUser & { profile: SafeProfile }>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const name = row.getValue("name") as string;
+      const name = row.original.name as string;
+
       return <div className={`text-center flex items-center justify-center`}> {name}</div>;
     },
   },
@@ -75,7 +76,9 @@ export const columns: ColumnDef<SafeUser & { profile: SafeProfile }>[] = [
     ),
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
-      return <div className={`text-center`}>{"Male"}</div>;
+      const gender = row.original.profile.gender as string;
+
+      return <div className={`text-center`}>{gender}</div>;
     },
   },
 

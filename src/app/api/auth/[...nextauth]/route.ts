@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        username: { label: "username", type: "text" },
+        email: { label: "email", type: "text" },
         password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
@@ -29,13 +29,13 @@ export const authOptions: AuthOptions = {
           (i.e., the request IP address) 
         */
 
-        if (!credentials?.username || !credentials?.password) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials. Please fill in all fields");
         }
 
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
           where: {
-            username: credentials.username,
+            email: credentials.email,
           },
         });
 

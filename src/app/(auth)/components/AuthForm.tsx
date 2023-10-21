@@ -13,12 +13,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
 
 const formSchema = z.object({
-  username: z.string().min(1, {
+  email: z.string().min(1, {
     message: "This field is required",
   }),
   password: z.string().min(1, {
@@ -31,7 +30,7 @@ type formSchemaType = z.infer<typeof formSchema> | FieldValues;
 const AuthForm = () => {
   const form = useForm({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
     resolver: zodResolver(formSchema),
@@ -74,17 +73,17 @@ const AuthForm = () => {
         <div className="flex flex-col items-center  w-full gap-2">
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                  Username
+                  Email
                 </FormLabel>
                 <FormControl>
                   <Input
                     disabled={isLoading}
                     className="bg-white border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                    placeholder={`Enter username`}
+                    placeholder={`Enter email`}
                     {...field}
                   />
                 </FormControl>

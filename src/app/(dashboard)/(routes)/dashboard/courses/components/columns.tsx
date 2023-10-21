@@ -32,7 +32,7 @@ export const columns: ColumnDef<SafeDeparment>[] = [
   {
     accessorKey: "id",
     header: () => {
-      return <div className="sr-only">Id</div>;
+      return <div className="sr-only dark:text-white">Id</div>;
     },
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
@@ -46,6 +46,7 @@ export const columns: ColumnDef<SafeDeparment>[] = [
       return (
         <Button
           variant="ghost"
+          className=" dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Title
@@ -60,6 +61,8 @@ export const columns: ColumnDef<SafeDeparment>[] = [
       return (
         <Button
           variant="ghost"
+          className=" dark:text-white"
+
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Created At

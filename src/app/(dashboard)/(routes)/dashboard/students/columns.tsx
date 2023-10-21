@@ -7,8 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // This type is used to define the shape of our data.
@@ -19,7 +17,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     accessorKey: "email",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Email <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -39,10 +37,10 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     accessorKey: "username",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Student No. <ArrowUpDown className="ml-2 h-4 w-4" />
+        Student ID <ArrowUpDown className="ml-2 h-4 w-4" />
       </div>
     ),
     cell: ({ row }) => {
@@ -54,7 +52,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     accessorKey: "name",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Name <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -74,7 +72,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     accessorKey: "profile.gender",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Gender <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -86,11 +84,14 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     },
   },
 
+  
+
+
   {
     accessorKey: "courseId",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Course & Section <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -106,7 +107,7 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     accessorKey: "yearEnrolled",
     header: ({ column }) => (
       <div
-        className="text-[#003171] text-center flex items-center justify-center cursor-pointer"
+        className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Year Enrolled <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -118,9 +119,9 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
     },
   },
   {
-    accessorKey: "id",
+    accessorKey: "createdAt",
     header: ({ column }) => (
-      <div className="text-[#003171] text-center flex items-center justify-center cursor-pointer"></div>
+      <div className="text-[#003171] text-center flex items-center justify-center cursor-pointer dark:text-white"></div>
     ),
     cell: ({ row }) => {
       // const yearEnrolled = row.getValue('') as Date
@@ -139,4 +140,6 @@ export const columns: ColumnDef<User & { profile: Profile }>[] = [
       );
     },
   },
+  
+  
 ];

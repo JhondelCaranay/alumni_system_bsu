@@ -175,7 +175,7 @@ const StudentsClient = () => {
             yearGraduated: new Date(),
           },
         },
-      ];
+    ];
       
   return (
     <div className="flex flex-col p-10">

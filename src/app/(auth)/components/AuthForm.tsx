@@ -83,6 +83,7 @@ const AuthForm = () => {
                   <Input
                     disabled={isLoading}
                     className="bg-white border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                    type="email"
                     placeholder={`Enter email`}
                     {...field}
                   />

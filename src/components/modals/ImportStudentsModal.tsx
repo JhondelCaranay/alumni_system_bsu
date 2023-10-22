@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Dialog,
@@ -17,11 +18,14 @@ import {
 } from "../ui/form";
 import * as xlsx from "xlsx";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Loader2, FileDown, FileIcon, X } from "lucide-react";
+import { Loader2, FileDown, FileIcon, X, Download, DownloadCloud, DownloadIcon } from "lucide-react";
+import toast from "react-hot-toast";
+import { mutate } from "@/lib/tanstack-query-processor";
+import { SafeUser } from "@/types/types";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -32,18 +36,13 @@ export type formType = z.infer<typeof formSchema>;
 // type and validation for excel sheet to json
 export const excelToJsonSchema = z.array(
   z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-    studentNumber: z.string().min(1),
-    yearEnrolled: z.string().min(1),
-    yearGraduated: z.string().min(1),
-    religion: z.string().min(1),
-    gender: z.string().min(1),
-    dateOfBirth: z.string().min(1),
-    placeOfBirth: z.string().min(1),
-    city: z.string().min(1),
-    province: z.string().min(1),
-    contactNo: z.string().min(1),
+    ['Full Name']: z.string().min(1),
+    ['Email']: z.string().email(),
+    ['Student No.']: z.number().min(1),
+    ['Gender']: z.string().min(1),
+    ['Level']: z.string().min(1),
+    ['Program']: z.string().min(1),
+    ['Contact']: z.number().min(1),
   })
 );
 
@@ -62,8 +61,6 @@ const ImportStudentsModal = () => {
 
     mode: "all",
   });
-
-  const isLoading = form.formState.isSubmitting;
 
   const { register } = form;
 
@@ -98,14 +95,34 @@ const ImportStudentsModal = () => {
     }
   };
 
+  const createStudents = mutate<ExcelToJsonSchemaType, SafeUser[]>(`/students`, null, 'POST', ['students']);
+  const isLoading = createStudents.isPending || form.formState.isSubmitting
+
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
-
     // callback pattern
     uploadData(data, (jsonData: ExcelToJsonSchemaType) => {
-      console.log("json data", jsonData);
 
+      // validation
+      const validatedJsonData = excelToJsonSchema.safeParse(jsonData);
+
+      if(!validatedJsonData.success) {
+        return toast.error('Error excel sheet')
+      }
+
+      console.log('client', validatedJsonData.data)
       // api request here...
+
+      createStudents.mutate(validatedJsonData.data, {
+        onError(error, variables, context) {
+          toast.error('something went wrong...')
+          form.reset()
+        },
+        onSuccess(data, variables, context) {
+          toast.success('The file has been imported successfully')
+          form.reset()
+        },
+      })
     });
   };
 
@@ -134,12 +151,14 @@ const ImportStudentsModal = () => {
                         control={form.control}
                         name="excelFile"
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className="w-full">
                             <label
                               htmlFor="upload"
-                              className="flex items-center w-full px-7 p-3 rounded-md cursor-pointer text-sm text-white bg-[#034FA1] "
-                            >
-                              Import <FileDown className=" text-green-400 " />
+                              className=" hover:bg-zinc-200 w-[60%] transition-all m-auto cursor-pointer py-5 border-zinc-300 border-2 rounded-lg flex flex-col justify-center items-center gap-5 "
+                              >
+                              <Download className=" text-gray-400 ml-2 h-10 w-10 " />
+                              <span className="text-[#42579E] text-sm font-semibold">Choose a file</span>
+                              <span className="text-xs text-zinc-500 font-semibold">Excel (xlsx, xls)</span>
                             </label>
                             <FormControl>
                               <Input

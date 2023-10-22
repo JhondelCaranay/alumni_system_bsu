@@ -115,7 +115,7 @@ export const mutate = <T, K>(
     // When mutate is called:
     onMutate: (newData: T) => {
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData<T>(key);
+      const previousData = queryClient.getQueryData<T | T[]>(key);
 
       // Optimistically update to the new value
       queryClient.setQueryData(key, (old: T[]) => [...old, newData]);

@@ -113,7 +113,6 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      // const yearEnrolled = row.getValue('') as Date
       return <div className={``}>{new Date().getFullYear()}</div>;
     },
   },

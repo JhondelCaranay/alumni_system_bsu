@@ -11,10 +11,9 @@ const StudentsPage = async (props: StudentsPageProps) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["deparments"],
-    queryFn: () => queryFn('/departments', {}),
+    queryKey: ["students"],
+    queryFn: () => queryFn('/students/'),
   });
-  
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

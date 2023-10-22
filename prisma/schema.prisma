@@ -213,7 +213,7 @@ model User {
   sessions Session[]
   profile  Profile?
   events   Event[]
-  comment  Comment[]
+  comments  Comment[]
 
   section   Section? @relation(fields: [sectionId], references: [id])
   sectionId String?

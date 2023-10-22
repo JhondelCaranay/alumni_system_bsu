@@ -1,4 +1,4 @@
-import { Department, Profile, User } from "@prisma/client";
+import { Department, Profile, Section, User } from "@prisma/client";
 
 export type SafeDeparment = Omit<Department, "createdAt" | "updatedAt"> & {
   createdAt: string;
@@ -29,3 +29,9 @@ export type SafeProfile = Omit<
 export type UserWithProfile = SafeUser & {
   profile: SafeProfile;
 };
+
+export type UserProfileWithDepartmentSection = Omit<User, 'hashedPassword' | 'emailVerified'> & {
+  profile: Profile;
+  department: Department
+  section: Section
+}

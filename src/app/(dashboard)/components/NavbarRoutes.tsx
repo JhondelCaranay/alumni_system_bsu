@@ -10,7 +10,7 @@ type NavbarRoutesProps = {
 export const NavbarRoutes = ({ currentUser }: NavbarRoutesProps) => {
   return (
     <>
-      <div className="dark:bg-[#020817] dark:text-white">NAV LINKS</div>
+      {/* <div className="dark:bg-[#020817] dark:text-white">NAV LINKS</div> */}
       <div className="flex gap-x-2 ml-auto">
         {/* <Link href="/">
           <Button size="sm" variant="ghost">

@@ -19,11 +19,10 @@ datasource db {
 
 enum Role {
   ADMIN // can control everything - can create group chat
-  FACULTY_MEMBER // normal faculty member
-  FACULTY_ADVISER // include in group chat per section
-  FACULTY_COORDINATOR // 7 programs 
-  FACULTY_AlUMNI // former student
-  FACULTY_STUDENT // current student
+  ADVISER // include in group chat per section
+  COORDINATOR // 7 programs 
+  ALUMNI // former student
+  STUDENT // current student
   PESO // can post job openings , Public Employment Service Office
   BULSU_PARTNER // can post job openings
 }
@@ -161,6 +160,7 @@ model Profile {
   id String @id @unique @default(uuid())
 
   studentNumber String?
+  schoolYear    Int?
   yearEnrolled  DateTime?
   yearGraduated DateTime?
 
@@ -220,7 +220,7 @@ model User {
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
-  posts         Post[]
+  posts        Post[]
 
   @@index([sectionId])
   @@index([departmentId])

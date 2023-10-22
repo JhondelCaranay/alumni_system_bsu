@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 type CoursesClientProps = {};
 const CoursesClient = (props: CoursesClientProps) => {
-  const { data: departmentsData, } = useQuery({
+  const { data: departmentsData } = useQuery({
     queryKey: ["departments"],
     queryFn: getDeparments,
   });
@@ -20,16 +20,20 @@ const CoursesClient = (props: CoursesClientProps) => {
       <Link href="/departments/create">
         <Button className=" dark:text-white">
           <PlusCircle className="h-4 w-4 mr-2" />
-          New departments
+          Add departments
         </Button>
       </Link>
     </div>
   );
 
-
   return (
     <div className="p-6">
-      <DataTable columns={columns} data={departmentsData || []} tableLinks={tableLinks} />
+      <DataTable
+        columns={columns}
+        data={departmentsData || []}
+        tableLinks={tableLinks}
+        searchKeys={[]}
+      />
     </div>
   );
 };

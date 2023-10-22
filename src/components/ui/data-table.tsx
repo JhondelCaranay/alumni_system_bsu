@@ -30,15 +30,17 @@ import { useState } from "react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tableLinks?: React.ReactNode;
+  actionLinks?: React.ReactNode;
+  searchKeys: string[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  tableLinks,
+  actionLinks,
+  searchKeys,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -69,27 +71,25 @@ export function DataTable<TData, TValue>({
     <div>
       {/* search filter */}
       <div className="flex items-center py-4 justify-between">
-        {/* <Input
-          placeholder={"Search " + searchKey}
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        /> */}
-        <Input
-          placeholder="Search all columns..."
-          value={globalFilter ?? ""}
-          onChange={(event) => {
-            setGlobalFilter(String(event.target.value));
-          }}
-          className="max-w-sm"
-        />
-        {tableLinks}
-        {/* <Link href="/teacher/create">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            New course
-          </Button>
-        </Link> */}
+        <div className="flex gap-4">
+          <Input
+            placeholder="Search all columns..."
+            value={globalFilter ?? ""}
+            onChange={(event) => {
+              setGlobalFilter(String(event.target.value));
+            }}
+            className="max-w-sm"
+          />
+          {searchKeys.map((key) => (
+            <Input
+              placeholder={"Search " + key}
+              value={(table.getColumn(key)?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(key)?.setFilterValue(event.target.value)}
+              className="max-w-sm"
+            />
+          ))}
+        </div>
+        {actionLinks}
       </div>
       {/* table */}
       <div className="rounded-md border">

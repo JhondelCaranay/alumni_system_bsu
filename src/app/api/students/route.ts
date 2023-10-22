@@ -1,4 +1,3 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -6,16 +5,23 @@ import { z } from "zod";
 import generator from "generate-password";
 import bcrypt from "bcrypt";
 import sendMail from "@/lib/smtp";
-import { UserWithProfile } from "@/types/types";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const searchParams = req.nextUrl.searchParams;
   const query = searchParams.get("role");
 
-  const role =
-    Role[query as keyof typeof Role] === Role.FACULTY_AlUMNI
-      ? Role.FACULTY_AlUMNI
-      : Role.FACULTY_STUDENT;
+  let role;
+  switch (Role[query?.toUpperCase() as keyof typeof Role]) {
+    case "ALUMNI":
+      role = Role.ALUMNI;
+      break;
+    case "STUDENT":
+      role = Role.STUDENT;
+      break;
+    default:
+      role = Role.STUDENT;
+      break;
+  }
 
   try {
     const students = await prisma.user.findMany({
@@ -25,9 +31,18 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       where: {
         role: role,
       },
+      include: {
+        profile: true,
+        department: true,
+      },
     });
 
-    return NextResponse.json(students);
+    const safeStudents = students.map((student) => {
+      const { hashedPassword, ...rest } = student;
+      return rest;
+    });
+
+    return NextResponse.json(safeStudents);
   } catch (error) {
     console.log("[STUDENTS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
@@ -92,7 +107,7 @@ export async function POST(req: NextRequest) {
           name: data["Full Name"],
           hashedPassword: hashPw,
           email: data["Email"].toString(),
-          role: "FACULTY_STUDENT",
+          role: "STUDENT",
           profile: {
             create: {
               studentNumber: data["Student No."].toString(),
@@ -138,9 +153,7 @@ export async function POST(req: NextRequest) {
       return student;
     };
 
-    const students = await Promise.all(
-      validatedValues.data.map((data) => createUser(data))
-    );
+    const students = await Promise.all(validatedValues.data.map((data) => createUser(data)));
 
     return NextResponse.json(students);
   } catch (error) {

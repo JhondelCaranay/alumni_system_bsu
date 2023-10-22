@@ -30,8 +30,8 @@ const routesList = [
   },
   {
     icon: GraduationCap,
-    label: "Alumni",
-    href: "/dashboard/alumni",
+    label: "Alumni / Students",
+    href: "/dashboard/alumni-students",
   },
   {
     icon: Users,

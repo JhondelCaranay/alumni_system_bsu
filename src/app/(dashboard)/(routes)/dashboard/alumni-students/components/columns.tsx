@@ -1,7 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,13 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { SafeDeparment } from "@/types/types";
+import { SafeUserWithProfileWithDapartment } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
-export const columns: ColumnDef<SafeDeparment>[] = [
+export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
   // {
   //   id: "counter",
   //   header: () => {
@@ -41,7 +39,7 @@ export const columns: ColumnDef<SafeDeparment>[] = [
     },
   },
   {
-    accessorKey: "name",
+    accessorKey: "firstname",
     header: ({ column }) => {
       return (
         <Button
@@ -49,31 +47,117 @@ export const columns: ColumnDef<SafeDeparment>[] = [
           className=" dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className=" dark:text-white"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Created
+          First Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const createdAt = row.getValue("createdAt") as string;
-      const formatted = format(new Date(createdAt), "MM/dd/yyyy");
-
-      return <div>{formatted}</div>;
+      const firstname = row.original.profile.firstname;
+      return <div>{firstname}</div>;
+    },
+  },
+  {
+    accessorKey: "profile.middleName",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Middle Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const middlename = row.original.profile.middlename;
+      return <div>{middlename}</div>;
+    },
+  },
+  {
+    accessorKey: "profile.lastname",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Last Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const lastname = row.original.profile.lastname;
+      return <div>{lastname}</div>;
+    },
+  },
+  {
+    accessorKey: "role",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const role = row.getValue("role") as string;
+      return <div>{role}</div>;
+    },
+  },
+  {
+    accessorKey: "School Year",
+    accessorFn: (row) => {
+      const schoolYear = row.profile.schoolYear?.toString();
+      return schoolYear;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          School Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const schoolYear = row.original.profile.schoolYear;
+      return <div>{schoolYear}</div>;
+    },
+  },
+  {
+    accessorKey: "Department",
+    accessorFn: (row) => {
+      const name = row.department.name;
+      return name;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Department
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const name = row.original.department.name;
+      return <div>{name}</div>;
     },
   },
   {
@@ -99,13 +183,13 @@ export const columns: ColumnDef<SafeDeparment>[] = [
               <DropdownMenuItem onClick={() => onCopy(id)}>
                 <Copy className="mr-2 h-4 w-4" /> Copy Id
               </DropdownMenuItem>
-              <Link href={`/departments/${id}`}>
+              <Link href={`/students/${id}`}>
                 <DropdownMenuItem>
                   <Eye className="h-4 w-4 mr-2" />
                   View
                 </DropdownMenuItem>
               </Link>
-              <Link href={`/departments/${id}`}>
+              <Link href={`/students/${id}`}>
                 <DropdownMenuItem>
                   <Pencil className="h-4 w-4 mr-2" />
                   Edit
@@ -121,51 +205,4 @@ export const columns: ColumnDef<SafeDeparment>[] = [
       );
     },
   },
-
-  // {
-  //   accessorKey: "price",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Price
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const price = parseFloat(row.getValue("price") || "0");
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(price);
-
-  //     return <div>{formatted}</div>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "isPublished",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Published
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const isPublished = row.getValue("isPublished") || false;
-
-  //     return (
-  //       <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
-  //         {isPublished ? "Published" : "Draft"}
-  //       </Badge>
-  //     );
-  //   },
-  // },
 ];

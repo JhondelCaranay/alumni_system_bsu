@@ -95,7 +95,7 @@ const ImportStudentsModal = () => {
     }
   };
 
-  const createStudents = mutate<ExcelToJsonSchemaType, SafeUser[]>(`/students`, null, 'POST', ['students']);
+  const createStudents = mutate<ExcelToJsonSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['students']);
   const isLoading = createStudents.isPending || form.formState.isSubmitting
 
   const onSubmit: SubmitHandler<formType> = async (values) => {

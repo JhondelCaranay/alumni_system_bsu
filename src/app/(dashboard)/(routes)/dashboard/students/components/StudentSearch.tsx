@@ -11,16 +11,12 @@ type StudentSearchProps = {
 }
 const StudentSearch:React.FC<StudentSearchProps> = ({onChange}) => {
  
-  const {data, isLoading} = query('/departments', {}, ['deparments'], {}, {})
-
     const {onOpen} = useModal()
+
     const onModalOpen = (type: ModalType) => {
-      console.log(type)
       onOpen(type, {});
     }
 
-    if(isLoading) return <div>loading...</div>
-    
   return (
     <div className="flex items-center gap-5 my-10">
         <div className="border flex items-center rounded-md px-2 flex-1">

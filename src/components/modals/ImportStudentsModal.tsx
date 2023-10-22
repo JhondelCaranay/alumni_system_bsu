@@ -116,9 +116,11 @@ const ImportStudentsModal = () => {
       createStudents.mutate(validatedJsonData.data, {
         onError(error, variables, context) {
           toast.error('something went wrong...')
+          form.reset()
         },
         onSuccess(data, variables, context) {
-          console.log('successful', data)
+          toast.success('The file has been imported successfully')
+          form.reset()
         },
       })
     });

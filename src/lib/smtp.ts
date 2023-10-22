@@ -1,6 +1,5 @@
 import { env } from "@/env.mjs";
 import * as nodemailer from "nodemailer";
-env
 const mailTransporter = nodemailer.createTransport({
   service: "gmail",
   secure: false,

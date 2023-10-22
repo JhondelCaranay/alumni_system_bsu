@@ -86,7 +86,7 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
 
 
   {
-    accessorKey: "courseId",
+    accessorKey: "department.id",
     header: ({ column }) => (
       <div
         className="text-[#003171]  flex items-center cursor-pointer dark:text-white"
@@ -96,9 +96,10 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      //  const name = row.getValue('name') as string
+      const departmentName = row.original.department.name;
 
-      return <div className={``}>{"Automotive 1-A"}</div>;
+
+      return <div className={``}>{departmentName}</div>;
     },
   },
   {

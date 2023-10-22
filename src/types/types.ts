@@ -26,6 +26,11 @@ export type SafeProfile = Omit<
   gender: string;
 };
 
+export type SafeUserWithProfileWithDapartment = SafeUser & {
+  profile: SafeProfile;
+  department: SafeDeparment;
+};
+
 export type UserWithProfile = SafeUser & {
   profile: SafeProfile;
 };

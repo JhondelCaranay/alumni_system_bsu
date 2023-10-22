@@ -29,8 +29,8 @@ const routesList = [
     href: "/dashboard/courses",
   },
   {
-    icon: GraduationCap,
-    label: "Alumni",
+    icon: Users,
+    label: "Alumni / Students",
     href: "/dashboard/alumni",
   },
   {

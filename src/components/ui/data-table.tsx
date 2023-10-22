@@ -25,20 +25,23 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tableLinks?: React.ReactNode;
+  searchKeys?: string[];
+  globalFilter: string;
+  setGlobalFilter: Dispatch<SetStateAction<string>>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  tableLinks,
+  globalFilter,
+  setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState('');
+  // const [globalFilter, setGlobalFilter] = useState("");
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -68,30 +71,27 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       {/* search filter */}
-      <div className="flex items-center py-4 justify-between">
-        {/* <Input
-          placeholder={"Search " + searchKey}
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        /> */}
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:md:sm:grid-cols-4 gap-4 py-4">
         <Input
           placeholder="Search all columns..."
           value={globalFilter ?? ""}
           onChange={(event) => {
             setGlobalFilter(String(event.target.value));
           }}
-          className="max-w-sm"
+          className="w-full"
         />
-        {tableLinks}
-        {/* <Link href="/teacher/create">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            New course
-          </Button>
-        </Link> */}
-      </div>
+        {filters}
+        {searchKeys.map((key) => (
+          <Input
+            placeholder={"Search " + key}
+            value={(table.getColumn(key)?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn(key)?.setFilterValue(event.target.value)}
+            className="max-w-sm"
+          />
+        ))}
+      </div> */}
       {/* table */}
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>

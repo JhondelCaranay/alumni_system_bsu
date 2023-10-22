@@ -15,7 +15,7 @@ const CoursesClient = (props: CoursesClientProps) => {
     queryFn: getDeparments,
   });
 
-  const tableLinks = (
+  const actionLinks = (
     <div className="flex justify-end">
       <Link href="/departments/create">
         <Button className=" dark:text-white">
@@ -31,7 +31,7 @@ const CoursesClient = (props: CoursesClientProps) => {
       <DataTable
         columns={columns}
         data={departmentsData || []}
-        tableLinks={tableLinks}
+        actionLinks={actionLinks}
         searchKeys={[]}
       />
     </div>

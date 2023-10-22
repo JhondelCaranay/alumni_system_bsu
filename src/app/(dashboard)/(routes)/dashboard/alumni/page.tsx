@@ -1,13 +1,18 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { getStudents } from "@/queries/students";
-import AlumniStudentsClient from "./components/AlumniStudentsClient";
+import AlumniStudentsClient from "./components/AlumniClient";
 
 type AlumniPageProps = {};
 const AlumniPage = async (props: AlumniPageProps) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["alumni"],
+    queryKey: [
+      "students",
+      {
+        role: "alumni",
+      },
+    ],
     queryFn: ({ queryKey }) => getStudents("?role=alumni"),
   });
 

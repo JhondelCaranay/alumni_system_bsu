@@ -159,6 +159,7 @@ model Guardian {
 model Profile {
   id String @id @unique @default(uuid())
 
+  isEmployed    Boolean   @default(false)
   studentNumber String?
   schoolYear    Int?
   yearEnrolled  DateTime?
@@ -213,7 +214,7 @@ model User {
   sessions Session[]
   profile  Profile?
   events   Event[]
-  comment  Comment[]
+  comments Comment[]
 
   section   Section? @relation(fields: [sectionId], references: [id])
   sectionId String?

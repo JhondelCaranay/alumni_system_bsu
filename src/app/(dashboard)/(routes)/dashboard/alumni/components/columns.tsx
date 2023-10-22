@@ -13,6 +13,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Badge } from "@/components/ui/badge";
+import { capitalizeWords, cn } from "@/lib/utils";
 
 export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
   // {
@@ -39,7 +41,34 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
     },
   },
   {
+    accessorKey: "LRN",
+    accessorFn: (row) => {
+      const studentNumber = row.profile.studentNumber;
+      return studentNumber;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          LRN
+          {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const studentNumber = row.original.profile.studentNumber;
+      return <div>{studentNumber}</div>;
+    },
+  },
+  {
     accessorKey: "firstname",
+    accessorFn: (row) => {
+      const firstname = row.profile.firstname;
+      return firstname;
+    },
     header: ({ column }) => {
       return (
         <Button
@@ -57,27 +86,13 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
       return <div>{firstname}</div>;
     },
   },
+
   {
-    accessorKey: "profile.middleName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className=" dark:text-white"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Middle Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+    accessorKey: "lastname",
+    accessorFn: (row) => {
+      const lastname = row.profile.lastname;
+      return lastname;
     },
-    cell: ({ row }) => {
-      const middlename = row.original.profile.middlename;
-      return <div>{middlename}</div>;
-    },
-  },
-  {
-    accessorKey: "profile.lastname",
     header: ({ column }) => {
       return (
         <Button
@@ -96,7 +111,39 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
     },
   },
   {
+    accessorKey: "job",
+    accessorFn: (row) => {
+      const job = row.profile.isEmployed ? "Employed" : "Unemployed";
+      return job;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Job
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const isEmployed = row.original.profile.isEmployed;
+
+      return (
+        <Badge className={cn("bg-slate-500 dark:text-white", isEmployed && "bg-sky-700")}>
+          {isEmployed ? "Employed" : "Unemployed"}
+        </Badge>
+      );
+    },
+  },
+  {
     accessorKey: "role",
+    accessorFn: (row) => {
+      const role = row.role;
+      return role;
+    },
     header: ({ column }) => {
       return (
         <Button
@@ -111,7 +158,12 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
     },
     cell: ({ row }) => {
       const role = row.getValue("role") as string;
-      return <div>{role}</div>;
+      const final = capitalizeWords(role);
+      return (
+        <Badge className={cn("bg-slate-500 dark:text-white", role === "ALUMNI" && "bg-sky-700")}>
+          {final}
+        </Badge>
+      );
     },
   },
   {
@@ -163,7 +215,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { id, profile } = row.original;
 
       const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
@@ -180,16 +232,18 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onCopy(id)}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Id
+              <DropdownMenuItem
+                onClick={() => profile.studentNumber && onCopy(profile.studentNumber)}
+              >
+                <Copy className="mr-2 h-4 w-4" /> Copy LRN
               </DropdownMenuItem>
-              <Link href={`/students/${id}`}>
+              <Link href={`/dashboard/students/${id}`}>
                 <DropdownMenuItem>
                   <Eye className="h-4 w-4 mr-2" />
                   View
                 </DropdownMenuItem>
               </Link>
-              <Link href={`/students/${id}`}>
+              <Link href={`/dashboard/students/${id}`}>
                 <DropdownMenuItem>
                   <Pencil className="h-4 w-4 mr-2" />
                   Edit

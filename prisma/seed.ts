@@ -74,6 +74,7 @@ async function main() {
     // profile
     await prisma.profile.create({
       data: {
+        isEmployed: faker.datatype.boolean(),
         schoolYear: faker.number.int({ min: 1, max: 4 }),
         studentNumber: isAlumniOrStudent ? faker.number.int().toString() : undefined,
         yearEnrolled: isAlumniOrStudent

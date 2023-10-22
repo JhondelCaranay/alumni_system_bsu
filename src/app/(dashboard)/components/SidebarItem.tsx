@@ -31,7 +31,7 @@ export const SidebarItem = ({ icon: Icon, label, href }: SidebarItemProps) => {
     >
       {/* <button type="button"> */}
       <div className="flex items-center gap-x-2 py-4">
-        <Icon size={22} className={cn("text-slate-500 dark:bg-[#020817] dark:text-white", isActive && "text-sky-700")} />
+        <Icon size={18} className={cn("text-slate-500 dark:bg-[#020817] dark:text-white", isActive && "text-sky-700")} />
         {label}
       </div>
       <div

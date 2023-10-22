@@ -6,6 +6,8 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.string().min(1),
     NEXTAUTH_SECRET: z.string().min(1),
+    NODEMAILER_GMAIL:z.string().min(1),
+    NODEMAILER_PASSWORD:z.string().min(1),
   },
   client: {
     // NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),

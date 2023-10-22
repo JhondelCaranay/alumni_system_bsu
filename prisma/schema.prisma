@@ -110,7 +110,7 @@ model Section {
   id String @id @default(uuid())
 
   name  String
-  year  Int
+  year  String
   batch String // 2019-2020
 
   members User[]
@@ -220,7 +220,7 @@ model User {
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
-  Post         Post[]
+  posts         Post[]
 
   @@index([sectionId])
   @@index([departmentId])

@@ -104,7 +104,7 @@ export const mutationFn = async <T>(
 
 export const mutate = <T, K>(
   url: string,
-  queryParams: Record<string, any>,
+  queryParams: Record<string, any> | null,
   method: HttpMutationMethod,
   key: any[],
   options = {},
@@ -115,7 +115,7 @@ export const mutate = <T, K>(
   return useMutation({
     ...options,
     mutationFn: async (value: T) =>
-      mutationFn<T>(url, queryParams, method, value, headers) as K,
+      mutationFn<T>(url, queryParams={}, method, value, headers) as K,
     onMutate: (newData: T) => {
       const previousData = queryClient.getQueryData<T>(key);
       const isArray = Array.isArray(previousData);

@@ -1,20 +1,17 @@
 "use client";
-import axios, {  } from "axios";
+import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import qs from "query-string";
 
 const controller = new AbortController();
 
 export const apiClient = axios.create({
-  baseURL: "http://localhost:3000/api",
+  // baseURL: "http://localhost:3000/api",
+  baseURL: "api",
   headers: { "Content-type": "application/json" },
 });
 
-export const queryFn = async <T>(
-  url: string,
-  queryParams: Record<string, any>,
-  headers = {}
-) => {
+export const queryFn = async <T>(url: string, queryParams: Record<string, any>, headers = {}) => {
   const newUrl = qs.stringifyUrl({
     url,
     query: {
@@ -106,7 +103,7 @@ export const mutate = <T, K>(
   url: string,
   queryParams: Record<string, any>,
   method: HttpMutationMethod,
-  key: any[],
+  key: string[],
   options = {},
   headers = {}
 ) => {
@@ -114,21 +111,26 @@ export const mutate = <T, K>(
 
   return useMutation({
     ...options,
-    mutationFn: async (value: T) =>
-      mutationFn<T>(url, queryParams, method, value, headers) as K,
+    mutationFn: async (value: T) => mutationFn<T>(url, queryParams, method, value, headers) as K,
+    // When mutate is called:
     onMutate: (newData: T) => {
+      // Snapshot the previous value
       const previousData = queryClient.getQueryData<T>(key);
-      const isArray = Array.isArray(previousData);
 
-      //checking if the previous data is an array type if yes then update the array data
-      if (isArray) {
-        // @ts-ignore
-        // @ts-nocheck
-        queryClient.setQueryData(key, (old) => [...old, newData]);
-      } else {
-        // if not then update the single object data with the new data
-        queryClient.setQueryData(key, newData);
-      }
+      // Optimistically update to the new value
+      queryClient.setQueryData(key, (old: T[]) => [...old, newData]);
+
+      // const isArray = Array.isArray(previousData);
+
+      // //checking if the previous data is an array type if yes then update the array data
+      // if (isArray) {
+      //   queryClient.setQueryData(key, (old) => {
+      //     return [...old, newData];
+      //   });
+      // } else {
+      //   // if not then update the single object data with the new data
+      //   queryClient.setQueryData(key, newData);
+      // }
       return { previousData };
     },
     onError: (err, newTodo, context) => {
@@ -140,9 +142,8 @@ export const mutate = <T, K>(
       } else {
         console.error(err);
       }
-      // @ts-ignore
-      // @ts-nocheck
-      queryClient.setQueryData(key, context.previousData);
+
+      queryClient.setQueryData(key, context?.previousData);
       console.log(" 🚀 error mutate processor 🚀");
     },
     onSuccess(data, variables, context) {

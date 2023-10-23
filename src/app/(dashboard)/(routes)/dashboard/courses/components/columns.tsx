@@ -12,22 +12,22 @@ import {
 import { format } from "date-fns";
 import { SafeDeparment } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown, Copy, MoreHorizontal, Pencil } from "lucide-react";
+import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export const columns: ColumnDef<SafeDeparment>[] = [
-  {
-    id: "counter",
-    header: () => {
-      return <div className="sr-only">Counter</div>;
-    },
-    cell: ({ row }) => {
-      const index = row.index + 1;
+  // {
+  //   id: "counter",
+  //   header: () => {
+  //     return <div className="sr-only">Counter</div>;
+  //   },
+  //   cell: ({ row }) => {
+  //     const index = row.index + 1;
 
-      return <div>{index}</div>;
-    },
-  },
+  //     return <div>{index}</div>;
+  //   },
+  // },
   // add id dont show it
   {
     accessorKey: "id",
@@ -62,10 +62,9 @@ export const columns: ColumnDef<SafeDeparment>[] = [
         <Button
           variant="ghost"
           className=" dark:text-white"
-
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created At
+          Created
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -88,29 +87,37 @@ export const columns: ColumnDef<SafeDeparment>[] = [
       };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-4 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onCopy(id)}>
-              <Copy className="mr-2 h-4 w-4" /> Copy Id
-            </DropdownMenuItem>
-            <Link href={`/departments/${id}`}>
-              <DropdownMenuItem>
-                <Pencil className="h-4 w-4 mr-2" />
-                Edit
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-4 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onCopy(id)}>
+                <Copy className="mr-2 h-4 w-4" /> Copy Id
               </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem className="text-red-600 hover:!text-red-600 hover:!bg-red-100">
-              <Archive className="h-4 w-4 mr-2" />
-              Archive
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <Link href={`/departments/${id}`}>
+                <DropdownMenuItem>
+                  <Eye className="h-4 w-4 mr-2" />
+                  View
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/departments/${id}`}>
+                <DropdownMenuItem>
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem className="text-red-600 hover:!text-red-600 hover:!bg-red-100">
+                <Archive className="h-4 w-4 mr-2" />
+                Archive
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

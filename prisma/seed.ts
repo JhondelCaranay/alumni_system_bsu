@@ -24,37 +24,58 @@ async function main() {
   /* 
     SEED USERS
   */
+
+  // course / department / program
+  const departments = ["AUTOMOTIVE", "COMPUTER", "DRAFTING", "EIR", "EEC", "FOODS", "MECHANICAL"];
+
+  const departmentsIds = await Promise.all(
+    departments.map(async (department) => {
+      return await prisma.department.create({
+        data: {
+          name: department,
+        },
+      });
+    })
+  );
+
   const password = await bcrypt.hash("dev123", 12);
 
   const users_roles = [
     "ADMIN",
-    "FACULTY_MEMBER",
-    "FACULTY_ADVISER",
-    "FACULTY_COORDINATOR",
-    "FACULTY_AlUMNI",
-    "FACULTY_STUDENT",
+    "ADVISER",
+    "COORDINATOR",
+    "ALUMNI",
+    "STUDENT",
     "PESO",
     "BULSU_PARTNER",
   ];
 
   users_roles.forEach(async (role) => {
+    // random number 0 - 6
+    const randomNumber = Math.floor(Math.random() * 7);
+
     const user = await prisma.user.create({
       data: {
-        
         email: `${role.toLowerCase()}@bulsu.edu.ph`,
         hashedPassword: password,
         role: Role[role as keyof typeof Role],
         name: faker.person.firstName(),
         image: faker.image.avatar(),
+        department: {
+          connect: {
+            id: departmentsIds[randomNumber].id,
+          },
+        },
       },
     });
 
-    const isAlumniOrStudent =
-      user.role === Role.FACULTY_AlUMNI || user.role === Role.FACULTY_STUDENT;
+    const isAlumniOrStudent = user.role === Role.ALUMNI || user.role === Role.STUDENT;
 
     // profile
     await prisma.profile.create({
       data: {
+        isEmployed: faker.datatype.boolean(),
+        schoolYear: faker.number.int({ min: 1, max: 4 }),
         studentNumber: isAlumniOrStudent ? faker.number.int().toString() : undefined,
         yearEnrolled: isAlumniOrStudent
           ? faker.date.between({ from: "2020-01-01T00:00:00.000Z", to: "2030-01-01T00:00:00.000Z" })
@@ -78,22 +99,30 @@ async function main() {
     const isAlumniOrStudent = i % 2 === 0;
     // alumni is even, student is odd
 
+    // random number 0 - 6
+    const randomNumber = Math.floor(Math.random() * 7);
+
     const user = await prisma.user.create({
       data: {
-
         email: `
         ${faker.person.firstName()}@bulsu.edu.ph
         `,
         hashedPassword: password,
-        role: isAlumniOrStudent ? Role.FACULTY_AlUMNI : Role.FACULTY_STUDENT,
+        role: isAlumniOrStudent ? Role.ALUMNI : Role.STUDENT,
         name: faker.person.firstName(),
         image: faker.image.avatar(),
+        department: {
+          connect: {
+            id: departmentsIds[randomNumber].id,
+          },
+        },
       },
     });
 
     // profile
     await prisma.profile.create({
       data: {
+        schoolYear: faker.number.int({ min: 1, max: 4 }),
         studentNumber: faker.number.int().toString(),
         yearEnrolled: faker.date.between({
           from: "2020-01-01T00:00:00.000Z",
@@ -112,17 +141,6 @@ async function main() {
       },
     });
   }
-
-  // course / department / program
-  const departments = ["AUTOMOTIVE", "COMPUTER", "DRAFTING", "EIR", "EEC", "FOODS", "MECHANICAL"];
-
-  departments.forEach(async (department) => {
-    await prisma.department.create({
-      data: {
-        name: department,
-      },
-    });
-  });
 
   console.log("Seeding completed.");
 }

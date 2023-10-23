@@ -33,11 +33,11 @@ const routesList = [
     label: "Alumni / Students",
     href: "/dashboard/alumni",
   },
-  {
-    icon: Users,
-    label: "Students",
-    href: "/dashboard/students",
-  },
+  // {
+  //   icon: Users,
+  //   label: "Students",
+  //   href: "/dashboard/students",
+  // },
   {
     icon: Briefcase,
     label: "Jobs",

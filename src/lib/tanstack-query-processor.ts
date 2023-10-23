@@ -168,6 +168,7 @@ import axios, {  } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import qs from "query-string";
 import { env } from "@/env.mjs";
+import { useParams, useSearchParams } from "next/navigation";
 
 const controller = new AbortController();
 
@@ -277,24 +278,34 @@ export const mutate = <T, K>(
   headers = {}
 ) => {
   const queryClient = useQueryClient();
-
   return useMutation({
     ...options,
     mutationFn: async (value: T) =>
-      mutationFn<T>(url, queryParams={}, method, value, headers) as K,
-    onMutate: (newData: T) => {
+      mutationFn<T>(url, queryParams, method, value, headers) as K,
+    onMutate: (data: T) => {
       const previousData = queryClient.getQueryData<T>(key);
       const isArray = Array.isArray(previousData);
-
       //checking if the previous data is an array type if yes then update the array data
       if (isArray) {
-        // @ts-ignore
-        // @ts-nocheck
-        queryClient.setQueryData(key, (old) => [...old, newData]);
-      } else {
-        // if not then update the single object data with the new data
-        queryClient.setQueryData(key, newData);
-      }
+        queryClient.setQueryData(key, (old: (T | any)[]) => {
+          if(method === 'DELETE') {
+            // if delete method we assume it's an id to delete
+            return old.filter((value) => value?.id != data)
+          }
+          if(method === 'POST') {
+            // else its an object of new data
+            if(Array.isArray(data)) {
+              return [...old, ...data]
+            } else {
+              return [...old, data]
+            }
+          }
+        });
+      } 
+      // else {
+      //   // if not then update the single object data with the new data
+      //   queryClient.setQueryData(key, data);
+      // }
       return { previousData };
     },
     onError: (err, newTodo, context) => {
@@ -306,19 +317,17 @@ export const mutate = <T, K>(
       } else {
         console.error(err);
       }
-      // @ts-ignore
-      // @ts-nocheck
-      queryClient.setQueryData(key, context.previousData);
+      queryClient.setQueryData(key, context?.previousData);
       console.log(" 🚀 error mutate processor 🚀");
     },
     onSuccess(data, variables, context) {
       console.log(" 🚀 success mutate processor 🚀");
     },
-    onSettled: (data) => {
-      queryClient.invalidateQueries({
+    onSettled: async (data) => {
+      console.log(" 🚀 settled mutate processor 🚀");
+     return await queryClient.invalidateQueries({
         queryKey: key,
       });
-      console.log(" 🚀 settled mutate processor 🚀");
     },
   });
 };

@@ -18,6 +18,7 @@ import {
 import { ModalType, useModal } from "@/hooks/useModalStore";
 import { query } from "@/lib/tanstack-query-processor";
 import { Search, UserPlus, File, Filter } from "lucide-react";
+import { capitalizeWords } from "@/lib/utils";
 const StudentsClient = () => {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -79,7 +80,7 @@ const StudentsClient = () => {
           <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
             {roles?.map((value) => (
               <SelectItem value={value} key={value} className="cursor-pointer">
-                {value}
+                {capitalizeWords(value)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -92,7 +93,7 @@ const StudentsClient = () => {
           <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
             {departments?.map((value) => (
               <SelectItem value={value} key={value} className="cursor-pointer">
-                {value}
+                {capitalizeWords(value)}
               </SelectItem>
             ))}
           </SelectContent>

@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import sendMail from "@/lib/smtp";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { Role } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
             name: data["Full Name"],
             hashedPassword: hashPw,
             email: data["Email"].toString(),
-            role: "FACULTY_STUDENT",
+            role: Role.STUDENT,
             profile: {
               create: {
                 studentNumber: data["Student No."].toString(),
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest) {
   
         const { hashedPassword, ...rest } = student;
   
-        return student;
+        return {...rest};
       };
   
       const students = await Promise.all(

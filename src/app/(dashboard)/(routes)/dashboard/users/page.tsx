@@ -1,5 +1,24 @@
-type UsersPageProps = {};
-const UsersPage = (props: UsersPageProps) => {
-  return <div>UsersPage</div>;
+
+import { HydrationBoundary, QueryClient, dehydrate, } from "@tanstack/react-query";
+import { queryFn } from "@/lib/tanstack-query-processor";
+import UsersClient from "./components/UsersClient";
+
+
+type StudentsPageProps = {};
+
+const StudentsPage = async (props: StudentsPageProps) => {
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["users"],
+    queryFn: () => queryFn('/users/'),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UsersClient />
+    </HydrationBoundary>
+  );
 };
-export default UsersPage;
+export default StudentsPage;

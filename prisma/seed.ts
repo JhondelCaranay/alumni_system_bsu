@@ -26,7 +26,15 @@ async function main() {
   */
 
   // course / department / program
-  const departments = ["AUTOMOTIVE", "COMPUTER", "DRAFTING", "EIR", "EEC", "FOODS", "MECHANICAL"];
+  const departments = [
+    "AUTOMOTIVE",
+    "COMPUTER",
+    "DRAFTING",
+    "EIR",
+    "EEC",
+    "FOODS",
+    "MECHANICAL",
+  ];
 
   const departmentsIds = await Promise.all(
     departments.map(async (department) => {
@@ -69,22 +77,35 @@ async function main() {
       },
     });
 
-    const isAlumniOrStudent = user.role === Role.ALUMNI || user.role === Role.STUDENT;
+    const isAlumniOrStudent =
+      user.role === Role.ALUMNI || user.role === Role.STUDENT;
 
     // profile
     await prisma.profile.create({
       data: {
         isEmployed: faker.datatype.boolean(),
         schoolYear: faker.number.int({ min: 1, max: 4 }),
-        studentNumber: isAlumniOrStudent ? faker.number.int().toString() : undefined,
+        studentNumber: isAlumniOrStudent
+          ? faker.number.int().toString()
+          : undefined,
         yearEnrolled: isAlumniOrStudent
-          ? faker.date.between({ from: "2020-01-01T00:00:00.000Z", to: "2030-01-01T00:00:00.000Z" })
+          ? faker.date.between({
+              from: "2020-01-01T00:00:00.000Z",
+              to: "2030-01-01T00:00:00.000Z",
+            })
           : undefined,
         alternative_email: faker.internet.email(),
         firstname: faker.person.firstName(),
         lastname: faker.person.lastName(),
         middlename: faker.person.lastName(),
         age: faker.number.int({ min: 18, max: 60 }),
+        city: faker.location.city(),
+        homeNo: faker.location.buildingNumber(),
+        street: faker.location.street(),
+        barangay: faker.location.state(),
+        gender: faker.person.sexType().toUpperCase() as Gender,
+        contactNo: faker.phone.number(),
+        province: faker.location.state(),
         user: {
           connect: {
             id: user.id,
@@ -133,6 +154,13 @@ async function main() {
         lastname: faker.person.lastName(),
         middlename: faker.person.lastName(),
         age: faker.number.int({ min: 18, max: 60 }),
+        city: faker.location.city(),
+        homeNo: faker.location.buildingNumber(),
+        street: faker.location.street(),
+        barangay: faker.location.state(),
+        gender: faker.person.sexType().toUpperCase() as Gender,
+        contactNo: faker.phone.number(),
+        province: faker.location.state(),
         user: {
           connect: {
             id: user.id,

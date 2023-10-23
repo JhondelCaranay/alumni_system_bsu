@@ -11,6 +11,7 @@ const StudentsPage = async (props: StudentsPageProps) => {
     queryKey: ["students"],
     queryFn: ({ queryKey }) => getStudents(),
   });
+  
   await queryClient.prefetchQuery({
     queryKey: ["departments"],
     queryFn: ({ queryKey }) => getDeparments(),

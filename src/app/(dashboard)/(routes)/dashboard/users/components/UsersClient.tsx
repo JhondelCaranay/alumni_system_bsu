@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { ModalType, useModal } from "@/hooks/useModalStore";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
-import { Search, UserPlus, File, Filter } from "lucide-react";
+import { Search, UserPlus, File, Filter, Loader2 } from "lucide-react";
 import { capitalizeWords } from "@/lib/utils";
 import { Role } from "@prisma/client";
 const StudentsClient = () => {
@@ -50,7 +50,10 @@ const StudentsClient = () => {
 
   const users = useQueryProcessor<UserProfileWithDepartmentSection[]>(
     `/users`,
-    { role: role == "All" ? '' : role, department: department == "All" ? '' : department },
+    {
+      role: role == "All" ? "" : role,
+      department: department == "All" ? "" : department,
+    },
     ["users"],
     {
       enabled: typeof departments.data != "undefined",
@@ -59,7 +62,7 @@ const StudentsClient = () => {
 
   useEffect(() => {
     users.refetch();
-  }, [role, department, users]);
+  }, [role, department]);
 
   return (
     <div className="flex flex-col p-10">
@@ -141,12 +144,26 @@ const StudentsClient = () => {
         </Button>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={users?.data || []}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      {
+      (() => {
+        if (users.status === 'pending') {
+          return <Loader2 className="w-8 h-8 animate-spin mx-auto" />;
+        }
+
+        if (users.status === 'error') {
+          return <div className="mx-auto">Something went wrong...</div>;
+        }
+        
+        return (
+          <DataTable
+            columns={columns}
+            data={users.data || []}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        );
+      })()
+      }
     </div>
   );
 };

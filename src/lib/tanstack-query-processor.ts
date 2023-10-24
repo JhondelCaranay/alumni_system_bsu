@@ -179,7 +179,7 @@ export const apiClient = axios.create({
 
 export const queryFn = async <T>(
   url: string,
-  queryParams: Record<string, any> | null = {},
+  queryParams: Record<string, any> | null = {} ,
   headers = {}
 ) => {
   const newUrl = qs.stringifyUrl({
@@ -199,14 +199,14 @@ export const queryFn = async <T>(
 };
 export const query = <T>(
   url: string,
-  queryParams: Record<string, any> | null = {},
+  queryParams: Record<string, any> | null = {} ,
   key: any[] = [],
   options = {},
   headers = {}
 ) => {
   return useQuery<T>({
     queryKey: key,
-    queryFn: () => queryFn(url, queryParams={}, headers),
+    queryFn: () => queryFn(url, queryParams, headers),
     ...options,
   });
 };
@@ -215,17 +215,16 @@ type HttpMutationMethod = "DELETE" | "POST" | "PUT" | "PATCH";
 
 export const mutationFn = async <T>(
   url: string,
-  queryParams: Record<string, any> | null ={},
+  queryParams: Record<string, any> | null = {},
   method: HttpMutationMethod,
   value: T,
   headers = {}
 ) => {
   const newUrl = qs.stringifyUrl({
     url,
-    query: {
-      ...queryParams,
-    },
+    query:{...queryParams},
   });
+
   switch (method) {
     case "DELETE": {
       const { data } = await apiClient.delete<T>(newUrl, {
@@ -271,7 +270,7 @@ export const mutationFn = async <T>(
 
 export const mutate = <T, K>(
   url: string,
-  queryParams: Record<string, any> | null = {},
+  queryParams: Record<string, any> | null = {} ,
   method: HttpMutationMethod,
   key: any[],
   options = {},

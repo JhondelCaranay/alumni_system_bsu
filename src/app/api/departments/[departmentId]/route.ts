@@ -3,23 +3,48 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function GET(req: NextRequest, { params }: { params: {} }) {
+export async function GET(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      departmentId: string;
+    };
+  }
+) {
   try {
-    const departments = await prisma.department.findMany({
-      orderBy: {
-        name: "asc",
+    const { departmentId } = params;
+
+    const departments = await prisma.department.findUnique({
+      where: {
+        id: departmentId,
       },
     });
 
+    if (!departments) {
+      return NextResponse.json("Department not found", { status: 404 });
+    }
+
     return NextResponse.json(departments);
   } catch (error) {
-    console.log("[DEPARTMENTS_GET]", error);
+    console.log("[DEPARTMENT_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: {} }) {
+export async function PATCH(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      departmentId: string;
+    };
+  }
+) {
   try {
+    const { departmentId } = params;
     const user = await getCurrentUser();
 
     /* 
@@ -33,6 +58,16 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       TODO: ADD ROLE AUTHORIZATION
     */
 
+    const departments = await prisma.department.findUnique({
+      where: {
+        id: departmentId,
+      },
+    });
+
+    if (!departments) {
+      return NextResponse.json("Department not found", { status: 404 });
+    }
+
     const bodySchema = z.object({
       name: z
         .string({
@@ -44,9 +79,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     const result = await bodySchema.safeParseAsync(await req.json());
 
     if (!result.success) {
-      // handle error then return
-      console.log("[DEPARTMENTS_POST]", result.error);
-
+      console.log("[DEPARTMENT_PATCH]", result.error);
       return NextResponse.json(
         {
           errors: result.error.errors,
@@ -58,15 +91,18 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
 
     const { name } = result.data;
 
-    const department = await prisma.department.create({
+    const updatedDepartment = await prisma.department.update({
+      where: {
+        id: departmentId,
+      },
       data: {
         name,
       },
     });
 
-    return NextResponse.json(department);
+    return NextResponse.json(updatedDepartment);
   } catch (error) {
-    console.log("[DEPARTMENTS_POST]", error);
+    console.log("[DEPARTMENT_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

@@ -123,7 +123,10 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       // const yearEnrolled = row.getValue('') as Date
       const gender = row.original.profile?.gender as string;
 
-      return <div className={``}>{gender}</div>;
+      return <div className={`text-center`}> <Badge className={cn('dark:text-white bg-slate-500', 
+      gender === 'FEMALE' && 'bg-rose-500',
+      gender === 'MALE' && 'bg-sky-700',
+      )}>{ capitalizeWords(gender)}</Badge> </div>;
     },
   },
 
@@ -151,15 +154,18 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
 
       const upperRole = ["ADVISER", "COORDINATOR", "BULSU_PARTNER", "PESO"];
       return (
+        <div className="text-center">
+          
         <Badge
           className={cn(
             "bg-slate-500 dark:text-white",
             role === "ALUMNI" && "bg-sky-700",
             upperRole.includes(role) && "bg-indigo-500"
-          )}
-        >
+            )}
+            >
           {final}
         </Badge>
+          </div>
       );
     },
   },
@@ -181,7 +187,7 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     cell: ({ row }) => {
       const { name } = row.original.department || {};
 
-      return <div className={``}>{name}</div>;
+      return <div className={`text-center`}>{capitalizeWords(name) }</div>;
     },
   },
   {

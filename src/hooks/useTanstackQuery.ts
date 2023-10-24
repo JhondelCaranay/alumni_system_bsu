@@ -168,7 +168,6 @@ import axios, {  } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import qs from "query-string";
 import { env } from "@/env.mjs";
-import { useParams, useSearchParams } from "next/navigation";
 
 const controller = new AbortController();
 

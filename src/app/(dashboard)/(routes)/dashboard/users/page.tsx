@@ -1,6 +1,6 @@
 
 import { HydrationBoundary, QueryClient, dehydrate, } from "@tanstack/react-query";
-import { queryFn } from "@/lib/tanstack-query-processor";
+import { queryFn } from "@/hooks/useTanstackQuery";
 import UsersClient from "./components/UsersClient";
 
 

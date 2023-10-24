@@ -126,7 +126,7 @@ const AlumniClient = (props: AlumniClientProps) => {
           <SelectContent>
             <SelectItem value="All">All</SelectItem>
             {departmentsData?.map((department) => (
-              <SelectItem value={department.name}>{department.name}</SelectItem>
+              <SelectItem value={department.name} key={department.name}>{department.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>

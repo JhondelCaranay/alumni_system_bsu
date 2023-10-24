@@ -24,7 +24,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2, FileDown, FileIcon, X, Download, DownloadCloud, DownloadIcon } from "lucide-react";
 import toast from "react-hot-toast";
-import { mutate } from "@/lib/tanstack-query-processor";
+import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { SafeUser } from "@/types/types";
 
 export const formSchema = z.object({
@@ -95,7 +95,7 @@ const ImportStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const createStudents = mutate<ExcelToJsonSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
+  const createStudents = useMutateProcessor<ExcelToJsonSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
   const isLoading = createStudents.isPending || form.formState.isSubmitting
   
   const onSubmit: SubmitHandler<formType> = async (values) => {

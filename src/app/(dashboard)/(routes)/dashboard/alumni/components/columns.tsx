@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { SafeUserWithProfileWithDapartment } from "@/types/types";
+import { SafeUserWithProfileWithDapartmentWithSection } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { capitalizeWords, cn } from "@/lib/utils";
 
-export const columns: ColumnDef<SafeUserWithProfileWithDapartment>[] = [
+export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] = [
   // {
   //   id: "counter",
   //   header: () => {

@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { getStudents } from "@/queries/students";
-import StudentsStudentsClient from "./components/StudentsClient";
 import { getDeparments } from "@/queries/department";
+import StudentsClient from "./components/StudentsClient";
 
 type StudentsPageProps = {};
 const StudentsPage = async (props: StudentsPageProps) => {
@@ -9,9 +9,9 @@ const StudentsPage = async (props: StudentsPageProps) => {
 
   await queryClient.prefetchQuery({
     queryKey: ["students"],
-    queryFn: ({ queryKey }) => getStudents(),
+    queryFn: ({ queryKey }) => getStudents({}),
   });
-  
+
   await queryClient.prefetchQuery({
     queryKey: ["departments"],
     queryFn: ({ queryKey }) => getDeparments(),
@@ -19,7 +19,7 @@ const StudentsPage = async (props: StudentsPageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <StudentsStudentsClient />
+      <StudentsClient />
     </HydrationBoundary>
   );
 };

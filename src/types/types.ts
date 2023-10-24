@@ -26,17 +26,23 @@ export type SafeProfile = Omit<
   gender: string;
 };
 
-export type SafeUserWithProfileWithDapartment = SafeUser & {
+export type SafeSection = Omit<Section, "createdAt" | "updatedAt"> & {
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SafeUserWithProfileWithDapartmentWithSection = SafeUser & {
   profile: SafeProfile;
   department: SafeDeparment;
+  section: SafeSection;
 };
 
 export type UserWithProfile = SafeUser & {
   profile: SafeProfile;
 };
 
-export type UserProfileWithDepartmentSection = Omit<User, 'hashedPassword' | 'emailVerified'> & {
+export type UserProfileWithDepartmentSection = Omit<User, "hashedPassword" | "emailVerified"> & {
   profile: Profile;
-  department: Department
-  section: Section
-}
+  department: Department;
+  section: Section;
+};

@@ -2,10 +2,9 @@
 
 import { DataTable } from "@/components/ui/data-table";
 import { useQuery } from "@tanstack/react-query";
-import { getStudents } from "@/queries/students";
+import { getStudents, getStudentsQuery } from "@/queries/students";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
-import q from "query-string";
+import { useState } from "react";
 
 import {
   Select,
@@ -21,33 +20,22 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-type AlumniClientProps = {};
-const AlumniClient = (props: AlumniClientProps) => {
+type StudentsClientProps = {};
+const StudentsClient = (props: StudentsClientProps) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [role, setRole] = useState("");
   const [schoolYear, setSchoolYear] = useState("");
   const [department, setDepartment] = useState("");
 
-  const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    const query = q.stringify(
-      {
-        role,
-        schoolYear,
-        department,
-      },
-      {
-        skipEmptyString: true,
-        skipNull: true,
-      }
-    );
-    setQuery(query);
-  }, [role, schoolYear, department]);
+  const queries: getStudentsQuery = {
+    role,
+    schoolYear,
+    department,
+  };
 
   const { data: alumniData } = useQuery({
-    queryKey: ["students", query],
-    queryFn: () => getStudents(query),
+    queryKey: ["students", { queries }],
+    queryFn: () => getStudents(queries),
   });
 
   const { data: departmentsData } = useQuery({
@@ -126,7 +114,9 @@ const AlumniClient = (props: AlumniClientProps) => {
           <SelectContent>
             <SelectItem value="All">All</SelectItem>
             {departmentsData?.map((department) => (
-              <SelectItem value={department.name} key={department.name}>{department.name}</SelectItem>
+              <SelectItem value={department.name} key={department.id}>
+                {department.name}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -141,4 +131,4 @@ const AlumniClient = (props: AlumniClientProps) => {
     </div>
   );
 };
-export default AlumniClient;
+export default StudentsClient;

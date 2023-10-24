@@ -21,11 +21,11 @@ export async function GET(request:Request) {
             }
           },
           {
-            role: role === 'All' ? undefined : role as Role,
+            role: role === '' ? undefined : role as Role,
           },
           {
             department: {
-              name: department === 'All' ? undefined : department as string
+              name: department === '' ? undefined : department as string
             }
           }
         ]

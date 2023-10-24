@@ -2,10 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { DataTable } from "@/components/DataTable";
 import { columns } from "./columns";
-import {
-  SafeDeparment,
-  UserProfileWithDepartmentSection,
-} from "@/types/types";
+import { SafeDeparment, UserProfileWithDepartmentSection } from "@/types/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,7 +18,6 @@ import { Search, UserPlus, File, Filter } from "lucide-react";
 import { capitalizeWords } from "@/lib/utils";
 import { Role } from "@prisma/client";
 const StudentsClient = () => {
-
   const [globalFilter, setGlobalFilter] = useState("");
 
   const onFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,30 +30,36 @@ const StudentsClient = () => {
     onOpen(type, {});
   };
 
-  const roles = Object.values(Role).filter((role) => role != 'ADMIN');
+  const roles = Object.values(Role).filter((role) => role != "ADMIN");
 
-  const departments = query<SafeDeparment['name'][]>(`/departments`, {}, [
-    "deparments",
-  ], {
-    select: (data:SafeDeparment[]) => {
-      const newData = data.map((d) => d.name)
-      return newData;
+  const departments = query<SafeDeparment["name"][]>(
+    `/departments`,
+    {},
+    ["deparments"],
+    {
+      select: (data: SafeDeparment[]) => {
+        const newData = data.map((d) => d.name);
+        return newData;
+      },
     }
-  });
+  );
 
-  type RoleType = (typeof roles)[number]
-  const [role, setRole] = useState<'All' | RoleType >('All')
-  const [department, setDepartment] = useState('All')
+  type RoleType = (typeof roles)[number];
+  const [role, setRole] = useState<"All" | RoleType>("All");
+  const [department, setDepartment] = useState("All");
 
-  const users = query<UserProfileWithDepartmentSection[]>(`/users`, { role, department }, [
-    "users",
-  ], {
-    enabled: typeof departments.data != 'undefined'
-  });
+  const users = query<UserProfileWithDepartmentSection[]>(
+    `/users`,
+    { role: role == "All" ? '' : role, department: department == "All" ? '' : department },
+    ["users"],
+    {
+      enabled: typeof departments.data != "undefined",
+    }
+  );
 
   useEffect(() => {
-    users.refetch()
-}, [role, department])
+    users.refetch();
+  }, [role, department]);
 
   return (
     <div className="flex flex-col p-10">
@@ -87,30 +89,36 @@ const StudentsClient = () => {
             placeholder="Search for Email, Department or something..."
           />
         </div>
-        <Select value={role} onValueChange={(value:RoleType) => setRole(value)}>
+        <Select
+          value={role}
+          onValueChange={(value: RoleType) => setRole(value)}
+        >
           <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
-          <SelectItem value={'All'} key={'All'} className="cursor-pointer">
-                {capitalizeWords('All')}
-              </SelectItem>
+            <SelectItem value={"All"} key={"All"} className="cursor-pointer">
+              {capitalizeWords("All")}
+            </SelectItem>
             {roles?.map((value) => (
               <SelectItem value={value} key={value} className="cursor-pointer">
-                {capitalizeWords(value).replaceAll('_', ' ')}
+                {capitalizeWords(value).replaceAll("_", " ")}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <Select value={department} onValueChange={(value) => setDepartment(value)}>
+        <Select
+          value={department}
+          onValueChange={(value) => setDepartment(value)}
+        >
           <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
-            <SelectItem value={'All'} key={'All'} className="cursor-pointer">
-                {capitalizeWords('All')}
-              </SelectItem>
+            <SelectItem value={"All"} key={"All"} className="cursor-pointer">
+              {capitalizeWords("All")}
+            </SelectItem>
 
             {departments?.data?.map((value) => (
               <SelectItem value={value} key={value} className="cursor-pointer">
@@ -120,11 +128,15 @@ const StudentsClient = () => {
           </SelectContent>
         </Select>
 
-        <Button variant="outline" className="text-zinc-500 dark:text-white" onClick={() => {
-          setRole("All");
-          setDepartment("All");
-          setGlobalFilter(prev => '')
-        }}>
+        <Button
+          variant="outline"
+          className="text-zinc-500 dark:text-white"
+          onClick={() => {
+            setRole("All");
+            setDepartment("All");
+            setGlobalFilter((prev) => "");
+          }}
+        >
           <Filter className="w-5 h-5 text-zinc-500" /> Clear Filters
         </Button>
       </div>

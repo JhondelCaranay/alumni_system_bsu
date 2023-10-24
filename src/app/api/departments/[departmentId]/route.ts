@@ -106,3 +106,54 @@ export async function PATCH(
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: {
+      departmentId: string;
+    };
+  }
+) {
+  try {
+    const { departmentId } = params;
+    const user = await getCurrentUser();
+
+    /* 
+      TODO: UNCOMMENT WHEN USER CAN NOW LOGIN
+    */
+    // if (!user) {
+    //   return new NextResponse("Unauthorized", { status: 401 });
+    // }
+
+    /* 
+      TODO: ADD ROLE AUTHORIZATION
+    */
+
+    const departments = await prisma.department.findUnique({
+      where: {
+        id: departmentId,
+      },
+    });
+
+    if (!departments) {
+      return NextResponse.json("Department not found", { status: 404 });
+    }
+
+    const archivedDepartment = await prisma.department.update({
+      where: {
+        id: departmentId,
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+
+    return NextResponse.json(archivedDepartment);
+  } catch (error) {
+    console.log("[DEPARTMENT_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

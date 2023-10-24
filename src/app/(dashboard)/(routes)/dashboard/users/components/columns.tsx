@@ -146,7 +146,7 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     },
     cell: ({ row }) => {
       const role = row.original?.role as string;
-      const final = capitalizeWords(role);
+      const final = capitalizeWords(role).replaceAll('_', ' ');
 
       const upperRole = ["ADVISER", "COORDINATOR", "BULSU_PARTNER", "PESO"];
       return (

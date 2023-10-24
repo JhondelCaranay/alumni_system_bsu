@@ -97,7 +97,7 @@ const ImportStudentsModal = () => {
   // we use ['users'] so we can update the data in the users route not in alumni or student route
   const createStudents = mutate<ExcelToJsonSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
   const isLoading = createStudents.isPending || form.formState.isSubmitting
-  console.log('vars', createStudents.variables)
+  
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
     // callback pattern

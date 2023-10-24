@@ -197,7 +197,7 @@ export const queryFn = async <T>(
   });
   return data;
 };
-export const query = <T>(
+export const useQueryProcessor = <T>(
   url: string,
   queryParams: Record<string, any> | null = {} ,
   key: any[] = [],
@@ -268,7 +268,7 @@ export const mutationFn = async <T>(
   }
 };
 
-export const mutate = <T, K>(
+export const useMutateProcessor = <T, K>(
   url: string,
   queryParams: Record<string, any> | null = {} ,
   method: HttpMutationMethod,

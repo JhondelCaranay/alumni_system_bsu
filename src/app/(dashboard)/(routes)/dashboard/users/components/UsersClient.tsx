@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ModalType, useModal } from "@/hooks/useModalStore";
-import { query } from "@/lib/tanstack-query-processor";
+import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { Search, UserPlus, File, Filter } from "lucide-react";
 import { capitalizeWords } from "@/lib/utils";
 import { Role } from "@prisma/client";
@@ -32,7 +32,7 @@ const StudentsClient = () => {
 
   const roles = Object.values(Role).filter((role) => role != "ADMIN");
 
-  const departments = query<SafeDeparment["name"][]>(
+  const departments = useQueryProcessor<SafeDeparment["name"][]>(
     `/departments`,
     {},
     ["deparments"],
@@ -48,7 +48,7 @@ const StudentsClient = () => {
   const [role, setRole] = useState<"All" | RoleType>("All");
   const [department, setDepartment] = useState("All");
 
-  const users = query<UserProfileWithDepartmentSection[]>(
+  const users = useQueryProcessor<UserProfileWithDepartmentSection[]>(
     `/users`,
     { role: role == "All" ? '' : role, department: department == "All" ? '' : department },
     ["users"],
@@ -59,7 +59,7 @@ const StudentsClient = () => {
 
   useEffect(() => {
     users.refetch();
-  }, [role, department]);
+  }, [role, department, users]);
 
   return (
     <div className="flex flex-col p-10">

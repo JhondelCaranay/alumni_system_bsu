@@ -11,7 +11,7 @@ import { useModal } from "@/hooks/useModalStore";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { mutate } from "@/lib/tanstack-query-processor";
+import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { User } from "@prisma/client";
 import {
   UserProfileWithDepartmentSection,
@@ -23,7 +23,7 @@ const ArchiveUserModal = () => {
   const isModalOpen = isOpen && type === "archiveUser";
   const router = useRouter();
 
-  const archiveUser = mutate<
+  const archiveUser = useMutateProcessor<
     string,
     User | UserWithProfile | UserProfileWithDepartmentSection
   >(`/users/${data?.user?.id}`,{yes:'no'}, "DELETE", ["users"], {

@@ -13,6 +13,7 @@ import { useModal } from "@/hooks/useModalStore";
 import { capitalizeWords, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import ActionButton from "./ActionButton";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -192,26 +193,9 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       <div className="text-[#003171]  flex items-center cursor-pointer dark:text-white flex-1"></div>
     ),
     cell: ({ row }) => {
-      const { onOpen } = useModal();
+      
       return (
-        <div className={``}>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <MoreHorizontal className="h-4 w-4 text-zinc-500" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
-                Update
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-xs cursor-pointer hover:bg-zinc-400"
-                onClick={() => onOpen("archiveUser", { user: row.original })}
-              >
-                Archive
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <ActionButton user={row.original} />
       );
     },
   },

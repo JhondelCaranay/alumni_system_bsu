@@ -4,9 +4,9 @@ import { queryFn } from "@/hooks/useTanstackQuery";
 import UsersClient from "./components/UsersClient";
 
 
-type StudentsPageProps = {};
+type UsersPageProps = {};
 
-const StudentsPage = async (props: StudentsPageProps) => {
+const UsersPage = async (props: UsersPageProps) => {
 
   const queryClient = new QueryClient();
 
@@ -21,4 +21,4 @@ const StudentsPage = async (props: StudentsPageProps) => {
     </HydrationBoundary>
   );
 };
-export default StudentsPage;
+export default UsersPage;

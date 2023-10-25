@@ -17,7 +17,7 @@ export async function GET(request: Request, {params}: {params: {userId: string}}
 
     const user = await prisma.user.findUnique({
         where: {
-            id: userId as string
+            id: userId as string,
         },
         include: {
           profile:true
@@ -49,15 +49,31 @@ export async function DELETE(request: Request, {params}: {params: {userId: strin
 
     if(userId === currentUser?.id) return new NextResponse("Something went wrong...", {status:400})
 
-    const user = await prisma.user.update({
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+        isArchived: false,
+      }
+    })
+
+    if(!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
+    const updatedUser = await prisma.user.update({
         where: {
-            id: userId as string
+            id: userId as string,
+            isArchived:false,
         },
         data: {
-            archive: true
+            archive: true,
+            isArchived:true
         }
     })
-    return NextResponse.json(user);
+
+    const {hashedPassword, ...rest} = updatedUser;
+
+    return NextResponse.json({...rest});
 
   } catch (error) {
     console.log("[USERS_DELETE]", error);
@@ -98,9 +114,24 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
     }
     const {userId} = params;
 
+    if(!userId) {
+      return new NextResponse("User ID missing", { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+        isArchived: false,
+      }
+    })
+
+    if(!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
     const {email, ...rest} = validatedData.data
 
-    const user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: {
         id: userId as string
       },
@@ -114,7 +145,9 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
       }
     })
 
-    return NextResponse.json(user);
+    const {hashedPassword, ...props} = updatedUser;
+
+    return NextResponse.json({...props});
 
   } catch (error) {
     console.log("[USERS_PATCH]", error);

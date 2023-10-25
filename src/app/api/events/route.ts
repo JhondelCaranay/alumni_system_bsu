@@ -2,8 +2,8 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { isUserAllowed } from "@/lib/utils";
-import { createEventsSchema } from "./_schema";
 import { Role } from "@prisma/client";
+import { createEventsSchema } from "./_schema";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   try {
@@ -31,7 +31,6 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     const result = await createEventsSchema.safeParseAsync(await req.json());
 
     if (!result.success) {
-      console.log("[EVENTS_POST]", result.error);
 
       return NextResponse.json(
         {
@@ -42,18 +41,19 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       );
     }
 
-    const { title, description, dateStart, timeStart, timeEnd } = result.data;
+    const { id, title, description,allDay, timeEnd, timeStart,} = result.data;
 
     const event = await prisma.event.create({
       data: {
+        id: id,
         title,
         description,
-        dateStart,
-        timeStart,
-        timeEnd,
+        dateStart:timeStart,
+        dateEnd: timeEnd,
+        allDay,
         user: {
           connect: {
-            id: currentUser.id,
+            id: currentUser?.id,
           },
         },
       },

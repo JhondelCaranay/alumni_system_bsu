@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ImportStudentsModal from '../modals/ImportStudentsModal'
 import ArchiveUserModal from '../modals/ArchiveUserModal';
+import CreateEventModal from '../modals/CreateEventModal';
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -16,6 +17,7 @@ const ModalProvider = () => {
     <>
         <ArchiveUserModal />
         <ImportStudentsModal />
+        <CreateEventModal />
     </>
   )
 }

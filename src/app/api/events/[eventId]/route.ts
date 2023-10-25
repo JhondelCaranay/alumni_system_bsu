@@ -77,7 +77,7 @@ export async function PATCH(
       );
     }
 
-    const { title, description, dateStart, timeStart, timeEnd } = result.data;
+    const { title, description, timeStart, timeEnd, allDay } = result.data;
 
     const updatedEvent = await prisma.event.update({
       where: {
@@ -86,9 +86,9 @@ export async function PATCH(
       data: {
         title,
         description,
-        dateStart,
         timeStart,
         timeEnd,
+        allDay,
       },
     });
 

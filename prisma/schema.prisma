@@ -53,8 +53,8 @@ model Event {
   isArchived Boolean @default(false)
 
   dateStart DateTime
-  timeStart DateTime
-  timeEnd   DateTime
+  dateEnd DateTime
+  allDay Boolean 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -2,6 +2,8 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { updateStudentsSchema } from "../_schema";
+import { isUserAllowed } from "@/lib/utils";
+import { Role } from "@prisma/client";
 
 export async function GET(
   req: NextRequest,
@@ -26,7 +28,7 @@ export async function GET(
         email: true,
         emailVerified: true,
         image: true,
-        archive: true,
+        isArchived: true,
         createdAt: true,
         updatedAt: true,
         department: true,
@@ -58,9 +60,9 @@ export async function PATCH(
   try {
     const currentUser = await getCurrentUser();
 
-    // if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     const { studentId } = params;
 
@@ -131,7 +133,7 @@ export async function PATCH(
         email: true,
         emailVerified: true,
         image: true,
-        archive: true,
+        isArchived: true,
         createdAt: true,
         updatedAt: true,
         department: true,
@@ -190,9 +192,9 @@ export async function DELETE(
   try {
     const currentUser = await getCurrentUser();
 
-    // if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     const { studentId } = params;
 

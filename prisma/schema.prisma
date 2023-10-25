@@ -45,7 +45,7 @@ enum Relationship {
 }
 
 model Event {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   title       String
   description String @db.Text
@@ -65,7 +65,7 @@ model Event {
 }
 
 model Post {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   title       String
   description String @db.Text
@@ -88,7 +88,7 @@ model Post {
 }
 
 model Comment {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   description String @db.Text
 
@@ -106,7 +106,7 @@ model Comment {
 }
 
 model Section {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   name  String
   year  String
@@ -127,7 +127,7 @@ model Section {
 
 // change course to department
 model Department {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   name       String
   isArchived Boolean @default(false)
@@ -140,7 +140,7 @@ model Department {
 }
 
 model Guardian {
-  id String @id @unique @default(uuid())
+  id String @id @unique @default(cuid())
 
   firstname  String
   lastName   String
@@ -158,7 +158,7 @@ model Guardian {
 }
 
 model Profile {
-  id String @id @unique @default(uuid())
+  id String @id @unique @default(cuid())
 
   isEmployed    Boolean   @default(false)
   studentNumber String?

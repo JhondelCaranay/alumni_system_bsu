@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { format } from "date-fns";
 import { SafeUserWithProfileWithDapartmentWithSection } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
@@ -15,6 +14,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { capitalizeWords, cn } from "@/lib/utils";
+import Avatar from "@/components/Avatar";
 
 export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] = [
   // {
@@ -36,15 +36,31 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
     },
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
+      console.log("🚀 ~ file: columns.tsx:40 ~ id:", id);
 
-      return <div>{id}</div>;
+      return <div className="sr-only dark:text-white">{id}</div>;
     },
   },
   {
-    accessorKey: "LRN",
+    accessorKey: "len",
     accessorFn: (row) => {
       const studentNumber = row.profile.studentNumber;
       return studentNumber;
+    },
+    header: ({ column }) => {
+      return <div className="sr-only dark:text-white">LRN</div>;
+    },
+    cell: ({ row }) => {
+      const studentNumber = row.original.profile.studentNumber;
+      console.log("🚀 ~ file: columns.tsx:56 ~ studentNumber:", studentNumber);
+      return <div className="sr-only dark:text-white">{studentNumber}</div>;
+    },
+  },
+  {
+    accessorKey: "avatar",
+    accessorFn: (row) => {
+      const email = row.email;
+      return email;
     },
     header: ({ column }) => {
       return (
@@ -53,21 +69,27 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
           className=" dark:text-white"
           // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          LRN
+          Email
           {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
         </Button>
       );
     },
     cell: ({ row }) => {
-      const studentNumber = row.original.profile.studentNumber;
-      return <div>{studentNumber}</div>;
+      const image = row.original.image;
+      const email = row.original.email;
+      return (
+        <div className={`flex items-center justify-start`}>
+          <Avatar src={image} className="mr-3" /> {email}
+        </div>
+      );
     },
   },
   {
-    accessorKey: "firstname",
+    accessorKey: "fullname",
     accessorFn: (row) => {
       const firstname = row.profile.firstname;
-      return firstname;
+      const lastname = row.profile.lastname;
+      return `${firstname} ${lastname}`;
     },
     header: ({ column }) => {
       return (
@@ -76,22 +98,26 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
           className=" dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          First Name
+          Full Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
       const firstname = row.original.profile.firstname;
-      return <div>{firstname}</div>;
+      const lastname = row.original.profile.lastname;
+      return (
+        <div>
+          {firstname} {lastname}
+        </div>
+      );
     },
   },
-
   {
-    accessorKey: "lastname",
+    accessorKey: "gender",
     accessorFn: (row) => {
-      const lastname = row.profile.lastname;
-      return lastname;
+      const gender = row.profile.gender;
+      return `${gender}`;
     },
     header: ({ column }) => {
       return (
@@ -100,16 +126,17 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
           className=" dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Last Name
+          Gender
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const lastname = row.original.profile.lastname;
-      return <div>{lastname}</div>;
+      const gender = row.original.profile.gender;
+      return <div>{capitalizeWords(gender)}</div>;
     },
   },
+
   {
     accessorKey: "job",
     accessorFn: (row) => {
@@ -159,6 +186,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
     cell: ({ row }) => {
       const role = row.getValue("role") as string;
       const final = capitalizeWords(role);
+
       return (
         <Badge className={cn("bg-slate-500 dark:text-white", role === "ALUMNI" && "bg-sky-700")}>
           {final}

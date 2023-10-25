@@ -14,8 +14,8 @@ export const createStudentsSchema = z.object({
   middlename: z.string().min(1),
   email: z.string().email().min(1),
   role: z.enum([Role.STUDENT, Role.ALUMNI]),
-  departmentId: z.string().uuid(),
-  sectionId: z.string().uuid(),
+  departmentId: z.string().cuid(),
+  sectionId: z.string().cuid(),
 });
 
 export const updateStudentsSchema = createStudentsSchema.partial().extend({

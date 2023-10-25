@@ -37,6 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       },
       select: {
         id: true,
+        role: true,
         email: true,
         emailVerified: true,
         image: true,
@@ -95,6 +96,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       },
       select: {
         id: true,
+        role: true,
         email: true,
         emailVerified: true,
         image: true,

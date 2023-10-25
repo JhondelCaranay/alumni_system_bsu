@@ -66,7 +66,6 @@ export async function DELETE(request: Request, {params}: {params: {userId: strin
             isArchived:false,
         },
         data: {
-            archive: true,
             isArchived:true
         }
     })

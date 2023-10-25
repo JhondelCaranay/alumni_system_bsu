@@ -78,10 +78,6 @@ const UserIdPageClient = () => {
 
   useEffect(() => {
     if (data) {
-      if(data.isArchived) {
-        toast.error('User not found')
-      }
-
       form.setValue("email", data?.profile.alternative_email || "");
       form.setValue("firstname", data?.profile.firstname || "");
       form.setValue("lastname", data?.profile.lastname || "");

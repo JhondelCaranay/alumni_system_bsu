@@ -2,10 +2,13 @@
 
 import { ClipLoader } from "react-spinners";
 
-export const Loader = () => {
+type LoaderProps = {
+  size?: number
+}
+export const Loader:React.FC<LoaderProps> = ({size=55}) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <ClipLoader color="#3498db" size={50} />;
+      <ClipLoader color="#3498db" size={size} />;
     </div>
   );
 };

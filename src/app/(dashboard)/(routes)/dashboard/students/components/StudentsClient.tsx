@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Loader } from "@/components/ui/loader";
 
 type StudentsClientProps = {};
 const StudentsClient = (props: StudentsClientProps) => {
@@ -33,15 +34,23 @@ const StudentsClient = (props: StudentsClientProps) => {
     department,
   };
 
-  const { data: alumniData } = useQuery({
+  const studentsQuery = useQuery({
     queryKey: ["students", { queries }],
     queryFn: () => getStudents(queries),
   });
 
-  const { data: departmentsData } = useQuery({
+  const departmentsQuery = useQuery({
     queryKey: ["departments"],
     queryFn: () => getDeparments(),
   });
+
+  if (studentsQuery.isError || departmentsQuery.isError) {
+    return <div>Error...</div>;
+  }
+
+  if (studentsQuery.isPending || departmentsQuery.isPending) {
+    return <Loader />;
+  }
 
   return (
     <div className="p-6">
@@ -113,7 +122,7 @@ const StudentsClient = (props: StudentsClientProps) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="All">All</SelectItem>
-            {departmentsData?.map((department) => (
+            {departmentsQuery.data.map((department) => (
               <SelectItem value={department.name} key={department.id}>
                 {department.name}
               </SelectItem>
@@ -123,7 +132,7 @@ const StudentsClient = (props: StudentsClientProps) => {
       </div>
       <DataTable
         columns={columns}
-        data={alumniData || []}
+        data={studentsQuery.data}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
         // searchKeys={["School Year", "Department"]}

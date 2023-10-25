@@ -8,15 +8,26 @@ import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Loader } from "@/components/ui/loader";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 
 type CoursesClientProps = {};
 const CoursesClient = (props: CoursesClientProps) => {
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const { data: departmentsData } = useQuery({
+  const departmentsQuery = useQuery({
     queryKey: ["departments"],
     queryFn: getDeparments,
   });
+
+  if (departmentsQuery.isError) {
+    return <div>Error...</div>;
+  }
+
+  if (departmentsQuery.isPending) {
+    return <Loader />;
+  }
 
   return (
     <div className="p-6">
@@ -31,9 +42,21 @@ const CoursesClient = (props: CoursesClientProps) => {
           </Link>
         </div>
       </div>
+
+      <Separator />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:md:sm:grid-cols-4 gap-4 py-4">
+        <Input
+          placeholder="Search all columns..."
+          value={globalFilter ?? ""}
+          onChange={(event) => {
+            setGlobalFilter(String(event.target.value));
+          }}
+          className="w-full"
+        />
+      </div>
       <DataTable
         columns={columns}
-        data={departmentsData || []}
+        data={departmentsQuery.data}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />

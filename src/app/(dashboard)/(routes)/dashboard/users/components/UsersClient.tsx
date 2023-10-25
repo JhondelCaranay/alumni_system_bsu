@@ -17,6 +17,7 @@ import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { Search, UserPlus, File, Filter, Loader2 } from "lucide-react";
 import { capitalizeWords } from "@/lib/utils";
 import { Role } from "@prisma/client";
+import { Loader } from "@/components/ui/loader";
 const StudentsClient = () => {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -147,7 +148,7 @@ const StudentsClient = () => {
       {
       (() => {
         if (users.status === 'pending') {
-          return <Loader2 className="w-8 h-8 animate-spin mx-auto" />;
+          return <Loader size={35} />
         }
 
         if (users.status === 'error') {

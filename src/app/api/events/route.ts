@@ -1,21 +1,21 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { createDepartmentSchema } from "./_schema";
 import { isUserAllowed } from "@/lib/utils";
+import { createEventsSchema } from "./_schema";
 import { Role } from "@prisma/client";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   try {
-    const departments = await prisma.department.findMany({
+    const events = await prisma.event.findMany({
       orderBy: {
-        name: "asc",
+        createdAt: "desc",
       },
     });
 
-    return NextResponse.json(departments);
+    return NextResponse.json(events);
   } catch (error) {
-    console.log("[DEPARTMENTS_GET]", error);
+    console.log("[EVENTS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -28,11 +28,10 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const result = await createDepartmentSchema.safeParseAsync(await req.json());
+    const result = await createEventsSchema.safeParseAsync(await req.json());
 
     if (!result.success) {
-      // handle error then return
-      console.log("[DEPARTMENTS_POST]", result.error);
+      console.log("[EVENTS_POST]", result.error);
 
       return NextResponse.json(
         {
@@ -43,17 +42,26 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       );
     }
 
-    const { name } = result.data;
+    const { title, description, dateStart, timeStart, timeEnd } = result.data;
 
-    const department = await prisma.department.create({
+    const event = await prisma.event.create({
       data: {
-        name,
+        title,
+        description,
+        dateStart,
+        timeStart,
+        timeEnd,
+        user: {
+          connect: {
+            id: currentUser.id,
+          },
+        },
       },
     });
 
-    return NextResponse.json(department);
+    return NextResponse.json(event);
   } catch (error) {
-    console.log("[DEPARTMENTS_POST]", error);
+    console.log("[EVENTS_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

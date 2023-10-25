@@ -117,7 +117,7 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
     return NextResponse.json(user);
 
   } catch (error) {
-    console.log("[USERS_DELETE]", error);
+    console.log("[USERS_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
   

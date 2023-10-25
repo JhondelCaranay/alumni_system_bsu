@@ -13,7 +13,7 @@ export async function GET(request:Request) {
       where: {
         AND:[
           {
-            archive:false
+            isArchived:false,
           },
           {
             role: {

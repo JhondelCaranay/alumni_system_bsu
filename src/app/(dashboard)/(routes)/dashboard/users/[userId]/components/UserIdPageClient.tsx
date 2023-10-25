@@ -78,8 +78,8 @@ const UserIdPageClient = () => {
 
   useEffect(() => {
     if (data) {
-      if(data.archive) {
-        router.push('/dashboard/users')
+      if(data.isArchived) {
+        toast.error('User not found')
       }
 
       form.setValue("email", data?.profile.alternative_email || "");
@@ -124,6 +124,10 @@ const UserIdPageClient = () => {
         Error fetching user
       </h1>
     );
+  }
+
+  if(data.isArchived) {
+    router.push('/dashboard/users')
   }
 
   return (

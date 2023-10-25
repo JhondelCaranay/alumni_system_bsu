@@ -205,7 +205,6 @@ model User {
   email          String?   @unique // bsu email format
   emailVerified  DateTime?
   image          String?
-  archive        Boolean   @default(false)
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt

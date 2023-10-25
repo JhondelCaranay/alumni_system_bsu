@@ -50,6 +50,8 @@ model Event {
   title       String
   description String @db.Text
 
+  isArchived Boolean @default(false)
+
   dateStart DateTime
   timeStart DateTime
   timeEnd   DateTime

@@ -3,6 +3,7 @@ import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { createStudentsSchema, getStudentsQueriesSchema } from "./_schema";
 import getCurrentUser from "@/actions/getCurrentUser";
+import { isUserAllowed } from "@/lib/utils";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   try {
@@ -41,7 +42,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         email: true,
         emailVerified: true,
         image: true,
-        archive: true,
+        isArchived: true,
         createdAt: true,
         updatedAt: true,
         department: true,
@@ -60,9 +61,10 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   try {
     const currentUser = await getCurrentUser();
 
-    // if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
     const result = await createStudentsSchema.safeParseAsync(await req.json());
 
     if (!result.success) {
@@ -100,7 +102,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         email: true,
         emailVerified: true,
         image: true,
-        archive: true,
+        isArchived: true,
         createdAt: true,
         updatedAt: true,
         department: true,

@@ -31,7 +31,7 @@ const routesList = [
   {
     icon: Users,
     label: "Alumni / Students",
-    href: "/dashboard/alumni",
+    href: "/dashboard/students",
   },
   // {
   //   icon: Users,

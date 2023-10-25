@@ -177,12 +177,12 @@ model Profile {
   gender   Gender?
 
   placeOfBirth String?
-  dateOfBirth  String?
+  dateOfBirth  DateTime?
   homeNo       String?
   street       String?
   barangay     String?
   city         String?
-  corUrl       String? @db.Text
+  corUrl       String?   @db.Text
   province     String?
   contactNo    String?
 
@@ -200,6 +200,7 @@ model Profile {
 model User {
   id String @id @default(cuid())
 
+  isArchived     Boolean   @default(false)
   name           String?
   email          String?   @unique // bsu email format
   emailVerified  DateTime?

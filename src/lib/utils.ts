@@ -17,3 +17,7 @@ export function capitalizeWords(str: string) {
   // Join the words back together
   return words?.join(" ");
 }
+
+export function isUserAllowed(role: string, allowedRoles: string[]) {
+  return allowedRoles.includes(role);
+}

@@ -2,6 +2,7 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { updateDepartmentSchema } from "../_schema";
 
 export async function GET(
   req: NextRequest,
@@ -44,19 +45,13 @@ export async function PATCH(
   }
 ) {
   try {
-    const { departmentId } = params;
-    const user = await getCurrentUser();
+    const currentUser = await getCurrentUser();
 
-    /* 
-      TODO: UNCOMMENT WHEN USER CAN NOW LOGIN
-    */
-    // if (!user) {
+    // if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
     //   return new NextResponse("Unauthorized", { status: 401 });
     // }
 
-    /* 
-      TODO: ADD ROLE AUTHORIZATION
-    */
+    const { departmentId } = params;
 
     const departments = await prisma.department.findUnique({
       where: {
@@ -68,15 +63,7 @@ export async function PATCH(
       return NextResponse.json("Department not found", { status: 404 });
     }
 
-    const bodySchema = z.object({
-      name: z
-        .string({
-          required_error: "Name is required",
-        })
-        .min(1, "Name must be at least 1 characters long"),
-    });
-
-    const result = await bodySchema.safeParseAsync(await req.json());
+    const result = await updateDepartmentSchema.safeParseAsync(await req.json());
 
     if (!result.success) {
       console.log("[DEPARTMENT_PATCH]", result.error);
@@ -118,19 +105,13 @@ export async function DELETE(
   }
 ) {
   try {
-    const { departmentId } = params;
-    const user = await getCurrentUser();
+    const currentUser = await getCurrentUser();
 
-    /* 
-      TODO: UNCOMMENT WHEN USER CAN NOW LOGIN
-    */
-    // if (!user) {
+    // if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
     //   return new NextResponse("Unauthorized", { status: 401 });
     // }
 
-    /* 
-      TODO: ADD ROLE AUTHORIZATION
-    */
+    const { departmentId } = params;
 
     const departments = await prisma.department.findUnique({
       where: {

@@ -1,8 +1,4 @@
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import Calendar from "./components/Calendar";
 import { queryFn } from "@/hooks/useTanstackQuery";
 
@@ -17,7 +13,7 @@ const EventsPage = async (props: EventsPageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex w-full bg-white p-5">
+      <div className="flex w-full bg-white p-6">
         <Calendar />
       </div>
     </HydrationBoundary>

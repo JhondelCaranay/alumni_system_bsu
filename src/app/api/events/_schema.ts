@@ -15,4 +15,15 @@ export const createEventsSchema = z.object({
   allDay: z.boolean(),
 });
 
-export const updateEventsSchema = createEventsSchema.partial();
+export const updateTimeAndDateEventsSchema = createEventsSchema.partial({
+  description: true,
+});
+
+export const updateTitleAndDescriptionEventsSchema = createEventsSchema.partial(
+  {
+    id: true,
+    timeStart: true,
+    timeEnd: true,
+    allDay: true,
+  }
+);

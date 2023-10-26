@@ -131,8 +131,8 @@ const CreateEventModal = () => {
                       <FormControl>
                         <Textarea
                         disabled={isLoading}
-                          cols={5}
-                          rows={5}
+                        cols={7}
+                        rows={7}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none"
                           placeholder={`Enter description`}
                           {...field}

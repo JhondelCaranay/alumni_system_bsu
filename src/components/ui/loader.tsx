@@ -8,7 +8,7 @@ type LoaderProps = {
 export const Loader:React.FC<LoaderProps> = ({size=55}) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <ClipLoader color="#3498db" size={size} />;
+      <ClipLoader color="#3498db" size={size} />
     </div>
   );
 };

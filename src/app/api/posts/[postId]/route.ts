@@ -22,24 +22,19 @@ export async function GET(
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const posts = await prisma.post.findUnique({
-    where: {
-      id: postId,
-      isArchived: false,
-    },
-  });
-
-  if (!posts) {
-    return NextResponse.json("Post not found", { status: 404 });
-  }
   try {
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: "desc",
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+        isArchived: false,
       },
     });
 
-    return NextResponse.json(posts);
+    if (!post) {
+      return NextResponse.json("Post not found", { status: 404 });
+    }
+
+    return NextResponse.json(post);
   } catch (error) {
     console.log("[POST_GET]", error);
     return new NextResponse("Internal error", { status: 500 });

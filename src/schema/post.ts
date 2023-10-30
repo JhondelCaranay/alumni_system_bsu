@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const PostSchema = z.object({
   id: z.string(),
-  title: z.string(),
+  title: z.string().min(1),
   description: z.string(),
   company: z.string(),
   location: z.string(),

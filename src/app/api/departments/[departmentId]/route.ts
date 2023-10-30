@@ -1,9 +1,8 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { updateDepartmentSchema } from "../_schema";
-import { Role } from "@prisma/client";
 import { isUserAllowed } from "@/lib/utils";
+import { UpdateDepartmentSchema } from "@/schema/department";
 
 export async function GET(
   req: NextRequest,
@@ -15,12 +14,19 @@ export async function GET(
     };
   }
 ) {
-  try {
-    const { departmentId } = params;
+  const { departmentId } = params;
 
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  try {
     const departments = await prisma.department.findUnique({
       where: {
         id: departmentId,
+        isArchived: false,
       },
     });
 
@@ -45,47 +51,45 @@ export async function PATCH(
     };
   }
 ) {
-  try {
-    const currentUser = await getCurrentUser();
+  const { departmentId } = params;
 
-    if (!currentUser || !isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+  const currentUser = await getCurrentUser();
 
-    const { departmentId } = params;
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
-    const departments = await prisma.department.findUnique({
-      where: {
-        id: departmentId,
+  const departments = await prisma.department.findUnique({
+    where: {
+      id: departmentId,
+      isArchived: false,
+    },
+  });
+
+  if (!departments) {
+    return NextResponse.json("Department not found", { status: 404 });
+  }
+
+  const result = await UpdateDepartmentSchema.safeParseAsync(await req.json());
+
+  if (!result.success) {
+    console.log("[DEPARTMENT_PATCH]", result.error);
+    return NextResponse.json(
+      {
+        errors: result.error.flatten().fieldErrors,
+        message: "Invalid body parameters",
       },
-    });
+      { status: 400 }
+    );
+  }
 
-    if (!departments) {
-      return NextResponse.json("Department not found", { status: 404 });
-    }
-
-    const result = await updateDepartmentSchema.safeParseAsync(await req.json());
-
-    if (!result.success) {
-      console.log("[DEPARTMENT_PATCH]", result.error);
-      return NextResponse.json(
-        {
-          errors: result.error.errors,
-          message: "Invalid body parameters",
-        },
-        { status: 400 }
-      );
-    }
-
-    const { name } = result.data;
-
+  try {
     const updatedDepartment = await prisma.department.update({
       where: {
         id: departmentId,
+        isArchived: false,
       },
-      data: {
-        name,
-      },
+      data: result.data,
     });
 
     return NextResponse.json(updatedDepartment);
@@ -105,28 +109,30 @@ export async function DELETE(
     };
   }
 ) {
+  const { departmentId } = params;
+
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const departments = await prisma.department.findUnique({
+    where: {
+      id: departmentId,
+      isArchived: false,
+    },
+  });
+
+  if (!departments) {
+    return NextResponse.json("Department not found", { status: 404 });
+  }
+
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser || !isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const { departmentId } = params;
-
-    const departments = await prisma.department.findUnique({
-      where: {
-        id: departmentId,
-      },
-    });
-
-    if (!departments) {
-      return NextResponse.json("Department not found", { status: 404 });
-    }
-
     const archivedDepartment = await prisma.department.update({
       where: {
         id: departmentId,
+        isArchived: false,
       },
       data: {
         isArchived: true,

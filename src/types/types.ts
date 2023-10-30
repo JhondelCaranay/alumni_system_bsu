@@ -47,4 +47,4 @@ export type UserProfileWithDepartmentSection = Omit<User, "hashedPassword" | "em
   section: Section;
 };
 
-export type Events = Event[]
+export type Events = Event[];

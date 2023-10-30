@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -18,6 +19,6 @@ export function capitalizeWords(str: string) {
   return words?.join(" ");
 }
 
-export function isUserAllowed(role: string, allowedRoles: string[]) {
-  return allowedRoles.includes(role);
+export function isUserAllowed(role: string, allowedRoles: (Role | "ALL")[]) {
+  return allowedRoles.includes("ALL") || allowedRoles.includes(role as Role);
 }

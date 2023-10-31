@@ -1,26 +1,39 @@
 import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { createStudentsSchema, getStudentsQueriesSchema } from "./_schema";
 import getCurrentUser from "@/actions/getCurrentUser";
 import { isUserAllowed } from "@/lib/utils";
 
+import { Role } from "@prisma/client";
+import { z } from "zod";
+import { CreateStudentsSchema } from "@/schema/students";
+
+export const GetStudentsQueriesSchema = z.object({
+  role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
+  schoolYear: z.coerce.number().optional(),
+  department: z.string().optional(),
+});
+
 export async function GET(req: NextRequest, { params }: { params: {} }) {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const searchParams = req.nextUrl.searchParams;
+  const queries = Object.fromEntries(searchParams.entries());
+  const result = await GetStudentsQueriesSchema.safeParseAsync(queries);
+
+  if (!result.success) {
+    console.log("[STUDENTS_GET]", result.error.flatten().fieldErrors);
+    return new NextResponse("Invalid query parameters", { status: 400 });
+  }
+
+  const { role, schoolYear, department } = result.data;
+
+  const allowedRoles = role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
+
   try {
-    const searchParams = req.nextUrl.searchParams;
-
-    const queries = Object.fromEntries(searchParams.entries());
-    const result = await getStudentsQueriesSchema.safeParseAsync(queries);
-
-    if (!result.success) {
-      console.log("[STUDENTS_GET]", result.error.errors);
-      return new NextResponse("Invalid query parameters", { status: 400 });
-    }
-
-    const { role, schoolYear, department } = result.data;
-
-    const allowedRoles = role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
-
     const students = await prisma.user.findMany({
       orderBy: {
         name: "asc",
@@ -35,6 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         department: {
           name: department || undefined,
         },
+        isArchived: false,
       },
       select: {
         id: true,
@@ -58,29 +72,29 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 }
 
 export async function POST(req: NextRequest, { params }: { params: {} }) {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const result = await CreateStudentsSchema.safeParseAsync(await req.json());
+
+  if (!result.success) {
+    console.log("[STUDENTS_POST]", result.error.errors);
+    return NextResponse.json(
+      {
+        message: "Invalid body parameters",
+        errors: result.error.flatten().fieldErrors,
+      },
+      { status: 400 }
+    );
+  }
+
+  const { studentNumber, firstname, lastname, middlename, email, role, departmentId, sectionId } =
+    result.data;
+
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const result = await createStudentsSchema.safeParseAsync(await req.json());
-
-    if (!result.success) {
-      console.log("[STUDENTS_POST]", result.error.errors);
-      return NextResponse.json(
-        {
-          message: "Invalid body parameters",
-          errors: result.error.errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    const { studentNumber, firstname, lastname, middlename, email, role, departmentId, sectionId } =
-      result.data;
-
     const user = await prisma.user.create({
       data: {
         email,

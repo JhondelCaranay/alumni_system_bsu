@@ -1,9 +1,9 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { updateStudentsSchema } from "../_schema";
 import { isUserAllowed } from "@/lib/utils";
 import { Role } from "@prisma/client";
+import { UpdateStudentsSchema } from "@/schema/students";
 
 export async function GET(
   req: NextRequest,
@@ -15,12 +15,19 @@ export async function GET(
     };
   }
 ) {
-  try {
-    const { studentId } = params;
+  const { studentId } = params;
 
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  try {
     const student = await prisma.user.findUnique({
       where: {
         id: studentId,
+        isArchived: false,
       },
       select: {
         id: true,
@@ -57,66 +64,67 @@ export async function PATCH(
     };
   }
 ) {
-  try {
-    const currentUser = await getCurrentUser();
+  const { studentId } = params;
 
-    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+  const currentUser = await getCurrentUser();
 
-    const { studentId } = params;
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: studentId,
+  const user = await prisma.user.findUnique({
+    where: {
+      id: studentId,
+      isArchived: false,
+    },
+  });
+
+  if (!user) {
+    return NextResponse.json("Student not found", { status: 404 });
+  }
+
+  const result = await UpdateStudentsSchema.safeParseAsync(await req.json());
+
+  if (!result.success) {
+    console.log("[STUDENT_PATCH]", result.error);
+    return NextResponse.json(
+      {
+        errors: result.error.flatten().fieldErrors,
+        message: "Invalid body parameters",
       },
-    });
+      { status: 400 }
+    );
+  }
 
-    if (!user) {
-      return NextResponse.json("Student not found", { status: 404 });
-    }
+  const {
+    email,
+    role,
+    studentNumber,
+    firstname,
+    lastname,
+    middlename,
+    departmentId,
+    sectionId,
+    isEmployed,
+    schoolYear,
+    yearEnrolled,
+    yearGraduated,
+    alternative_email,
+    age,
+    religion,
+    gender,
+    placeOfBirth,
+    dateOfBirth,
+    homeNo,
+    street,
+    barangay,
+    city,
+    corUrl,
+    province,
+    contactNo,
+  } = result.data;
 
-    const result = await updateStudentsSchema.safeParseAsync(await req.json());
-
-    if (!result.success) {
-      console.log("[STUDENT_PATCH]", result.error);
-      return NextResponse.json(
-        {
-          errors: result.error.errors,
-          message: "Invalid body parameters",
-        },
-        { status: 400 }
-      );
-    }
-
-    const {
-      email,
-      role,
-      studentNumber,
-      firstname,
-      lastname,
-      middlename,
-      departmentId,
-      sectionId,
-      isEmployed,
-      schoolYear,
-      yearEnrolled,
-      yearGraduated,
-      alternative_email,
-      age,
-      religion,
-      gender,
-      placeOfBirth,
-      dateOfBirth,
-      homeNo,
-      street,
-      barangay,
-      city,
-      corUrl,
-      province,
-      contactNo,
-    } = result.data;
-
+  try {
     const updatedStudent = await prisma.user.update({
       where: {
         id: studentId,
@@ -189,25 +197,26 @@ export async function DELETE(
     };
   }
 ) {
+  const { studentId } = params;
+
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const student = await prisma.user.findUnique({
+    where: {
+      id: studentId,
+      isArchived: false,
+    },
+  });
+
+  if (!student) {
+    return NextResponse.json("Student not found", { status: 404 });
+  }
+
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser || isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const { studentId } = params;
-
-    const student = await prisma.user.findUnique({
-      where: {
-        id: studentId,
-      },
-    });
-
-    if (!student) {
-      return NextResponse.json("Student not found", { status: 404 });
-    }
-
     const archivedStudent = await prisma.user.update({
       where: {
         id: studentId,

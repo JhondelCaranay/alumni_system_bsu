@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 
 import "froala-editor/css/froala_style.min.css";
@@ -10,6 +10,7 @@ import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/js/plugins.pkgd.min.js";
 
 import FroalaEditorComponent from "react-froala-wysiwyg";
+import { Lightbulb } from "lucide-react";
 
 const Editor = () => {
   const [model, setModel] = useState(() => {
@@ -18,40 +19,41 @@ const Editor = () => {
 
   // froala.com/blog/editor/tutorials/how-to-integrate-froala-with-react/
 
-  // let config = {
-  //   documentReady: true,
-  //   heightMin: 300,
-  //   events: {
-  //     contentChanged: function (e, editor) {
-  //       console.log("test");
-  //     },
-  //   },
-  // };
-
-   return (
+ 
+  return (
     <main className="editor">
+      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5">
+        <Lightbulb className="text-[rgb(195,125,22)]" />{" "}
+        <h1 className=" text-zinc-500">
+          {" "}
+          Create a high quality job post, to learn more
+          <kbd className="mx-2">
+            <span className="bg-zinc-200 p-2 rounded-md text-xs">Ctrl + /</span>
+          </kbd>
+          while you focus on the text editor
+        </h1>
+      </div>
       <FroalaEditorComponent
         tag="textarea"
+        model={model}
         onModelChange={(e: string) => setModel(e)}
-        // config={config}
-        // config={{
-        //   placeholderText: "Start writting your job description.",
-        //   heightMin: 500,
-        //   saveInterval: 1000,
-        //   fontFamilySelection: true,
-        //   fontSizeSelection: true,
-        //   paragraphFormatSelection: true,
-
-        //   events: {
-        //     "charCounter.exceeded": function () {},
-        //     "save.before": function (html: string) {
-        //       localStorage.setItem("savedContent", html);
-        //     },
-        //   },
-        // }}
+        config={{
+          placeholderText: "Start writting your job description.",
+          heightMin: 500,
+          saveInterval: 1000,
+          fontFamilySelection: true,
+          fontSizeSelection: true,
+          paragraphFormatSelection: true,
+          events: {
+            "charCounter.exceeded": function () {},
+            "save.before": function (html: string) {
+              localStorage.setItem("savedContent", html);
+            },
+          },
+        }}
       />
 
-      <FroalaEditorView model={model} />
+      {/* <FroalaEditorView model={model} /> */}
     </main>
   );
 };

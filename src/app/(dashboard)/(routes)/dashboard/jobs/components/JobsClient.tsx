@@ -6,6 +6,7 @@ import JobPost from "./JobPost";
 import JobInfo from "./JobInfo";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
+import { Button } from "@/components/ui/button";
 // import { Locate, MapPin } from "lucide-react";
 // import Avatar from "@/components/Avatar";
 

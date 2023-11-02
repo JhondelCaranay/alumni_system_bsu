@@ -1,9 +1,8 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { updateTimeAndDateEventsSchema, updateTitleAndDescriptionEventsSchema } from "../_schema";
 import { isUserAllowed } from "@/lib/utils";
-import { Role } from "@prisma/client";
+import { UpdateTimeAndDateEventSchema, UpdateTitleAndDescriptionEventSchema } from "@/schema/event";
 
 export async function GET(
   req: NextRequest,
@@ -15,12 +14,19 @@ export async function GET(
     };
   }
 ) {
-  try {
-    const { eventId } = params;
+  const { eventId } = params;
 
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  try {
     const events = await prisma.event.findUnique({
       where: {
         id: eventId,
+        isArchived: false,
       },
     });
 
@@ -45,48 +51,49 @@ export async function PATCH(
     };
   }
 ) {
-  try {
-    const currentUser = await getCurrentUser();
+  const { eventId } = params;
 
-    if (!currentUser || !isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+  const currentUser = await getCurrentUser();
 
-    const { eventId } = params;
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
-    const events = await prisma.event.findUnique({
-      where: {
-        id: eventId,
+  const events = await prisma.event.findUnique({
+    where: {
+      id: eventId,
+      isArchived: false,
+    },
+  });
+
+  if (!events) {
+    return NextResponse.json("Event not found", { status: 404 });
+  }
+
+  const result = await UpdateTimeAndDateEventSchema.safeParseAsync(await req.json());
+
+  if (!result.success) {
+    console.log("[EVENT_PATCH]", result.error);
+    return NextResponse.json(
+      {
+        errors: result.error.flatten().fieldErrors,
+        message: "Invalid body parameters",
       },
-    });
+      { status: 400 }
+    );
+  }
 
-    if (!events) {
-      return NextResponse.json("Event not found", { status: 404 });
-    }
+  const { title, timeStart, timeEnd, allDay } = result.data;
 
-    const result = await updateTimeAndDateEventsSchema.safeParseAsync(await req.json());
-
-    if (!result.success) {
-      console.log("[EVENT_PATCH]", result.error);
-      return NextResponse.json(
-        {
-          errors: result.error.errors,
-          message: "Invalid body parameters",
-        },
-        { status: 400 }
-      );
-    }
-
-    const { title, timeStart, timeEnd, allDay } = result.data;
-
+  try {
     const updatedEvent = await prisma.event.update({
       where: {
         id: eventId,
       },
       data: {
         title,
-        dateStart:timeStart,
-        dateEnd:timeEnd,
+        dateStart: timeStart,
+        dateEnd: timeEnd,
         allDay,
       },
     });
@@ -108,40 +115,41 @@ export async function PUT(
     };
   }
 ) {
-  try {
-    const currentUser = await getCurrentUser();
+  const { eventId } = params;
 
-    if (!currentUser || !isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+  const currentUser = await getCurrentUser();
 
-    const { eventId } = params;
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
-    const events = await prisma.event.findUnique({
-      where: {
-        id: eventId,
+  const events = await prisma.event.findUnique({
+    where: {
+      id: eventId,
+      isArchived: false,
+    },
+  });
+
+  if (!events) {
+    return NextResponse.json("Event not found", { status: 404 });
+  }
+
+  const result = await UpdateTitleAndDescriptionEventSchema.safeParseAsync(await req.json());
+
+  if (!result.success) {
+    console.log("[EVENT_PUT]", result.error);
+    return NextResponse.json(
+      {
+        errors: result.error.errors,
+        message: "Invalid body parameters",
       },
-    });
+      { status: 400 }
+    );
+  }
 
-    if (!events) {
-      return NextResponse.json("Event not found", { status: 404 });
-    }
+  const { title, description } = result.data;
 
-    const result = await updateTitleAndDescriptionEventsSchema.safeParseAsync(await req.json());
-    
-    if (!result.success) {
-      console.log("[EVENT_PUT]", result.error);
-      return NextResponse.json(
-        {
-          errors: result.error.errors,
-          message: "Invalid body parameters",
-        },
-        { status: 400 }
-      );
-    }
-
-    const { title,description } = result.data;
-
+  try {
     const updatedEvent = await prisma.event.update({
       where: {
         id: eventId,
@@ -169,25 +177,26 @@ export async function DELETE(
     };
   }
 ) {
+  const { eventId } = params;
+
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const events = await prisma.event.findUnique({
+    where: {
+      id: eventId,
+      isArchived: false,
+    },
+  });
+
+  if (!events) {
+    return NextResponse.json("Event not found", { status: 404 });
+  }
+
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser || !isUserAllowed(currentUser.role, [Role.ADMIN])) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const { eventId } = params;
-
-    const events = await prisma.event.findUnique({
-      where: {
-        id: eventId,
-      },
-    });
-
-    if (!events) {
-      return NextResponse.json("Event not found", { status: 404 });
-    }
-
     const archivedEvent = await prisma.event.update({
       where: {
         id: eventId,

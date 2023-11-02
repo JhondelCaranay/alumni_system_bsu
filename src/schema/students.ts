@@ -1,13 +1,24 @@
-import { Gender, Role } from "@prisma/client";
+import { Gender, Role, User } from "@prisma/client";
 import { z } from "zod";
 
-export const getStudentsQueriesSchema = z.object({
-  role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
-  schoolYear: z.coerce.number().optional(),
-  department: z.string().optional(),
-});
+export const StudentSchema = z.object({
+  id: z.string(),
+  isArchived: z.boolean(),
+  name: z.string().nullable(),
+  email: z.string().nullable(),
+  emailVerified: z.date().nullable(),
+  image: z.string().nullable(),
+  hashedPassword: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  role: z.nativeEnum(Role),
+  sectionId: z.string().nullable(),
+  departmentId: z.string().nullable(),
+}) satisfies z.ZodType<User>;
 
-export const createStudentsSchema = z.object({
+type PostSchemaType = z.infer<typeof StudentSchema>;
+
+export const CreateStudentsSchema = z.object({
   studentNumber: z.string().min(1),
   firstname: z.string().min(1),
   lastname: z.string().min(1),
@@ -18,7 +29,9 @@ export const createStudentsSchema = z.object({
   sectionId: z.string().cuid(),
 });
 
-export const updateStudentsSchema = createStudentsSchema.partial().extend({
+type CreateStudentsSchemaType = z.infer<typeof CreateStudentsSchema>;
+
+export const UpdateStudentsSchema = CreateStudentsSchema.extend({
   isEmployed: z.boolean().optional(),
   schoolYear: z.coerce.number().optional(),
   yearEnrolled: z.coerce.date().optional(),
@@ -39,4 +52,6 @@ export const updateStudentsSchema = createStudentsSchema.partial().extend({
   corUrl: z.string().optional(),
   province: z.string().optional(),
   contactNo: z.string().optional(),
-});
+}).partial();
+
+type UpdateStudentsSchemaType = z.infer<typeof UpdateStudentsSchema>;

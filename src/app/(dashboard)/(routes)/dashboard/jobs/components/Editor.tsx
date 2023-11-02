@@ -28,7 +28,7 @@ const Editor = () => {
   //   },
   // };
 
-  https: return (
+   return (
     <main className="editor">
       <FroalaEditorComponent
         tag="textarea"

@@ -12,6 +12,7 @@ import "froala-editor/css/froala_editor.pkgd.min.css";
 // Import all Froala Editor plugins;
 import "froala-editor/js/plugins.pkgd.min.js";
 
+import { Lightbulb } from "lucide-react";
 import "froala-editor/js/plugins/save.min.js";
 import "froala-editor/js/plugins/markdown.min.js";
 
@@ -42,42 +43,45 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 // import FroalaEditorInput from 'react-froala-wysiwyg/FroalaEditorInput';
 
 const Editor = () => {
-  const [model, setModel] = useState("");
-
-  useEffect(() => {
-    const savedContent = localStorage.getItem("savedContent");
-    if (savedContent) {
-      setModel(savedContent);
-    }
-  }, []);
+  const [model, setModel] = useState(() => {
+    return localStorage.getItem("savedContent") || ''
+  });
 
   // froala.com/blog/editor/tutorials/how-to-integrate-froala-with-react/
-
+ 
   return (
-    <main>
+    <main className="editor">
+      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5">
+        <Lightbulb className="text-[rgb(195,125,22)]" />{" "}
+        <h1 className=" text-zinc-500 text-sm">
+          {" "}
+          Create a high quality job post, to learn more
+          <kbd className="mx-2">
+            <span className="bg-zinc-200 p-2 rounded-md text-xs">Ctrl + /</span>
+          </kbd>
+          while you focus on the text editor.
+        </h1>
+      </div>
       <FroalaEditorComponent
         model={model}
         tag="textarea"
         onModelChange={(e: string) => setModel(e)}
-        // config={config}
         config={{
           placeholderText: "Start writting your job description.",
-
           heightMin: 500,
-          saveInterval: 500,
-
+          saveInterval: 1000,
+          fontFamilySelection: true,
+          fontSizeSelection: true,
+          paragraphFormatSelection: true,
           events: {
-            "charCounter.exceeded": function () {
-              alert("You have exceeded the maximum number of characters allowed");
-            },
-            "save.before": function (html: string) {
-              localStorage.setItem("savedContent", html);
-            },
+            'save.before': function(html:string) {
+              localStorage.setItem('savedContent', html)
           },
-        }}
-      />
+          }
+        }} 
+          />
 
-      <FroalaEditorView model={model} />
+      {/* <FroalaEditorView model={model} /> */}
     </main>
   );
 };

@@ -5,14 +5,14 @@ import { Separator } from "@/components/ui/separator";
 import JobPost from "./JobPost";
 import JobInfo from "./JobInfo";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import qs from 'query-string'
+import qs from "query-string";
 // import { Locate, MapPin } from "lucide-react";
 // import Avatar from "@/components/Avatar";
 
 const JobsClient = () => {
   // const useSearchParams();
-  const searchParams = useSearchParams()
-  const f = searchParams.get('f')
+  const searchParams = useSearchParams();
+  const f = searchParams.get("f");
 
   return (
     <main className="flex w-full gap-x-5 ">
@@ -25,9 +25,7 @@ const JobsClient = () => {
         <JobPost />
       </div>
       <Separator orientation="vertical" className="flex h-full text-sm w-2" />
-      {
-        f && <JobInfo />
-      }
+      {f && <JobInfo />}
     </main>
   );
 };

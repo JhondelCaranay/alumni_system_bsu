@@ -6,10 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Switch } from "@/components/ui/switch"
 import { SafeUser } from "@/types/types";
-import { Button } from "./ui/button";
-import { AlignJustify } from "lucide-react";
 import Avatar from "./Avatar";
 import { ModeToggle } from "./ModeToggle";
 
@@ -22,7 +19,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
       <DropdownMenuTrigger asChild>
         <div
           className="
-          p-1
+          p-[2px]
           border-[1px] 
           border-neutral-200 
           flex 
@@ -42,7 +39,9 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem><ModeToggle /></DropdownMenuItem>
+        <DropdownMenuItem>
+          <ModeToggle />
+        </DropdownMenuItem>
         <DropdownMenuItem>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

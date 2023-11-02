@@ -18,9 +18,9 @@ const JobInfo = () => {
         <a href="#">How to quickly deploy a static website</a>
       </h2>
       <p className="mb-5 font-light text-gray-500 dark:text-gray-400">
-        Static websites are now used to bootstrap lots of websites and are
-        becoming the basis for a variety of tools that even influence both web
-        designers and developers influence both web designers and developers.
+        Static websites are now used to bootstrap lots of websites and are becoming the basis for a
+        variety of tools that even influence both web designers and developers influence both web
+        designers and developers.
       </p>
 
       <div className="flex justify-end">
@@ -132,10 +132,9 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              Very straight-to-point article. Really worth time reading. Thank
-              you! But tools are just the instruments for the UX designers. The
-              knowledge of the design tools are as important as the creation of
-              the design strategy.
+              Very straight-to-point article. Really worth time reading. Thank you! But tools are
+              just the instruments for the UX designers. The knowledge of the design tools are as
+              important as the creation of the design strategy.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button
@@ -327,9 +326,8 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              The article covers the essentials, challenges, myths and stages
-              the UX designer should consider while creating the design
-              strategy.
+              The article covers the essentials, challenges, myths and stages the UX designer should
+              consider while creating the design strategy.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button
@@ -424,8 +422,8 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              Thanks for sharing this. I do came from the Backend development
-              and explored some of the tools to design my Side Projects.
+              Thanks for sharing this. I do came from the Backend development and explored some of
+              the tools to design my Side Projects.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button

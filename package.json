@@ -43,6 +43,7 @@
     "clsx": "^2.0.0",
     "convert-excel-to-json": "^1.7.0",
     "date-fns": "^2.30.0",
+    "font-awesome": "^4.7.0",
     "froala-editor": "^4.1.3",
     "generate-password": "^1.7.1",
     "lucide-react": "^0.288.0",

@@ -5,15 +5,15 @@ import Image from "next/image";
 
 type AvatarProps = {
   src: string | null | undefined;
-  className?: string
-} 
+  className?: string;
+};
 
 const Avatar = ({ src, className }: AvatarProps) => {
   return (
     <Image
-      className={ cn(`rounded-full object-cover ${className}`)}
-      height={"35"}
-      width={"35"}
+      className={cn(`rounded-full object-cover object-center ${className}`)}
+      height={40}
+      width={40}
       alt="Avatar"
       src={src || "/images/placeholder.jpg"}
     />

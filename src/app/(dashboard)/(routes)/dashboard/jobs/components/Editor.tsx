@@ -43,29 +43,23 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 // import FroalaEditorInput from 'react-froala-wysiwyg/FroalaEditorInput';
 
 const Editor = () => {
-  const [model, setModel] = useState("");
-
-  useEffect(() => {
-    const savedContent = localStorage.getItem("savedContent");
-    if (savedContent) {
-      setModel(savedContent);
-    }
-  }, []);
+  const [model, setModel] = useState(() => {
+    return localStorage.getItem("savedContent") || ''
+  });
 
   // froala.com/blog/editor/tutorials/how-to-integrate-froala-with-react/
-
  
   return (
     <main className="editor">
       <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5">
         <Lightbulb className="text-[rgb(195,125,22)]" />{" "}
-        <h1 className=" text-zinc-500">
+        <h1 className=" text-zinc-500 text-sm">
           {" "}
           Create a high quality job post, to learn more
           <kbd className="mx-2">
             <span className="bg-zinc-200 p-2 rounded-md text-xs">Ctrl + /</span>
           </kbd>
-          while you focus on the text editor
+          while you focus on the text editor.
         </h1>
       </div>
       <FroalaEditorComponent
@@ -79,6 +73,11 @@ const Editor = () => {
           fontFamilySelection: true,
           fontSizeSelection: true,
           paragraphFormatSelection: true,
+          events: {
+            'save.before': function(html:string) {
+              localStorage.setItem('savedContent', html)
+          },
+          }
         }} 
           />
 

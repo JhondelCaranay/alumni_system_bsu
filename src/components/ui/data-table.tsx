@@ -22,9 +22,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { PlusCircle } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface DataTableProps<TData, TValue> {

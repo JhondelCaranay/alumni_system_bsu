@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const DepartmentSchema = z.object({
   id: z.string(),
-  name: z.string().min(1),
+  name: z.string().min(1, "Required"),
   isArchived: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -11,20 +11,14 @@ export const DepartmentSchema = z.object({
 
 export type DepartmentSchemaType = z.infer<typeof DepartmentSchema>;
 
-export const CreateDepartmentSchema = DepartmentSchema.omit({
-  id: true,
-  isArchived: true,
-  createdAt: true,
-  updatedAt: true,
+export const CreateDepartmentSchema = DepartmentSchema.pick({
+  name: true,
 });
 
 export type CreateDepartmentSchemaType = z.infer<typeof CreateDepartmentSchema>;
 
-export const UpdateDepartmentSchema = DepartmentSchema.omit({
-  id: true,
-  isArchived: true,
-  createdAt: true,
-  updatedAt: true,
+export const UpdateDepartmentSchema = DepartmentSchema.pick({
+  name: true,
 }).partial();
 
 export type UpdateDepartmentSchemaType = z.infer<typeof UpdateDepartmentSchema>;

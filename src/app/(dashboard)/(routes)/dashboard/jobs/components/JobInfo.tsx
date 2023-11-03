@@ -1,13 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import { useQueryProcessor } from "@/hooks/useTanstackQuery";
+import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { SafeUser } from "@/types/types";
-import { Heart, MessageSquare, Send, Share2 } from "lucide-react";
+import {
+  Archive,
+  Heart,
+  MessageSquare,
+  MoreHorizontal,
+  Pencil,
+  Send,
+  Share2,
+} from "lucide-react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import Avatar from "@/components/Avatar";
@@ -18,6 +26,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import EmojiPicker from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { Role } from "@prisma/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -81,15 +97,60 @@ const JobInfo = () => {
     }
   );
 
+
+  const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
+    enabled:
+        typeof f === "string" &&
+        typeof f !== "object" &&
+        typeof f !== "undefined",
+  })
+
+  const onDelete = () => {
+    deleteJob.mutate(f as string)
+    router.push('/dashboard/jobs')
+  }
+
   useEffect(() => {
     job.refetch();
   }, [f]);
 
-  // if (job.status === "pending") return <Loader size={50} />;
+  const session = useSession();
+  const router = useRouter()
+
   if (job.status === "error" || !job.data) return null;
 
+  const isOwner = session.data?.user.id === job.data.userId;
+  const isAdmin = session.data?.user.role === Role.ADMIN;
+
+  const canEditOrDelete = isOwner || isAdmin;
+
+
   return (
-    <article className=" flex-1 p-6 bg-white rounded-lg h-fit">
+    <article className=" flex-1 p-6 bg-white rounded-lg h-fit relative">
+      {canEditOrDelete && (
+        <DropdownMenu>
+          <DropdownMenuTrigger className="absolute top-10 right-2">
+            <MoreHorizontal className="h-6 w-6 text-zinc-500 " />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="">
+            <DropdownMenuItem
+              className="text-xs cursor-pointer hover:bg-zinc-400"
+              onClick={() => router.push(`/dashboard/jobs/${job.data.id}/edit`)}
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Update
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+              onClick={onDelete}
+            >
+              <Archive className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+
       <div className="flex items-center space-x-4">
         <Avatar
           className="w-7 h-7 rounded-full"
@@ -97,7 +158,7 @@ const JobInfo = () => {
         />
         <span className="font-medium dark:text-white">
           {job.data?.user?.name}
-        </span>
+        </span> 
         <span className="text-sm">
           {format(new Date(job.data.createdAt), DATE_FORMAT)}
         </span>

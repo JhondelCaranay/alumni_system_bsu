@@ -70,12 +70,12 @@ const StudentsClient = (props: StudentsClientProps) => {
             Clear Filters
           </Button>
 
-          <Link href="/dashboard/students/add">
+          {/* <Link href="/dashboard/students/add">
             <Button variant="outline" size="sm">
               <PlusCircle className="h-4 w-4 mr-2" />
               Add Student
             </Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
       <Separator />

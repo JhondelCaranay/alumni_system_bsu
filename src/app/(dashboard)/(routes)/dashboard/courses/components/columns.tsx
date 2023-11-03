@@ -10,13 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { SafeDeparment } from "@/types/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { DepartmentSchemaType } from "@/schema/department";
 
-export const columns: ColumnDef<SafeDeparment>[] = [
+export const columns: ColumnDef<DepartmentSchemaType>[] = [
   // {
   //   id: "counter",
   //   header: () => {
@@ -99,13 +99,13 @@ export const columns: ColumnDef<SafeDeparment>[] = [
               <DropdownMenuItem onClick={() => onCopy(id)}>
                 <Copy className="mr-2 h-4 w-4" /> Copy Id
               </DropdownMenuItem>
-              <Link href={`/departments/${id}`}>
+              <Link href={`/departments/${id}/view`}>
                 <DropdownMenuItem>
                   <Eye className="h-4 w-4 mr-2" />
                   View
                 </DropdownMenuItem>
               </Link>
-              <Link href={`/departments/${id}`}>
+              <Link href={`/departments/${id}/edit`}>
                 <DropdownMenuItem>
                   <Pencil className="h-4 w-4 mr-2" />
                   Edit

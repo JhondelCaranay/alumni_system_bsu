@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         isArchived: false,
       },
       orderBy: {
-        name: "asc",
+        createdAt: "desc",
       },
     });
 
@@ -51,7 +51,9 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
 
   try {
     const department = await prisma.department.create({
-      data: result.data,
+      data: {
+        name: result.data.name.toUpperCase(),
+      },
     });
 
     return NextResponse.json(department);

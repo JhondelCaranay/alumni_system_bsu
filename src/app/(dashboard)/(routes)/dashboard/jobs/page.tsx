@@ -2,9 +2,19 @@ import { Button } from "@/components/ui/button";
 import JobsClient from "./components/JobsClient";
 import { PenSquare } from "lucide-react";
 import Link from "next/link";
+import { QueryClient } from "@tanstack/react-query";
+import { queryFn } from "@/hooks/useTanstackQuery";
 
 type JobsPageProps = {};
-const JobsPage = (props: JobsPageProps) => {
+const JobsPage = async (props: JobsPageProps) => {
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["jobs"],
+    queryFn: () => queryFn('/posts'),
+  });
+  
   return (
     <div className="flex flex-col p-10">
 

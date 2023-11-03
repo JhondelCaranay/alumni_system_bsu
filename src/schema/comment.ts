@@ -8,6 +8,7 @@ export const CommentSchema = z.object({
   updatedAt: z.date(),
   userId: z.string().cuid(),
   postId: z.string().cuid(),
+  
 }) satisfies z.ZodType<Comment>;
 
 export type CommentSchemaType = z.infer<typeof CommentSchema>;

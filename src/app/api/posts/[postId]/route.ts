@@ -2,7 +2,8 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { isUserAllowed } from "@/lib/utils";
-import { UpdatePostSchema } from "@/schema/post";
+import { PostSchemaType, UpdatePostSchema } from "@/schema/post";
+import { PostType } from "@prisma/client";
 
 export async function GET(
   req: NextRequest,
@@ -16,6 +17,9 @@ export async function GET(
 ) {
   const { postId } = params;
 
+  const {searchParams} = new URL(req.url)
+  const type = searchParams.get('type')
+
   const currentUser = await getCurrentUser();
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
@@ -26,6 +30,7 @@ export async function GET(
     const post = await prisma.post.findUnique({
       where: {
         id: postId,
+        type: type ? type.toUpperCase() as PostType : undefined,
         isArchived: false,
       },
     });
@@ -63,6 +68,32 @@ export async function PATCH(
     where: {
       id: postId,
       isArchived: false,
+    },
+    include: {
+      comments: {
+        include: {
+          user: {
+            select: {
+              profile: true,
+              name: true,
+              email: true,
+              role: true,
+              createdAt: true,
+              id: true,
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          profile: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          id: true,
+        },
+      },
     },
   });
 

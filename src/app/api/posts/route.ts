@@ -2,10 +2,15 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreatePostSchema } from "@/schema/post";
+import { PostType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
+
+  const { searchParams } = new URL(req.url);
+
+  const type = searchParams.get("type");
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -15,9 +20,36 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
     const posts = await prisma.post.findMany({
       where: {
         isArchived: false,
+        type: type ? (type.toUpperCase() as PostType) : undefined,
       },
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        comments: {
+          include: {
+            user: {
+              select: {
+                profile: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                id: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            profile: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            id: true,
+          },
+        },
       },
     });
 

@@ -69,11 +69,11 @@ model Event {
 model Post {
   id String @id @default(cuid())
 
-  title       String
+  title       String?
   description String @db.Text
 
-  company  String
-  location String
+  company  String?
+  location String?
 
   isArchived Boolean @default(false)
 

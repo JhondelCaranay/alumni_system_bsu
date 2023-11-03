@@ -22,6 +22,10 @@ export const CreatePostSchema = PostSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).partial({
+  company: true,
+  location:true,
+  title:true,
 });
 
 export type CreatePostSchemaType = z.infer<typeof CreatePostSchema>;

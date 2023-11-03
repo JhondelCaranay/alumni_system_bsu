@@ -1,33 +1,121 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageSquare, Share2 } from "lucide-react";
-import React from "react";
+import { Loader } from "@/components/ui/loader";
+import { useQueryProcessor } from "@/hooks/useTanstackQuery";
+import { CommentSchemaType } from "@/schema/comment";
+import { PostSchemaType } from "@/schema/post";
+import { SafeUser } from "@/types/types";
+import { Heart, MessageSquare, Send, Share2 } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import Avatar from "@/components/Avatar";
+import { Input } from "@/components/ui/input";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import EmojiPicker from "@/components/EmojiPicker";
+import { cn } from "@/lib/utils";
+
+const FroalaEditorView = dynamic(
+  () => import("react-froala-wysiwyg/FroalaEditorView"),
+  {
+    ssr: false,
+  }
+);
+
+const DATE_FORMAT = `d MMM yyyy, HH:mm`;
+
+const formSchema = z.object({
+  content: z.string().min(1),
+});
+
+type formType = z.infer<typeof formSchema>;
 
 const JobInfo = () => {
+  const [isCommenting, setIsCommenting] = useState(false);
+
+  const form = useForm<formType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      content: "",
+    },
+    mode: "all",
+  });
+
+  const isLoading = form.formState.isSubmitting;
+
+  const { handleSubmit } = form;
+
+  const onSubmit: SubmitHandler<formType> = async (values) => {
+    console.log(values);
+    try {
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const searchParams = useSearchParams();
+  const f = searchParams.get("f");
+
+  const job = useQueryProcessor<
+    PostSchemaType & {
+      comments: CommentSchemaType & {
+        user: SafeUser;
+      };
+      user: SafeUser;
+    }
+  >(
+    `/posts/${f}`,
+    {
+      type: "jobs",
+    },
+    ["jobs", f],
+    {
+      enabled:
+        typeof f === "string" &&
+        typeof f !== "object" &&
+        typeof f !== "undefined",
+    }
+  );
+
+  useEffect(() => {
+    job.refetch();
+  }, [f]);
+
+  // if (job.status === "pending") return <Loader size={50} />;
+  if (job.status === "error" || !job.data) return null;
+
   return (
     <article className=" flex-1 p-6 bg-white rounded-lg h-fit">
       <div className="flex items-center space-x-4">
-        <img
+        <Avatar
           className="w-7 h-7 rounded-full"
-          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-          alt="Jese Leos avatar"
+          src={job.data?.user?.image as string}
         />
-        <span className="font-medium dark:text-white">Jese Leos</span>
-        <span className="text-sm">14 days ago</span>
+        <span className="font-medium dark:text-white">
+          {job.data?.user?.name}
+        </span>
+        <span className="text-sm">
+          {format(new Date(job.data.createdAt), DATE_FORMAT)}
+        </span>
       </div>
-      <h2 className="my-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        <a href="#">How to quickly deploy a static website</a>
-      </h2>
-      <p className="mb-5 font-light text-gray-500 dark:text-gray-400">
-        Static websites are now used to bootstrap lots of websites and are becoming the basis for a
-        variety of tools that even influence both web designers and developers influence both web
-        designers and developers.
-      </p>
+      <div className="my-5">
+        <FroalaEditorView model={job.data.description} />
+      </div>
 
       <div className="flex justify-end">
         <Button variant={"ghost"} size={"icon"}>
           <Heart className="w-5 h-5" />
         </Button>
-        <Button variant={"ghost"} size={"icon"}>
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={() => setIsCommenting((prev) => !prev)}
+          className={cn("bg-white", isCommenting && "bg-[#F1F5F9]")}
+        >
           <MessageSquare className="w-5 h-5" />
         </Button>
         <Button variant={"ghost"} size={"icon"}>
@@ -37,31 +125,48 @@ const JobInfo = () => {
 
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
         <div className="max-w-2xl mx-auto px-4">
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+              {isCommenting && (
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem className="my-5">
+                      <FormControl>
+                        <div className="flex items-center border rounded-md border-zinc-500 px-2">
+                          <EmojiPicker
+                            onChange={(emoji: any) => {
+                              field.onChange(`${field.value}${emoji.native}`);
+                            }}
+                          />
+                          <Input
+                            className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+                            {...field}
+                            placeholder="Write your thoughts"
+                          />
+                          <Button
+                            variant={"ghost"}
+                            className="hover:bg-transparent"
+                            size={"icon"}
+                          >
+                            <Send className="w-5 h-5" />{" "}
+                          </Button>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
+            </form>
+          </Form>
+
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
               Discussion (20)
             </h2>
           </div>
-          <form className="mb-6">
-            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-              <label htmlFor="comment" className="sr-only">
-                Your comment
-              </label>
-              <textarea
-                id="comment"
-                rows={6}
-                className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                placeholder="Write a comment..."
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-            >
-              Post comment
-            </button>
-          </form>
+
           <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
             <footer className="flex justify-between items-center mb-2">
               <div className="flex items-center">
@@ -132,9 +237,10 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              Very straight-to-point article. Really worth time reading. Thank you! But tools are
-              just the instruments for the UX designers. The knowledge of the design tools are as
-              important as the creation of the design strategy.
+              Very straight-to-point article. Really worth time reading. Thank
+              you! But tools are just the instruments for the UX designers. The
+              knowledge of the design tools are as important as the creation of
+              the design strategy.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button
@@ -326,8 +432,9 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              The article covers the essentials, challenges, myths and stages the UX designer should
-              consider while creating the design strategy.
+              The article covers the essentials, challenges, myths and stages
+              the UX designer should consider while creating the design
+              strategy.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button
@@ -422,8 +529,8 @@ const JobInfo = () => {
               </div>
             </footer>
             <p className="text-gray-500 dark:text-gray-400">
-              Thanks for sharing this. I do came from the Backend development and explored some of
-              the tools to design my Side Projects.
+              Thanks for sharing this. I do came from the Backend development
+              and explored some of the tools to design my Side Projects.
             </p>
             <div className="flex items-center mt-4 space-x-4">
               <button

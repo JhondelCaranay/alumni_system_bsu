@@ -2,11 +2,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 
 const JobSkeletonList = () => {
-  const numberOfList = [1, 2, 3, 4, 5];
   return (
     <div className="grid grid-cols-2 gap-5 pt-5">
       <div className="flex flex-col gap-10">
-        {numberOfList.map((list) => {
+        {Array(5).fill(0).map((list) => {
           return (
             <div
               key={list}

@@ -46,8 +46,6 @@ const EditAJobPage = () => {
     enabled: typeof jobId !== 'undefined'
   })
 
- 
-
   const updateJob = useMutateProcessor<UpdatePostSchemaType, PostSchemaType>(`/posts/${jobId}`, null, 'PATCH', ['jobs', jobId]);
 
   const onUpdate = () => {

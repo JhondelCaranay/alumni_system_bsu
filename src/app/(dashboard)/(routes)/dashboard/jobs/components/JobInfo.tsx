@@ -1,13 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import { useQueryProcessor } from "@/hooks/useTanstackQuery";
+import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { SafeUser } from "@/types/types";
 import {
   Archive,
-  Edit,
   Heart,
   MessageSquare,
   MoreHorizontal,
@@ -29,10 +28,8 @@ import EmojiPicker from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
-import ActionTooltip from "@/components/ActionTooltip";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -100,6 +97,19 @@ const JobInfo = () => {
     }
   );
 
+
+  const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
+    enabled:
+        typeof f === "string" &&
+        typeof f !== "object" &&
+        typeof f !== "undefined",
+  })
+
+  const onDelete = () => {
+    deleteJob.mutate(f as string)
+    router.push('/dashboard/jobs')
+  }
+
   useEffect(() => {
     job.refetch();
   }, [f]);
@@ -132,6 +142,7 @@ const JobInfo = () => {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+              onClick={onDelete}
             >
               <Archive className="h-4 w-4 mr-2" />
               Delete
@@ -147,7 +158,7 @@ const JobInfo = () => {
         />
         <span className="font-medium dark:text-white">
           {job.data?.user?.name}
-        </span>
+        </span> 
         <span className="text-sm">
           {format(new Date(job.data.createdAt), DATE_FORMAT)}
         </span>

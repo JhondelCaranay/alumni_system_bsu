@@ -25,8 +25,9 @@ const PostAJobPage = () => {
       createJob.mutate({description: model, type: 'JOBS'}, {
         onSuccess(data, variables, context) {
           localStorage.removeItem('savedContent')
-          toast.success('Job has been uploaded.')
-          router.push('/dashboard/jobs')
+          toast.success('Job has been uploaded.');
+
+            router.push('/dashboard/jobs')
         },
       })
     }

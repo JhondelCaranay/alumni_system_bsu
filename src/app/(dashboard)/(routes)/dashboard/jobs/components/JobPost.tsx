@@ -47,20 +47,19 @@ const JobPost:React.FC<JobPostProps> = ({user,comments, post}) => {
     router.push(url);
   };
 
-
   return (
     <article className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 cursor-pointer" onClick={onClick}>
             <div className="flex items-center space-x-4">
               <Avatar
                 className="w-7 h-7 rounded-full"
-                src={user.image}
+                src={user?.image}
               />
-              <span className="font-medium dark:text-white">{user.name}</span>
-              <span className="text-sm">{format(new Date(post.createdAt), DATE_FORMAT)}</span>
+              <span className="font-medium dark:text-white">{user?.name}</span>
+              <span className="text-sm">{format(new Date(post?.createdAt || new Date()), DATE_FORMAT)}</span>
             </div>
 
             <div className='my-5 max-h-[350px] overflow-hidden truncate'>
-              <FroalaEditorView model={post.description} />
+              <FroalaEditorView model={post?.description} />
             </div>
             <div className="flex justify-end">
               <Button variant={"ghost"} size={"icon"}>

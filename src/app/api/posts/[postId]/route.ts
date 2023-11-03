@@ -33,6 +33,32 @@ export async function GET(
         type: type ? type.toUpperCase() as PostType : undefined,
         isArchived: false,
       },
+      include: {
+        comments: {
+          include: {
+            user: {
+              select: {
+                profile: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                id: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            profile: true,
+            name: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            id: true,
+          },
+        },
+      },
     });
 
     if (!post) {

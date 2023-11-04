@@ -11,7 +11,6 @@ import {
   MessageSquare,
   MoreHorizontal,
   Pencil,
-  Send,
   Share2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -19,12 +18,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import Avatar from "@/components/Avatar";
-import { Input } from "@/components/ui/input";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import EmojiPicker from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
@@ -34,9 +27,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import JobSkeletonList from "./JobSkeletonList";
 import Comment from "./Comment";
+import CommentInput from "./CommentInput";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -46,12 +39,6 @@ const FroalaEditorView = dynamic(
 );
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
-
-const formSchema = z.object({
-  content: z.string().min(1),
-});
-
-type formType = z.infer<typeof formSchema>;
 
 const JobInfo = () => {
   const [isCommenting, setIsCommenting] = useState(true);
@@ -65,54 +52,10 @@ const JobInfo = () => {
 const comments = useQueryProcessor<(CommentSchemaType & {user: UserWithProfile})[]>(`/comments`,{postId: job.data?.id,},['job', job.data?.id, 'comments'],{enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined",}
 );
 
-type AddCommentSchema = {
-  description: string;
-  postId: string
-}
-
-const addComment = useMutateProcessor<AddCommentSchema, Comment>('/comments', null, 'POST', ['job', job.data?.id, 'comments'], {
-  enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" &&  typeof job.data?.id !== "undefined",
-})
-
 const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
   enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
 })
 
-
-  // start~ add comments ~
-  const form = useForm<formType>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      content: "",
-    },
-    mode: "all",
-  });
-
-  const isLoading = form.formState.isSubmitting;
-
-  const { handleSubmit } = form;
-  const { toast } = useToast()
-
-  const onSubmit: SubmitHandler<formType> = async (values) => {
-    addComment.mutate({
-      description: values.content,
-      postId: f as string // this is the id of job post
-    }, {
-      onSuccess(data, variables, context) {
-        toast({
-          variant: 'default',
-          description: "Your comment has been sent.",
-        })
-        form.reset();
-      },
-    })
-    try {
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // end~ add comments ~
 
   const onDelete = () => {
     deleteJob.mutate(f as string)
@@ -182,7 +125,7 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() => setIsCommenting((prev) => !prev)}
+          onClick={() => setIsCommenting((prev) => true)}
           className={cn("bg-white", isCommenting && "bg-[#F1F5F9]")}
         >
           <MessageSquare className="w-5 h-5" />
@@ -194,41 +137,11 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
 
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
         <div className="max-w-2xl mx-auto px-4">
-          <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-              {isCommenting && (
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem className="my-5">
-                      <FormControl>
-                        <div className="flex items-center border rounded-md border-zinc-500 px-2">
-                          <EmojiPicker
-                            onChange={(emoji: any) => {
-                              field.onChange(`${field.value}${emoji.native}`);
-                            }}
-                          />
-                          <Input
-                            className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
-                            {...field}
-                            placeholder="Write your thoughts"
-                          />
-                          <Button
-                            variant={"ghost"}
-                            className="hover:bg-transparent"
-                            size={"icon"}
-                          >
-                            <Send className="w-5 h-5" />{" "}
-                          </Button>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              )}
-            </form>
-          </Form>
+          
+          {
+            isCommenting && <CommentInput />
+          }
+          
 
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">

@@ -15,6 +15,8 @@ import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { DepartmentSchemaType } from "@/schema/department";
+import UpdateDepartmentModal from "@/components/modals/department/UpdateDepartmentModal";
+import { useState } from "react";
 
 export const columns: ColumnDef<DepartmentSchemaType>[] = [
   // {
@@ -79,6 +81,7 @@ export const columns: ColumnDef<DepartmentSchemaType>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      const [isOpen, setOpen] = useState(false);
       const { id } = row.original;
 
       const onCopy = (id: string) => {
@@ -87,37 +90,45 @@ export const columns: ColumnDef<DepartmentSchemaType>[] = [
       };
 
       return (
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-4 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onCopy(id)}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Id
-              </DropdownMenuItem>
-              <Link href={`/departments/${id}/view`}>
-                <DropdownMenuItem>
-                  <Eye className="h-4 w-4 mr-2" />
-                  View
+        <>
+          {isOpen ? (
+            <UpdateDepartmentModal
+              department={row.original}
+              isOpen={isOpen}
+              onClose={() => setOpen(false)}
+            />
+          ) : null}
+
+          <div className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-4 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onCopy(id)}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Id
                 </DropdownMenuItem>
-              </Link>
-              <Link href={`/departments/${id}/edit`}>
-                <DropdownMenuItem>
+                <Link href={`/departments/${id}/view`}>
+                  <DropdownMenuItem>
+                    <Eye className="h-4 w-4 mr-2" />
+                    View
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem onClick={() => setOpen(true)}>
                   <Pencil className="h-4 w-4 mr-2" />
                   Edit
                 </DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem className="text-red-600 hover:!text-red-600 hover:!bg-red-100">
-                <Archive className="h-4 w-4 mr-2" />
-                Archive
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                <DropdownMenuItem className="text-red-600 hover:!text-red-600 hover:!bg-red-100">
+                  <Archive className="h-4 w-4 mr-2" />
+                  Archive
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </>
       );
     },
   },

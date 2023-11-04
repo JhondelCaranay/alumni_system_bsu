@@ -9,9 +9,12 @@ import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import CreateDepartmentModal from "@/components/modals/department/CreateDepartmentModal";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
 type CoursesClientProps = {};
 const CoursesClient = (props: CoursesClientProps) => {
+  const [isOpen, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
 
   const departmentsQuery = useQuery({
@@ -32,7 +35,11 @@ const CoursesClient = (props: CoursesClientProps) => {
       <div className="flex justify-between items-center space-x-2 pb-4">
         <h1 className="text-xl font-bold">DEPARTMENT</h1>
         <div className="flex gap-4">
-          <CreateDepartmentModal />
+          <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Add Department
+          </Button>
+          {isOpen ? <CreateDepartmentModal isOpen={isOpen} onClose={() => setOpen(false)} /> : null}
         </div>
       </div>
 

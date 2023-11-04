@@ -11,9 +11,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CreateDepartmentSchema, CreateDepartmentSchemaType } from "@/schema/department";
+import {
+  DepartmentSchemaType,
+  UpdateDepartmentSchema,
+  UpdateDepartmentSchemaType,
+} from "@/schema/department";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createDeparment } from "@/queries/department";
+import { updateDeparment } from "@/queries/department";
 import toast from "react-hot-toast";
 import {
   Dialog,
@@ -22,34 +26,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
 import { isAxiosError } from "axios";
 type Props = {
+  department: DepartmentSchemaType;
   isOpen: boolean;
   onClose: () => void;
 };
-
-const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
+const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: createDeparment,
+    mutationFn: (data: UpdateDepartmentSchemaType) => updateDeparment(department.id, data),
   });
 
-  const form = useForm<CreateDepartmentSchemaType>({
-    resolver: zodResolver(CreateDepartmentSchema),
+  const form = useForm<UpdateDepartmentSchemaType>({
+    resolver: zodResolver(UpdateDepartmentSchema),
     defaultValues: {
-      name: "",
+      name: department.name,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof CreateDepartmentSchema>) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
+  const onSubmit = async (values: z.infer<typeof UpdateDepartmentSchema>) => {
     mutation.mutate(values, {
-      async onSuccess() {
-        toast.success(`Department has been added`);
-        await queryClient.invalidateQueries({
+      onSuccess() {
+        toast.success(`Department has been updated`);
+        queryClient.invalidateQueries({
           queryKey: ["departments"],
         });
         form.reset();
@@ -57,7 +58,7 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
       },
       onError(error) {
         if (isAxiosError(error)) {
-          console.log("🚀 ~ file: CreateDepartmentModal.tsx:62 ~ onError ~ error:", error);
+          console.log("🚀 ~ file: UpdateDepartmentModal.tsx:62 ~ onError ~ error:", error);
           form.setError("name", {
             type: "manual",
             message: error.response?.data.message || "Something went wrong",
@@ -79,8 +80,8 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Department</DialogTitle>
-          <DialogDescription>add new department to manage sections.</DialogDescription>
+          <DialogTitle>Update Department</DialogTitle>
+          <DialogDescription>update new department to manage sections.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2 pb-4">
           <div className="space-y-2">
@@ -122,4 +123,4 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
     </Dialog>
   );
 };
-export default CreateDepartmentModal;
+export default UpdateDepartmentModal;

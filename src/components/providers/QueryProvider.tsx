@@ -15,7 +15,7 @@ function QueryProvider({ children }: React.PropsWithChildren) {
 
   return (
     <QueryClientProvider client={client}>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
       {children}
     </QueryClientProvider>
   );

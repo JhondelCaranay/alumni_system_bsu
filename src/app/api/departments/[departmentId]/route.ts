@@ -31,7 +31,7 @@ export async function GET(
     });
 
     if (!departments) {
-      return NextResponse.json("Department not found", { status: 404 });
+      return NextResponse.json({ message: "Department not found" }, { status: 404 });
     }
 
     return NextResponse.json(departments);
@@ -67,7 +67,7 @@ export async function PATCH(
   });
 
   if (!departments) {
-    return NextResponse.json("Department not found", { status: 404 });
+    return NextResponse.json({ message: "Department not found" }, { status: 404 });
   }
 
   const result = await UpdateDepartmentSchema.safeParseAsync(await req.json());
@@ -81,6 +81,16 @@ export async function PATCH(
       },
       { status: 400 }
     );
+  }
+
+  const departmentExists = await prisma.department.findFirst({
+    where: {
+      name: result.data.name,
+    },
+  });
+
+  if (departmentExists && departmentExists.id !== departmentId) {
+    return NextResponse.json({ message: "Department already exist" }, { status: 400 });
   }
 
   try {
@@ -125,7 +135,7 @@ export async function DELETE(
   });
 
   if (!departments) {
-    return NextResponse.json("Department not found", { status: 404 });
+    return NextResponse.json({ message: "Department not found" }, { status: 404 });
   }
 
   try {

@@ -49,6 +49,17 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
+  // Check if department already exists
+  const departmentExists = await prisma.department.findFirst({
+    where: {
+      name: result.data.name.toUpperCase(),
+    },
+  });
+
+  if (departmentExists) {
+    return NextResponse.json({ message: "Department already exist" }, { status: 400 });
+  }
+
   try {
     const department = await prisma.department.create({
       data: {

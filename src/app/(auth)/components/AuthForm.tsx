@@ -13,8 +13,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { isUserAllowed } from "@/lib/utils";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().min(1, {
@@ -28,6 +31,9 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema> | FieldValues;
 
 const AuthForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -52,6 +58,12 @@ const AuthForm = () => {
 
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
+
+        if (session?.user && isUserAllowed(session?.user?.role, ["ADMIN"])) {
+          router.push("/dashboard");
+        } else {
+          router.push("/client");
+        }
       }
     } catch (error) {
       toast.error("Something went wrong.");

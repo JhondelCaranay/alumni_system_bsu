@@ -1,7 +1,20 @@
 import React from "react";
 import AuthForm from "../components/AuthForm";
+import getCurrentUser from "@/actions/getCurrentUser";
+import { redirect } from "next/navigation";
+import { isUserAllowed } from "@/lib/utils";
 
-const LoginPage = () => {
+const LoginPage = async () => {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser) {
+    if (isUserAllowed(currentUser?.role, ["ADMIN"])) {
+      redirect("/dashboard");
+    } else if (isUserAllowed(currentUser?.role, ["STUDENT", "ALUMNI"])) {
+      redirect("/client");
+    }
+  }
+
   return (
     <div className="flex h-full w-full justify-center items-center bg-[url(/assets/CIT_1.jpg)] bg-cover bg-bottom">
       <div className="w-full h-full absolute bg-[#000000a2]" />

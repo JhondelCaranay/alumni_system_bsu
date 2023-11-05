@@ -34,7 +34,7 @@ const JobsClient = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (jobs?.data && jobs?.data.length > 0) {
+    if (jobs?.data && jobs?.data.length > 0 && !f) {
       const url = qs.stringifyUrl(
         {
           url: pathname || "",

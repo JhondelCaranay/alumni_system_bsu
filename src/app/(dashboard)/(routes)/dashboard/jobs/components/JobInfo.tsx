@@ -53,7 +53,7 @@ const JobInfo = () => {
       enabled:
         typeof job.data?.id === "string" &&
         typeof job.data?.id !== "object" &&
-        typeof job.data?.id !== "undefined",
+        typeof job.data?.id !== "undefined" && isCommenting,
     }
   );
 
@@ -147,7 +147,7 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
 
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-              Discussion ({comments?.data?.length})
+              Discussion ({comments?.data?.length || 0})
             </h2>
           </div>
 
@@ -155,11 +155,11 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
 
           {
             (() => {
-              if(comments.status === 'pending') return <JobCommentSkeleton />
+                if(comments.status === 'pending') return <JobCommentSkeleton />
 
-            if (comments.status === "error") return <h1>Loading comments error</h1>;
-
-            return comments.data.map((comment) => <Comment data={comment} />);
+                if (comments.status === "error") return <h1>Loading comments error</h1>;
+  
+                return comments.data.map((comment) => <Comment data={comment} />);
           })()}
         </div>
       </section>

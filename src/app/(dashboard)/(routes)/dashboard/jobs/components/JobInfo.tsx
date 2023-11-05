@@ -49,7 +49,7 @@ const JobInfo = () => {
  user: UserWithProfile;}>(`/posts/${f}`,{type: "jobs",},["jobs", f],{enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",}
 );
 
-const comments = useQueryProcessor<(CommentSchemaType & {user: UserWithProfile})[]>(`/socket/comments`,{postId: job.data?.id,},['job', job.data?.id, 'comments'],{enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined",}
+const comments = useQueryProcessor<(CommentSchemaType & {user: UserWithProfile})[]>(`/comments`,{postId: job.data?.id,},['job', job.data?.id, 'comments'],{enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined",}
 );
 
 const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {

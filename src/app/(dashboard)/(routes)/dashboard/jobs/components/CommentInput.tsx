@@ -35,7 +35,7 @@ const CommentInput = () => {
   };
 
   const addComment = useMutateProcessor<AddCommentSchema, Comment>(
-    "/socket/comments",
+    "/comments",
     null,
     "POST",
     ["job", f, "comments"],

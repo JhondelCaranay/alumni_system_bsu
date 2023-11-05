@@ -1,12 +1,14 @@
 import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUserPages from "@/actions/getCurrentUser-pages";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreateCommentSchema } from "@/schema/comment";
+import { NextApiResponseServerIo } from "@/types/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const currentUser = await getCurrentUser();
+export default async function handler(req: NextApiRequest, res: NextApiResponseServerIo) {
+  const currentUser = await getCurrentUserPages(req, res);
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -79,6 +81,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           userId: currentUser.id,
         },
       });
+
+    const Key = `posts:${result.data.postId}:comments`;
+
+    console.log("new message socket:", Key)
+    res.socket?.server?.io.emit(Key, comment);
 
       return res.status(200).json(comment);
     } catch (error) {

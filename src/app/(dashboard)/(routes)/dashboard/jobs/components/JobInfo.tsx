@@ -20,11 +20,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import JobSkeletonList from "./JobSkeletonList";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
-import JobCommentSkeleton from "./JobCommentSkeleton";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useCommentSocket } from "@/hooks/useCommentSocket";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -58,9 +56,11 @@ const JobInfo = () => {
     }
   );
 
-  const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
-    enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
-  });
+const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
+  enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
+})
+
+  useCommentSocket({postId: `posts:${f}:comments`, queryKey: ["jobs", f]})
 
   const onDelete = () => {
     deleteJob.mutate(f as string);
@@ -152,8 +152,9 @@ const JobInfo = () => {
 
           {/* comments */}
 
-          {(() => {
-            if (comments.status === "pending") return <JobCommentSkeleton />;
+          {
+            (() => {
+              if(comments.status === 'pending') return <Loader size={35} />
 
             if (comments.status === "error") return <h1>Loading comments error</h1>;
 

@@ -40,7 +40,10 @@ const CommentInput = () => {
     "POST",
     ["job", f, "comments"],
     {
-      enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
+      enabled:
+        typeof f === "string" &&
+        typeof f !== "object" &&
+        typeof f !== "undefined",
     }
   );
 
@@ -91,7 +94,11 @@ const CommentInput = () => {
                     {...field}
                     placeholder="Write your thoughts"
                   />
-                  <Button variant={"ghost"} className="hover:bg-transparent" size={"icon"}>
+                  <Button
+                    variant={"ghost"}
+                    className="hover:bg-transparent"
+                    size={"icon"}
+                  >
                     <Send className="w-5 h-5" />{" "}
                   </Button>
                 </div>

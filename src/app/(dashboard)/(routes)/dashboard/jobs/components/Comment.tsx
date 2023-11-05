@@ -52,7 +52,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
           <DropdownMenuContent align="end" className="">
             <DropdownMenuItem
               className="text-xs cursor-pointer hover:bg-zinc-400"
-              onClick={() => router.push(`/dashboard/jobs/${f}/edit`)}
+              // onClick={() => router.push(`/dashboard/jobs/${f}/edit`)}
             >
               <Pencil className="h-4 w-4 mr-2" />
               Update

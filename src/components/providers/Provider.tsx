@@ -5,6 +5,7 @@ import ToastProvider from "./ToastProvider";
 import { SessionProvider } from "next-auth/react";
 import ModalProvider from "./ModalProvider";
 import { ThemeProvider } from "next-themes";
+import { SocketIoProvider } from "./SocketProvider";
 
 const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -16,12 +17,15 @@ const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
         enableSystem={true}
         storageKey="bsu-alumni-system"
       >
+        <SocketIoProvider>
+
         <QueryProvider>
           <SessionProvider>
             <ModalProvider />
             {children}
           </SessionProvider>
         </QueryProvider>
+        </SocketIoProvider>
       </ThemeProvider>
     </>
   );

@@ -27,9 +27,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import JobSkeletonList from "./JobSkeletonList";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
+import { useCommentSocket } from "@/hooks/useCommentSocket";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -43,19 +43,20 @@ const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 const JobInfo = () => {
   const [isCommenting, setIsCommenting] = useState(true);
   const searchParams = useSearchParams();
-  const f = searchParams.get("f");
+  const f = searchParams?.get("f");
 
   const job = useQueryProcessor<PostSchemaType & {comments: CommentSchemaType & {user: UserWithProfile;};
  user: UserWithProfile;}>(`/posts/${f}`,{type: "jobs",},["jobs", f],{enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",}
 );
 
-const comments = useQueryProcessor<(CommentSchemaType & {user: UserWithProfile})[]>(`/comments`,{postId: job.data?.id,},['job', job.data?.id, 'comments'],{enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined",}
+const comments = useQueryProcessor<(CommentSchemaType & {user: UserWithProfile})[]>(`/socket/comments`,{postId: job.data?.id,},['job', job.data?.id, 'comments'],{enabled: typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined",}
 );
 
 const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
   enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
 })
 
+  useCommentSocket({postId: `posts:${f}:comments`, queryKey: ["jobs", f]})
 
   const onDelete = () => {
     deleteJob.mutate(f as string)
@@ -153,7 +154,7 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
 
           {
             (() => {
-              if(comments.status === 'pending') return <JobSkeletonList />
+              if(comments.status === 'pending') return <Loader size={35} />
 
               if(comments.status === 'error') return <h1>Loading comments error</h1>
 

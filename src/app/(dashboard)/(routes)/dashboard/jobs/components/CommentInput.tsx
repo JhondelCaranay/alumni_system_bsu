@@ -90,7 +90,7 @@ const CommentInput = () => {
                     }}
                   />
                   <Input
-                    className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+                    className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm bg-inherit"
                     {...field}
                     placeholder="Write your thoughts"
                   />

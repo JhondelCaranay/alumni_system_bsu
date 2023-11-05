@@ -21,17 +21,14 @@ const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 const Comment: React.FC<CommentProps> = ({ data }) => {
   const searchParams = useSearchParams();
-  const f = searchParams.get("f");
+  const f = searchParams?.get("f");
   const router = useRouter();
   return (
     <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-            <Avatar
-              className="mr-2 w-6 h-6 rounded-full"
-              src={data?.user?.image || ""}
-            />
+            <Avatar className="mr-2 w-6 h-6 rounded-full" src={data?.user?.image || ""} />
             {data?.user?.name}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">

@@ -23,6 +23,7 @@ import {
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
+import JobCommentSkeleton from "./JobCommentSkeleton";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -154,7 +155,7 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
 
           {
             (() => {
-              if(comments.status === 'pending') return <Loader size={35} />
+              if(comments.status === 'pending') return <JobCommentSkeleton />
 
             if (comments.status === "error") return <h1>Loading comments error</h1>;
 

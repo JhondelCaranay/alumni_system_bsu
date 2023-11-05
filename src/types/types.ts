@@ -1,5 +1,7 @@
 import { Department, Event, Profile, Section, User } from "@prisma/client";
-
+import { NextApiResponse } from "next";
+import { Server as NetServer, Socket } from "net";
+import {Server as SocketIOServer} from 'socket.io'
 export type SafeDeparment = Omit<Department, "createdAt" | "updatedAt"> & {
   createdAt: string;
   updatedAt: string;
@@ -48,3 +50,11 @@ export type UserProfileWithDepartmentSection = Omit<User, "hashedPassword" | "em
 };
 
 export type Events = Event[];
+
+export type NextApiResponseServerIo = NextApiResponse & {
+  socket: Socket & {
+      server: NetServer & {
+          io: SocketIOServer
+      }
+  }
+}

@@ -82,9 +82,9 @@ const JobInfo = () => {
   const canEditOrDelete = isOwner || isAdmin;
 
   return (
-    <article className="w-full flex-1 space-y-2 bg-white rounded-lg h-fit relative dark:bg-gray-900 dark:text-white">
+    <article className="w-full flex-1 space-y-2 rounded-lg h-fit relative ">
       {/* JOB POST */}
-      <div className="shadow-lg p-3">
+      <div className="shadow-lg p-3 bg-white dark:bg-gray-900 dark:text-white rounded-md">
         {canEditOrDelete && (
           <DropdownMenu>
             <DropdownMenuTrigger className="absolute top-10 right-2">
@@ -140,7 +140,7 @@ const JobInfo = () => {
       </div>
 
       {/* COMMENTS FORM */}
-      <section className="bg-white dark:bg-gray-900 py-3 antialiased shadow-lg">
+      <section className="bg-white dark:bg-gray-900 py-3 antialiased shadow-lg  rounded-md">
         <div className="max-w-2xl mx-auto px-4">
           {isCommenting && <CommentInput />}
 

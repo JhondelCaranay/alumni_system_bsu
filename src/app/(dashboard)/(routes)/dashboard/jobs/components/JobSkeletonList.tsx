@@ -38,7 +38,7 @@ const JobSkeletonList = () => {
         </div>
 
         <div className="flex flex-col gap-2 ">
-          {Array(3)
+          {Array(20)
             .fill(0)
             .map((_, i) => {
               return <Skeleton key={i} className="w-full h-5 my-1" />;

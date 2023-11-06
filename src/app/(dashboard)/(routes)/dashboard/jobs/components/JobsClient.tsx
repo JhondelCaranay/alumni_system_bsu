@@ -54,7 +54,7 @@ const JobsClient = () => {
   if (jobs.status === "error") return <h1 className="text-zinc-500">Something went wrong</h1>;
 
   return (
-    <main className="flex w-full gap-x-5">
+    <main className="flex w-full">
       <div className="flex flex-col flex-1 max-w-[50%] gap-y-5 max-h-[85vh] overflow-auto px-5">
         {jobs.data.length > 0 &&
           jobs?.data?.map(({ user, comments, ...rest }) => (

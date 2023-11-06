@@ -60,7 +60,6 @@ const Calendar = () => {
         onClose();
       },
       onError(error, variables, context) {
-        console.log("");
         toast.error("Something went wrong...");
       },
     });

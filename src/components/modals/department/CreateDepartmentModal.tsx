@@ -57,7 +57,6 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
       },
       onError(error) {
         if (isAxiosError(error)) {
-          console.log("🚀 ~ file: CreateDepartmentModal.tsx:62 ~ onError ~ error:", error);
           form.setError("name", {
             type: "manual",
             message: error.response?.data.message || "Something went wrong",

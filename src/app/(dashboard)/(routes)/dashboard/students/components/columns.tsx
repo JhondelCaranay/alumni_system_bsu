@@ -36,7 +36,6 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
     },
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
-      console.log("🚀 ~ file: columns.tsx:40 ~ id:", id);
 
       return <div className="sr-only dark:text-white">{id}</div>;
     },
@@ -52,7 +51,6 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
     },
     cell: ({ row }) => {
       const studentNumber = row.original.profile.studentNumber;
-      console.log("🚀 ~ file: columns.tsx:56 ~ studentNumber:", studentNumber);
       return <div className="sr-only dark:text-white">{studentNumber}</div>;
     },
   },

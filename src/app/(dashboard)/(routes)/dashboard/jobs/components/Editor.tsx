@@ -10,6 +10,7 @@ import "froala-editor/js/plugins.pkgd.min.js";
 
 import "froala-editor/js/plugins/save.min.js";
 import "froala-editor/js/plugins/markdown.min.js";
+import "froala-editor/js/plugins/image.min.js";
 
 // Import all Froala Editor plugins;
 import "froala-editor/js/plugins.pkgd.min.js";
@@ -29,6 +30,13 @@ import "froala-editor/js/third_party/embedly.min.js";
 // install using "npm install font-awesome --save"
 import "font-awesome/css/font-awesome.css";
 import "froala-editor/js/third_party/font_awesome.min.js";
+// import { cloudinaryUpload } from "@/lib/cloudinary";
+import { env } from "@/env.mjs";
+import axios from "axios";
+import { apiClient } from "@/hooks/useTanstackQuery";
+
+// Set your Cloudinary credentials
+
 
 type EditorProps = {
   model: string;
@@ -36,6 +44,12 @@ type EditorProps = {
 };
 
 const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
+
+  const handleImageDeleteOrReplace  = async (publicId:string) => {
+    apiClient.delete(`/cloudinary/${publicId}`)
+    // const {secure_url, public_id} = await cloudinaryUpload(file, 'next-alumni-system')
+  };
+
   return (
     <main className="editor">
       <FroalaEditorComponent
@@ -45,12 +59,43 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
           saveInterval: 1000,
           fontFamilySelection: true,
           fontSizeSelection: true,
+          imageUpload: true,
+          imageUploadURL: `${env.NEXT_PUBLIC_SITE_URL}/api/cloudinary`,
+          imageUploadMethod: 'POST',
+          imageUploadParam: 'file',
+          // Other configuration options
           paragraphFormatSelection: true,
 
           events: {
             "save.before": function (html: string) {
               localStorage.setItem("savedContent", html);
             },
+            'image.replaced': function (img:any, response:any) {
+              try {
+              // console.log(img, response, '🚀 ~ image replaced ~ 🚀')
+              // const responseData =  JSON.parse(response);
+              // const publicId = responseData.link.split('next-alumni-system/')[1]?.replace('.jpg', '')
+              // handleImageDeleteOrReplace(publicId)
+              } catch (error) {
+                console.error(error)
+              }
+            },
+            'image.removed': async function (img:any, response:any) {
+              try {
+              console.log(img, response, '🚀 ~ image removed ~ 🚀')
+               const publicIdFromReplace = img[0]["data-fr-old-src"]
+               if(publicIdFromReplace) {
+                 const publicId = publicIdFromReplace?.split('next-alumni-system/')[1]?.replace('.jpg', '')
+                 handleImageDeleteOrReplace(publicId)
+                }
+                else {
+                  const publicId = img[0].currentSrc?.split('next-alumni-system/')[1]?.replace('.jpg', '')
+                  handleImageDeleteOrReplace(publicId)
+                }
+              } catch (error) {
+                console.error(error)
+              }
+            }
           },
 
           toolbarButtons: {
@@ -91,7 +136,7 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
             moreRich: {
               buttons: [
                 "insertLink",
-                // "insertImage",
+                "insertImage",
                 // "insertVideo",
                 "insertTable",
                 "emoticons",

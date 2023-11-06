@@ -1,10 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
 import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
-import { SafeUser, UserWithProfile } from "@/types/types";
+import { UserWithProfile } from "@/types/types";
 import { Archive, Heart, MessageSquare, MoreHorizontal, Pencil, Share2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -53,15 +52,16 @@ const JobInfo = () => {
       enabled:
         typeof job.data?.id === "string" &&
         typeof job.data?.id !== "object" &&
-        typeof job.data?.id !== "undefined" && isCommenting,
+        typeof job.data?.id !== "undefined" &&
+        isCommenting,
     }
   );
 
-const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELETE', ['jobs'], {
-  enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
-})
+  const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
+    enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
+  });
 
-  useCommentSocket({postId: `posts:${f}:comments`, queryKey: ["jobs", f]})
+  useCommentSocket({ postId: `posts:${f}:comments`, queryKey: ["jobs", f] });
 
   const onDelete = () => {
     deleteJob.mutate(f as string);
@@ -83,12 +83,12 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
   const canEditOrDelete = isOwner || isAdmin;
 
   return (
-    <article className="w-full flex-1 space-y-2 rounded-lg h-fit relative ">
+    <article className="w-full flex-1 space-y-2 rounded-lg h-fit">
       {/* JOB POST */}
-      <div className="shadow-lg p-3 bg-white dark:bg-gray-900 dark:text-white rounded-md">
+      <div className="shadow-lg p-3 bg-gray-50  dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="absolute top-10 right-2">
+            <DropdownMenuTrigger className="absolute top-3 right-3">
               <MoreHorizontal className="h-6 w-6 text-zinc-500 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="">
@@ -128,7 +128,7 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
             size={"icon"}
             onClick={() => setIsCommenting((prev) => true)}
             className={cn(
-              "bg-white dark:bg-gray-900",
+              "bg-white dark:bg-gray-800",
               isCommenting && "bg-[#F1F5F9] dar:bg-gray-400"
             )}
           >
@@ -141,25 +141,24 @@ const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, 'DELE
       </div>
 
       {/* COMMENTS FORM */}
-      <section className="bg-white dark:bg-gray-900 py-3 antialiased shadow-lg  rounded-md">
+      <section className="bg-gray-50 dark:bg-gray-800 py-3 antialiased shadow-lg  rounded-md">
         <div className="max-w-2xl mx-auto px-4">
           {isCommenting && <CommentInput />}
 
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white">
               Discussion ({comments?.data?.length || 0})
             </h2>
           </div>
 
           {/* comments */}
 
-          {
-            (() => {
-                if(comments.status === 'pending') return <JobCommentSkeleton />
+          {(() => {
+            if (comments.status === "pending") return <JobCommentSkeleton />;
 
-                if (comments.status === "error") return <h1>Loading comments error</h1>;
-  
-                return comments.data.map((comment) => <Comment data={comment} />);
+            if (comments.status === "error") return <h1>Loading comments error</h1>;
+
+            return comments.data.map((comment) => <Comment data={comment} />);
           })()}
         </div>
       </section>

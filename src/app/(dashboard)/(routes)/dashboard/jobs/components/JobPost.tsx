@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import Avatar from "@/components/Avatar";
 // import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -48,7 +49,10 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
 
   return (
     <article
-      className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 cursor-pointer"
+      className={cn(
+        "p-6 bg-gray-50 rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer min-h-[150px] max-h-[350px] overflow-hidden",
+        post.id === f ? "border-blue-500 " : "border-gray-200 dark:border-gray-700"
+      )}
       onClick={onClick}
     >
       <div className="flex items-center space-x-4">

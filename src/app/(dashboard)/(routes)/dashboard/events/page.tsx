@@ -13,7 +13,7 @@ const EventsPage = async (props: EventsPageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex w-full bg-white p-6">
+      <div className="flex w-full bg-white p-6 dark:bg-[#020817]">
         <Calendar />
       </div>
     </HydrationBoundary>

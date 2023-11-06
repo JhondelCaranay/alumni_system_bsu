@@ -85,11 +85,13 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
               console.log(img, response, '🚀 ~ image removed ~ 🚀')
                const publicIdFromReplace = img[0]["data-fr-old-src"]
                if(publicIdFromReplace) {
-                 const publicId = publicIdFromReplace?.split('next-alumni-system/')[1]?.replace('.jpg', '')
+                // getting the public id from url and removing file ext
+                 const publicId = publicIdFromReplace?.split('next-alumni-system/')[1].substring(0,publicIdFromReplace.split('next-alumni-system/')[1].lastIndexOf('.'))
                  handleImageDeleteOrReplace(publicId)
                 }
                 else {
-                  const publicId = img[0].currentSrc?.split('next-alumni-system/')[1]?.replace('.jpg', '')
+                // getting the public id from url and removing file ext
+                  const publicId = img[0].currentSrc?.split('next-alumni-system/')[1].substring(0,img[0].currentSrc?.split('next-alumni-system/')[1].lastIndexOf('.'))
                   handleImageDeleteOrReplace(publicId)
                 }
               } catch (error) {

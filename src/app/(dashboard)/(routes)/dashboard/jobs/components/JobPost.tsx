@@ -50,7 +50,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
   return (
     <article
       className={cn(
-        "p-6 bg-gray-50 rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer ",
+        "p-6 bg-gray-50 rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer min-h-[150px] max-h-[350px] overflow-hidden",
         post.id === f ? "border-blue-500 " : "border-gray-200 dark:border-gray-700"
       )}
       onClick={onClick}

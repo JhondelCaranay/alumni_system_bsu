@@ -80,6 +80,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
           ...result.data,
           userId: currentUser.id,
         },
+        include: {
+          user: {
+            select: {
+                profile: true,
+                  name: true,
+                  email: true,
+                  role: true,
+                  createdAt: true,
+                  id: true,
+            }
+          }
+        }
       });
 
     const Key = `posts:${result.data.postId}:comments`;

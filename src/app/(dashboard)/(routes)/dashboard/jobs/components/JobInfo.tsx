@@ -47,7 +47,7 @@ const JobInfo = () => {
   const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
     `/comments`,
     { postId: job.data?.id },
-    ["job", job.data?.id, "comments"],
+    ["jobs", job.data?.id, "comments"],
     {
       enabled:
         typeof job.data?.id === "string" &&
@@ -61,7 +61,7 @@ const JobInfo = () => {
     enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
   });
 
-  useCommentSocket({ postId: `posts:${f}:comments`, queryKey: ["jobs", f] });
+  useCommentSocket({ postId: `posts:${f}:comments`, queryKey: ["jobs", f, 'comments'] });
 
   const onDelete = () => {
     deleteJob.mutate(f as string);
@@ -141,7 +141,7 @@ const JobInfo = () => {
       </div>
 
       {/* COMMENTS FORM */}
-      <section className="bg-gray-50 dark:bg-gray-800 py-3 antialiased shadow-lg  rounded-md">
+      <section className="bg-white dark:bg-gray-800 py-3 antialiased shadow-lg  rounded-md">
         <div className="max-w-2xl mx-auto px-4">
           {isCommenting && <CommentInput />}
 
@@ -158,7 +158,7 @@ const JobInfo = () => {
 
             if (comments.status === "error") return <h1>Loading comments error</h1>;
 
-            return comments.data.map((comment) => <Comment data={comment} />);
+            return comments.data.map((comment) => <Comment data={comment} key={comment.id} />);
           })()}
         </div>
       </section>

@@ -2,25 +2,24 @@ import { useSocket } from "@/components/providers/SocketProvider";
 import { CommentSchemaType } from "@/schema/comment";
 import { UserWithProfile } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 type ChatSocketProps = {
-  postId: string;
+  postKey: string;
   queryKey: (string | any)[];
 };
 
-export const useCommentSocket = ({ postId, queryKey }: ChatSocketProps) => {
-  const { socket, isConnected } = useSocket();
+export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
+  const { socket } = useSocket();
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   useEffect(() => {
     if (!socket) {
       return;
     }
-    socket.on(postId, (data: CommentSchemaType & { user: UserWithProfile }) => {
-      console.log("new comments in key:", postId, data);
+
+    socket.on(postKey, (data: CommentSchemaType & { user: UserWithProfile }) => {
       queryClient.setQueryData(
         queryKey,
         (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
@@ -28,10 +27,12 @@ export const useCommentSocket = ({ postId, queryKey }: ChatSocketProps) => {
           return newData;
         }
       );
-
-      return () => {
-        socket.off(postId);
-      };
     });
-  }, []);
+
+    return () => {
+      socket.off(postKey);
+    };
+
+  }, [postKey, queryKey]);
+
 };

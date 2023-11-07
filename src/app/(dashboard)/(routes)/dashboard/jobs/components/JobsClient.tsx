@@ -10,6 +10,7 @@ import { CommentSchemaType } from "@/schema/comment";
 import { SafeUser } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
+import { useCommentSocket } from "@/hooks/useCommentSocket";
 
 const JobsClient = () => {
   const jobs = useQueryProcessor<
@@ -47,7 +48,12 @@ const JobsClient = () => {
 
       router.push(url);
     }
+
+    return () => {
+      console.log('jobs exit')
+    }
   }, [jobs?.data, f, pathname, router]);
+
 
   if (jobs.status === "pending") return <JobSkeletonList />;
 
@@ -62,7 +68,9 @@ const JobsClient = () => {
           ))}
       </div>
       {/* <Separator orientation="vertical" className="flex h-full text-sm w-2" /> */}
-      {f && <JobInfo />}
+      {
+        f && <JobInfo />
+      }
     </main>
   );
 };

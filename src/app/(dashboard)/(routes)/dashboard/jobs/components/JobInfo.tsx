@@ -61,7 +61,7 @@ const JobInfo = () => {
     enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
   });
 
-  useCommentSocket({ postId: `posts:${f}:comments`, queryKey: ["jobs", f, "comments"] });
+  useCommentSocket({ postKey: `posts:${f}:comments`, queryKey: ["jobs", f, "comments"] });
 
   const onDelete = () => {
     deleteJob.mutate(f as string);
@@ -70,7 +70,8 @@ const JobInfo = () => {
 
   useEffect(() => {
     job.refetch();
-  }, [f, job]);
+    comments.refetch()
+  }, [f]);
 
   const session = useSession();
   const router = useRouter();

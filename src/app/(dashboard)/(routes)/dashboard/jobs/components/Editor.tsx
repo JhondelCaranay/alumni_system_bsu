@@ -58,7 +58,7 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
           fontFamilySelection: true,
           fontSizeSelection: true,
           imageUpload: true,
-          quickInsertEnabled: false,
+          quickInsertEnabled: true,
           imageUploadURL: `${env.NEXT_PUBLIC_SITE_URL}/api/cloudinary`,
           imageUploadMethod: "POST",
           imageUploadParam: "file",

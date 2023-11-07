@@ -33,5 +33,5 @@ export const useCommentSocket = ({ postId, queryKey }: ChatSocketProps) => {
         socket.off(postId);
       };
     });
-  }, [socket, queryClient, postId, queryKey]);
+  }, []);
 };

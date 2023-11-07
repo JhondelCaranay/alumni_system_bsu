@@ -20,7 +20,7 @@ const ActionButton:React.FC<ActionButtonProps> = ({user}) => {
               <MoreHorizontal className="h-4 w-4 text-zinc-500" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => router.push(`users/${user.id}`)}>
+              <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => router.push(`/dashboard/users/${user.id}`)}>
 <Pencil className="h-4 w-4 mr-2" />
                  Update
               </DropdownMenuItem>

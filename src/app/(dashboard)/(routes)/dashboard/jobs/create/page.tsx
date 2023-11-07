@@ -7,7 +7,7 @@ import { useMutateProcessor } from '@/hooks/useTanstackQuery';
 import { CreatePostSchemaType, PostSchemaType } from '@/schema/post';
 import toast from 'react-hot-toast';
 import { Lightbulb } from 'lucide-react';
-
+// import Editor from '../components/Editor'
 const Editor = dynamic(() => import("../components/Editor"), {
   ssr: false,
 });

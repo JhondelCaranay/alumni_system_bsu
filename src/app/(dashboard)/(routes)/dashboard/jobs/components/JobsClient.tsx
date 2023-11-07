@@ -54,6 +54,10 @@ const JobsClient = () => {
     }
   }, [jobs?.data, f, pathname, router]);
 
+  useEffect(() => {
+    jobs.refetch()
+  }, [])
+
 
   if (jobs.status === "pending") return <JobSkeletonList />;
 

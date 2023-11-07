@@ -1,5 +1,5 @@
 import React from "react";
-import FroalaEditorComponent from "react-froala-wysiwyg";
+import dynamic from "next/dynamic";
 
 import "froala-editor/css/froala_style.min.css";
 
@@ -34,6 +34,7 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 import { env } from "@/env.mjs";
 import axios from "axios";
 import { apiClient } from "@/hooks/useTanstackQuery";
+const FroalaEditorComponent = dynamic(() => import('react-froala-wysiwyg'),{ ssr: false })  
 
 // Set your Cloudinary credentials
 

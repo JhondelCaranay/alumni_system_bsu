@@ -7,9 +7,10 @@ import EmojiPicker from "@/components/EmojiPicker";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { useSearchParams } from "next/navigation";
-import { useMutateProcessor } from "@/hooks/useTanstackQuery";
+import { mutationFn, useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 
 const CommentInput = () => {
   // start~ add comments ~
@@ -34,18 +35,22 @@ const CommentInput = () => {
     postId: string;
   };
 
-  const addComment = useMutateProcessor<AddCommentSchema, Comment>(
-    "/comments",
-    null,
-    "POST",
-    ["job", f, "comments"],
-    {
-      enabled:
-        typeof f === "string" &&
-        typeof f !== "object" &&
-        typeof f !== "undefined",
-    }
-  );
+  // const addComment = useMutateProcessor<AddCommentSchema, Comment>(
+  //   "/comments",
+  //   null,
+  //   "POST",
+  //   ["job", f, "comments"],
+  //   {
+  //     enabled:
+  //       typeof f === "string" &&
+  //       typeof f !== "object" &&
+  //       typeof f !== "undefined",
+  //   }
+  // );
+
+  const addComment = useMutation({
+    mutationFn: (value: AddCommentSchema) => mutationFn('/comments', null, 'POST', value),
+  })
 
   const isLoading = form.formState.isSubmitting;
 

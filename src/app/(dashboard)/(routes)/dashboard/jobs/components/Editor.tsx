@@ -60,7 +60,7 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
           fontSizeSelection: true,
           imageUpload: true,
           toolbarSticky: true,
-          // quickInsertEnabled: false,
+          quickInsertEnabled: true,
           quickInsertButtons: [/* 'video',  */ "image", "embedly", "table", "ul", "ol", "hr"],
           imageUploadURL: `${env.NEXT_PUBLIC_SITE_URL}/api/cloudinary`,
           imageUploadMethod: "POST",

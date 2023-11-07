@@ -22,11 +22,15 @@ export const useCommentSocket = ({postId, queryKey}: ChatSocketProps) => {
         }
         socket.on(postId, (data:CommentSchemaType & {user:UserWithProfile}) => {
             console.log('new comments in key:', postId, data)
+            queryClient.setQueryData(queryKey, (oldData:CommentSchemaType & {user:UserWithProfile}[]) => {
+            const newData = [data, ...oldData]
+            return newData;
         })
 
         return () => {
             socket.off(postId)
-            // socket.off(updateKey)
         }
+    })
+
     }, [])
 }

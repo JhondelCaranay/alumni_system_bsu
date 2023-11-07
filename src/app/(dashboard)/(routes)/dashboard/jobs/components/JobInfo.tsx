@@ -47,7 +47,7 @@ const JobInfo = () => {
   const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
     `/comments`,
     { postId: job.data?.id },
-    ["job", job.data?.id, "comments"],
+    ["jobs", job.data?.id, "comments"],
     {
       enabled:
         typeof job.data?.id === "string" &&
@@ -158,7 +158,7 @@ const JobInfo = () => {
 
             if (comments.status === "error") return <h1>Loading comments error</h1>;
 
-            return comments.data.map((comment) => <Comment data={comment} />);
+            return comments.data.map((comment) => <Comment data={comment} key={comment.id} />);
           })()}
         </div>
       </section>

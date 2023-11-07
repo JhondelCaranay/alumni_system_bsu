@@ -6,31 +6,32 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 type ChatSocketProps = {
-    postId:string;
-    queryKey: (string| any)[];
-}
+  postId: string;
+  queryKey: (string | any)[];
+};
 
-export const useCommentSocket = ({postId, queryKey}: ChatSocketProps) => {
+export const useCommentSocket = ({ postId, queryKey }: ChatSocketProps) => {
+  const { socket, isConnected } = useSocket();
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-    const {socket,isConnected} = useSocket();
-    const queryClient = useQueryClient();
-    const router = useRouter()
-
-    useEffect(() => {
-        if(!socket) {
-            return;
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    socket.on(postId, (data: CommentSchemaType & { user: UserWithProfile }) => {
+      console.log("new comments in key:", postId, data);
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
+          const newData = [data, ...oldData];
+          return newData;
         }
-        socket.on(postId, (data:CommentSchemaType & {user:UserWithProfile}) => {
-            console.log('new comments in key:', postId, data)
-            queryClient.setQueryData(queryKey, (oldData:CommentSchemaType & {user:UserWithProfile}[]) => {
-            const newData = [data, ...oldData]
-            return newData;
-        })
+      );
 
-        return () => {
-            socket.off(postId)
-        }
-    })
-
-    }, [])
-}
+      return () => {
+        socket.off(postId);
+      };
+    });
+  }, [socket, queryClient, postId, queryKey]);
+};

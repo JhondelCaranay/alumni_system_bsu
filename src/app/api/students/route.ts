@@ -7,18 +7,18 @@ import { Role } from "@prisma/client";
 import { z } from "zod";
 import { CreateStudentsSchema } from "@/schema/students";
 
-export const GetStudentsQueriesSchema = z.object({
-  role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
-  schoolYear: z.coerce.number().optional(),
-  department: z.string().optional(),
-});
-
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const GetStudentsQueriesSchema = z.object({
+    role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
+    schoolYear: z.coerce.number().optional(),
+    department: z.string().optional(),
+  });
 
   const searchParams = req.nextUrl.searchParams;
   const queries = Object.fromEntries(searchParams.entries());

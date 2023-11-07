@@ -24,7 +24,10 @@ import { useModal } from "@/hooks/useModalStore";
 import toast from "react-hot-toast";
 
 const UserIdPageClient = () => {
-  const { userId } = useParams();
+  // const { userId } = useParams();
+  const params = useParams();
+
+  const userId = params?.userId as string;
 
   const { data, status } = useQueryProcessor<UserWithProfile>(
     `/users/${userId}`,
@@ -38,10 +41,7 @@ const UserIdPageClient = () => {
   const formSchema = z.object({
     firstname: z.string().min(1, { message: "Required field" }),
     lastname: z.string().min(1, { message: "Required field" }),
-    email: z
-      .string()
-      .min(1, { message: "Required field" })
-      .email({ message: "Invalid email" }),
+    email: z.string().min(1, { message: "Required field" }).email({ message: "Invalid email" }),
     middlename: z.string().min(1, { message: "Required field" }),
     city: z.string().min(1, { message: "Required field" }),
     homeNo: z.string().min(1, { message: "Required field" }),
@@ -53,11 +53,17 @@ const UserIdPageClient = () => {
 
   type formSchemaType = z.infer<typeof formSchema>;
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const {mutate, isPending} = useMutateProcessor<formSchemaType, UserWithProfile>(`/users/${userId}`, null, 'PATCH', ['users', userId], {
-    enabled: typeof userId !== 'undefined'
-  })
+  const { mutate, isPending } = useMutateProcessor<formSchemaType, UserWithProfile>(
+    `/users/${userId}`,
+    null,
+    "PATCH",
+    ["users", userId],
+    {
+      enabled: typeof userId !== "undefined",
+    }
+  );
 
   const form = useForm<formSchemaType>({
     defaultValues: {
@@ -91,23 +97,22 @@ const UserIdPageClient = () => {
     }
   }, [data, form, router]);
 
-  const formSubmitting = form.formState.isSubmitting || isPending
+  const formSubmitting = form.formState.isSubmitting || isPending;
 
-  const {onOpen} = useModal();
-
+  const { onOpen } = useModal();
 
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
-    console.log(values)
+    console.log(values);
     mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('User has been updated!')
-        form.reset()
-        router.refresh()
+        toast.success("User has been updated!");
+        form.reset();
+        router.refresh();
       },
       onError() {
-        toast.error('User did not update')
-      }
-    })
+        toast.error("User did not update");
+      },
+    });
   };
 
   if (status === "pending") {
@@ -115,36 +120,30 @@ const UserIdPageClient = () => {
   }
 
   if (status === "error") {
-    return (
-      <h1 className="text-center font-semibold text-zinc-300">
-        Error fetching user
-      </h1>
-    );
+    return <h1 className="text-center font-semibold text-zinc-300">Error fetching user</h1>;
   }
 
-  if(data.isArchived) {
-    router.push('/dashboard/users')
+  if (data.isArchived) {
+    router.push("/dashboard/users");
   }
 
   return (
     <div className="flex flex-col p-5 gap-10">
       <header>
-        <ArrowLeft className=" cursor-pointer hover:text-zinc-500 transition-all" onClick={() => router.push('/dashboard/users')} />
+        <ArrowLeft
+          className=" cursor-pointer hover:text-zinc-500 transition-all"
+          onClick={() => router.push("/dashboard/users")}
+        />
       </header>
 
       <main className="flex flex-col">
         <section className="border-[2px] border-zinc-200 rounded-md p-3 flex items-center">
-          <Avatar
-            className="w-[80px] object-contain"
-            src={data?.image as string}
-          />
+          <Avatar className="w-[80px] object-contain" src={data?.image as string} />
           <div className="flex flex-col ml-3">
             <span className="text-black font-semibold dark:text-white">
               {data.profile.firstname} {data.profile.lastname}
             </span>
-            <span className="text-zinc-500 text-xs">
-              @{data.profile.alternative_email}
-            </span>
+            <span className="text-zinc-500 text-xs">@{data.profile.alternative_email}</span>
           </div>
         </section>
         <Separator className="my-10 bg-zinc-200 h-2 dark:bg-zinc-600" />
@@ -165,7 +164,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter firstname`}
@@ -188,7 +187,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter middlename`}
@@ -212,7 +211,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter lastname`}
@@ -234,7 +233,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="email"
                           placeholder={`Enter email`}
@@ -264,7 +263,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter city`}
@@ -287,7 +286,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter home number`}
@@ -312,7 +311,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter street`}
@@ -334,7 +333,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="text"
                           placeholder={`Enter barangay`}
@@ -358,7 +357,7 @@ const UserIdPageClient = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={formSubmitting}
+                          disabled={formSubmitting}
                           className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 dark:bg-transparent dark:text-white"
                           type="number"
                           placeholder={`Enter phone number`}
@@ -374,22 +373,30 @@ const UserIdPageClient = () => {
 
             <section className="mt-10">
               <Button type="submit" variant={"default"} className="w-fit" disabled={formSubmitting}>
-                {
-                  (() => {
-                    if(formSubmitting) {
-                      return <div className="flex items-center"><span>Saving</span> <Loader2 className="animate-spin ml-2 w-5 h-5" /></div> 
-                    }
+                {(() => {
+                  if (formSubmitting) {
+                    return (
+                      <div className="flex items-center">
+                        <span>Saving</span> <Loader2 className="animate-spin ml-2 w-5 h-5" />
+                      </div>
+                    );
+                  }
 
-                    return 'Save update'
-                  })()
-                }
+                  return "Save update";
+                })()}
               </Button>
             </section>
 
             <Separator className="my-10 bg-zinc-200 h-1 dark:bg-zinc-600" />
             <section className="flex flex-col ">
               <h2 className="font-semibold my-5 text-rose-700">Danger Zone</h2>
-              <Button type="button" variant={"destructive"} className="w-fit" onClick={() => onOpen('archiveUser', {user: data})} disabled={formSubmitting}>
+              <Button
+                type="button"
+                variant={"destructive"}
+                className="w-fit"
+                onClick={() => onOpen("archiveUser", { user: data })}
+                disabled={formSubmitting}
+              >
                 Archive user
               </Button>
             </section>

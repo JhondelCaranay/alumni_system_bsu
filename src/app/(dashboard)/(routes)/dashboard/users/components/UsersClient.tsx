@@ -63,7 +63,7 @@ const StudentsClient = () => {
 
   useEffect(() => {
     users.refetch();
-  }, [role, department]);
+  }, [role, department, users]);
 
   return (
     <div className="flex flex-col p-10">
@@ -93,10 +93,7 @@ const StudentsClient = () => {
             placeholder="Search for Email, Department or something..."
           />
         </div>
-        <Select
-          value={role}
-          onValueChange={(value: RoleType) => setRole(value)}
-        >
+        <Select value={role} onValueChange={(value: RoleType) => setRole(value)}>
           <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -112,10 +109,7 @@ const StudentsClient = () => {
           </SelectContent>
         </Select>
 
-        <Select
-          value={department}
-          onValueChange={(value) => setDepartment(value)}
-        >
+        <Select value={department} onValueChange={(value) => setDepartment(value)}>
           <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
@@ -145,16 +139,15 @@ const StudentsClient = () => {
         </Button>
       </div>
 
-      {
-      (() => {
-        if (users.status === 'pending') {
-          return <Loader size={35} />
+      {(() => {
+        if (users.status === "pending") {
+          return <Loader size={35} />;
         }
 
-        if (users.status === 'error') {
+        if (users.status === "error") {
           return <div className="mx-auto">Something went wrong...</div>;
         }
-        
+
         return (
           <DataTable
             columns={columns}
@@ -163,8 +156,7 @@ const StudentsClient = () => {
             setGlobalFilter={setGlobalFilter}
           />
         );
-      })()
-      }
+      })()}
     </div>
   );
 };

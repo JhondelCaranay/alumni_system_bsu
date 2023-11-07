@@ -47,7 +47,7 @@ const JobsClient = () => {
 
       router.push(url);
     }
-  }, [jobs?.data]);
+  }, [jobs?.data, f, pathname, router]);
 
   if (jobs.status === "pending") return <JobSkeletonList />;
 

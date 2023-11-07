@@ -54,10 +54,12 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
         config={{
           placeholderText: "Start writting your job description.",
           heightMin: 500,
+          heightMax: 500,
           saveInterval: 1000,
           fontFamilySelection: true,
           fontSizeSelection: true,
           imageUpload: true,
+          toolbarSticky: true,
           // quickInsertEnabled: false,
           quickInsertButtons: [/* 'video',  */ "image", "embedly", "table", "ul", "ol", "hr"],
           imageUploadURL: `${env.NEXT_PUBLIC_SITE_URL}/api/cloudinary`,

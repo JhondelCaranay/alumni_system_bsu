@@ -50,7 +50,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
   return (
     <article
       className={cn(
-        "p-6 bg-gray-50 rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer min-h-[150px] max-h-[350px] overflow-hidden",
+        "p-6 bg-white rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer min-h-[200px] max-h-[350px] overflow-hidden relative",
         post.id === f ? "border-blue-500 " : "border-gray-200 dark:border-gray-700"
       )}
       onClick={onClick}
@@ -66,7 +66,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
       <div className="my-5 max-h-[350px] overflow-hidden truncate">
         <FroalaEditorView model={post?.description} />
       </div>
-      <div className="flex justify-end">
+      <div className="absolute top-3 right-3">
         <Button variant={"ghost"} size={"icon"}>
           <Heart className="w-5 h-5" />
         </Button>

@@ -85,7 +85,7 @@ const JobInfo = () => {
   return (
     <article className="w-full flex-1 space-y-2 rounded-lg h-fit">
       {/* JOB POST */}
-      <div className="shadow-lg p-3 bg-gray-50  dark:bg-gray-800 dark:text-white rounded-md relative">
+      <div className="shadow-lg p-3 bg-white dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (
           <DropdownMenu>
             <DropdownMenuTrigger className="absolute top-3 right-3">

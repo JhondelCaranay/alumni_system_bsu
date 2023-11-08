@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import dynamic from "next/dynamic";
 
@@ -34,7 +36,7 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 import { env } from "@/env.mjs";
 import axios from "axios";
 import { apiClient } from "@/hooks/useTanstackQuery";
-const FroalaEditorComponent = dynamic(() => import('react-froala-wysiwyg'),{ ssr: false })  
+const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), { ssr: false });
 
 // Set your Cloudinary credentials
 
@@ -52,6 +54,7 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
   return (
     <main className="editor">
       <FroalaEditorComponent
+        tag="textarea"
         config={{
           placeholderText: "Start writting your job description.",
           heightMin: 500,

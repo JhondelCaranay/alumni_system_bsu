@@ -70,7 +70,7 @@ const JobInfo = () => {
 
   useEffect(() => {
     job.refetch();
-    comments.refetch()
+    comments.refetch();
   }, [f]);
 
   const session = useSession();
@@ -84,7 +84,7 @@ const JobInfo = () => {
   const canEditOrDelete = isOwner || isAdmin;
 
   return (
-    <article className="w-full flex-1 space-y-2 rounded-lg h-fit">
+    <article className="w-full flex-1 space-y-2 rounded-lg h-fit border">
       {/* JOB POST */}
       <div className="shadow-lg p-3 bg-white dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (
@@ -116,7 +116,7 @@ const JobInfo = () => {
           <span className="font-medium dark:text-white">{job.data?.user?.name}</span>
           <span className="text-sm">{format(new Date(job.data.createdAt), DATE_FORMAT)}</span>
         </div>
-        <div className="my-5">
+        <div className="my-5 p-2 bg-white">
           <FroalaEditorView model={job.data.description} />
         </div>
 
@@ -142,11 +142,11 @@ const JobInfo = () => {
       </div>
 
       {/* COMMENTS FORM */}
-      <section className="bg-white dark:bg-gray-800 py-3 antialiased shadow-lg  rounded-md">
-        <div className="max-w-2xl mx-auto px-4">
+      <section className="bg-white dark:bg-gray-800 py-3 antialiased shadow-lg rounded-md">
+        <div className="max-w-2xl mx-auto px-4 space-y-3">
           {isCommenting && <CommentInput />}
 
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white">
               Discussion ({comments?.data?.length || 0})
             </h2>

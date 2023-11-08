@@ -35,19 +35,6 @@ const CommentInput = () => {
     postId: string;
   };
 
-  // const addComment = useMutateProcessor<AddCommentSchema, Comment>(
-  //   "/comments",
-  //   null,
-  //   "POST",
-  //   ["job", f, "comments"],
-  //   {
-  //     enabled:
-  //       typeof f === "string" &&
-  //       typeof f !== "object" &&
-  //       typeof f !== "undefined",
-  //   }
-  // );
-
   const addComment = useMutation({
     mutationFn: (value: AddCommentSchema) => mutationFn('/comments', null, 'POST', value),
   })

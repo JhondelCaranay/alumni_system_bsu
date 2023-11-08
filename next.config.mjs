@@ -10,7 +10,7 @@ const nextConfig = {
    return config
 },
   images: {
-    domains: ["avatars.githubusercontent.com", "cloudflare-ipfs.com"],
+    domains: ["avatars.githubusercontent.com", "cloudflare-ipfs.com", "flowbite.com"],
   },
 };
 

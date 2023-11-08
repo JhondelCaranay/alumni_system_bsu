@@ -9,7 +9,6 @@ import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { format } from "date-fns";
 import Avatar from "@/components/Avatar";
-// import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +65,6 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
       <div className="my-5 max-h-[350px] overflow-hidden truncate p-2 bg-white">
         <FroalaEditorView
           model={post?.description}
-          // style bg-white dark:bg-gray-800
           config={{
             backgroundColor: "rgb(31, 41, 55)",
           }}

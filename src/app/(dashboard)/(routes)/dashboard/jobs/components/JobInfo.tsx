@@ -23,6 +23,8 @@ import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import JobCommentSkeleton from "./JobCommentSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import JobSkeletonInfo from "./JobSkeletonInfo";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -47,15 +49,9 @@ const JobInfo = () => {
   const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
     `/comments`,
     { postId: job.data?.id },
-    ["jobs", job.data?.id, "comments"],
-    {
-      enabled:
-        typeof job.data?.id === "string" &&
-        typeof job.data?.id !== "object" &&
-        typeof job.data?.id !== "undefined" &&
-        isCommenting,
-    }
-  );
+    ["jobs", job.data?.id, "comments"],{
+      enabled:typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined" && isCommenting,
+    });
 
   const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
     enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
@@ -76,6 +72,7 @@ const JobInfo = () => {
   const session = useSession();
   const router = useRouter();
 
+  if(job.status === 'pending' || job.fetchStatus === 'fetching') return <JobSkeletonInfo />
   if (job.status === "error" || !job.data) return null;
 
   const isOwner = session.data?.user.id === job.data.userId;

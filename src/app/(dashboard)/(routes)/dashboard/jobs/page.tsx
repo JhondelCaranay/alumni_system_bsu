@@ -11,7 +11,7 @@ const JobsPage = async (props: JobsPageProps) => {
 
   await queryClient.prefetchQuery({
     queryKey: ["jobs"],
-    queryFn: () => queryFn("/posts"),
+    queryFn: () => queryFn("/posts", {type: 'jobs'}),
   });
 
   return (

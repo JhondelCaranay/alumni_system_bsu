@@ -70,7 +70,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
           }}
         />
       </div>
-      <div className="absolute top-3 right-3">
+      {/* <div className="absolute top-3 right-3">
         <Button variant={"ghost"} size={"icon"}>
           <Heart className="w-5 h-5" />
         </Button>
@@ -80,7 +80,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
         <Button variant={"ghost"} size={"icon"}>
           <Share2 className="w-5 h-5" />
         </Button>
-      </div>
+      </div> */}
     </article>
   );
 };

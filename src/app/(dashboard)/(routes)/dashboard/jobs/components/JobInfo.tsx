@@ -4,7 +4,15 @@ import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery"
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { UserWithProfile } from "@/types/types";
-import { Archive, Heart, MessageSquare, MoreHorizontal, Pencil, Share2 } from "lucide-react";
+import {
+  Archive,
+  Heart,
+  MessageSquare,
+  MoreHorizontal,
+  Pencil,
+  Share2,
+  XSquare,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -49,9 +57,15 @@ const JobInfo = () => {
   const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
     `/comments`,
     { postId: job.data?.id },
-    ["jobs", job.data?.id, "comments"],{
-      enabled:typeof job.data?.id === "string" && typeof job.data?.id !== "object" && typeof job.data?.id !== "undefined" && isCommenting,
-    });
+    ["jobs", job.data?.id, "comments"],
+    {
+      enabled:
+        typeof job.data?.id === "string" &&
+        typeof job.data?.id !== "object" &&
+        typeof job.data?.id !== "undefined" &&
+        isCommenting,
+    }
+  );
 
   const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
     enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
@@ -64,6 +78,10 @@ const JobInfo = () => {
     router.push("/dashboard/jobs");
   };
 
+  const onClose = () => {
+    router.push("/dashboard/jobs");
+  };
+
   useEffect(() => {
     job.refetch();
     comments.refetch();
@@ -72,7 +90,7 @@ const JobInfo = () => {
   const session = useSession();
   const router = useRouter();
 
-  if(job.status === 'pending' || job.fetchStatus === 'fetching') return <JobSkeletonInfo />
+  if (job.status === "pending" || job.fetchStatus === "fetching") return <JobSkeletonInfo />;
   if (job.status === "error" || !job.data) return null;
 
   const isOwner = session.data?.user.id === job.data.userId;
@@ -90,6 +108,13 @@ const JobInfo = () => {
               <MoreHorizontal className="h-6 w-6 text-zinc-500 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="">
+              <DropdownMenuItem
+                className="text-xs cursor-pointer hover:bg-zinc-400"
+                onClick={onClose}
+              >
+                <XSquare className="h-4 w-4 mr-2" />
+                Close
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
                 onClick={() => router.push(`/dashboard/jobs/${job.data.id}/edit`)}

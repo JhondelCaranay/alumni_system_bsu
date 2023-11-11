@@ -1,9 +1,19 @@
 "use client";
-import { Button } from "@/components/ui/button";
+
 import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
-import { UserWithProfile } from "@/types/types";
+import { SafeUser, UserWithProfile } from "@/types/types";
+import { useParams, useRouter } from "next/navigation";
+import JobCommentSkeleton from "../../components/JobCommentSkeleton";
+import Comment from "../../components/Comment";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Archive,
   Heart,
@@ -13,26 +23,16 @@ import {
   Share2,
   XSquare,
 } from "lucide-react";
-import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
-import Avatar from "@/components/Avatar";
-import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import JobSkeletonInfo from "../../components/JobSkeletonInfo";
 import { Role } from "@prisma/client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Comment from "./Comment";
-import CommentInput from "./CommentInput";
+import Avatar from "@/components/Avatar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import CommentInput from "../../components/CommentInput";
+import { format } from "date-fns";
+import dynamic from "next/dynamic";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
-import JobCommentSkeleton from "./JobCommentSkeleton";
-import { Skeleton } from "@/components/ui/skeleton";
-import JobSkeletonInfo from "./JobSkeletonInfo";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -40,19 +40,30 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
-const JobInfo = () => {
+type Props = {};
+const JobDetailPage = (props: Props) => {
   const [isCommenting, setIsCommenting] = useState(true);
-  const searchParams = useSearchParams();
-  const f = searchParams?.get("f");
+  const params = useParams();
+
+  const jobId = params?.jobId as string;
 
   const job = useQueryProcessor<
     PostSchemaType & {
-      comments: CommentSchemaType & { user: UserWithProfile };
-      user: UserWithProfile;
+      comments: CommentSchemaType & {
+        user: SafeUser;
+      };
+      user: SafeUser;
     }
-  >(`/posts/${f}`, { type: "jobs" }, ["jobs", f], {
-    enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
-  });
+  >(
+    `/posts/${jobId}`,
+    {
+      type: "jobs",
+    },
+    ["jobs", jobId],
+    {
+      enabled: typeof jobId !== "undefined",
+    }
+  );
 
   const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
     `/comments`,
@@ -67,14 +78,21 @@ const JobInfo = () => {
     }
   );
 
-  const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
-    enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
-  });
+  const deleteJob = useMutateProcessor<string, unknown>(
+    `/posts/${jobId}`,
+    null,
+    "DELETE",
+    ["jobs"],
+    {
+      enabled:
+        typeof jobId === "string" && typeof jobId !== "object" && typeof jobId !== "undefined",
+    }
+  );
 
-  useCommentSocket({ postKey: `posts:${f}:comments`, queryKey: ["jobs", f, "comments"] });
+  useCommentSocket({ postKey: `posts:${jobId}:comments`, queryKey: ["jobs", jobId, "comments"] });
 
   const onDelete = () => {
-    deleteJob.mutate(f as string);
+    deleteJob.mutate(jobId as string);
     router.push("/dashboard/jobs");
   };
 
@@ -82,15 +100,15 @@ const JobInfo = () => {
     router.push("/dashboard/jobs");
   };
 
-  useEffect(() => {
-    job.refetch();
-    comments.refetch();
-  }, [f]);
-
   const session = useSession();
   const router = useRouter();
 
-  if (job.status === "pending" || job.fetchStatus === "fetching") return <JobSkeletonInfo />;
+  if (job.status === "pending" || job.fetchStatus === "fetching")
+    return (
+      <div className="px-3">
+        <JobSkeletonInfo />
+      </div>
+    );
   if (job.status === "error" || !job.data) return null;
 
   const isOwner = session.data?.user.id === job.data.userId;
@@ -99,7 +117,7 @@ const JobInfo = () => {
   const canEditOrDelete = isOwner || isAdmin;
 
   return (
-    <article className="w-full flex-1 space-y-2 rounded-lg h-fit border">
+    <article className="w-full flex-1 space-y-2 rounded-lg h-fit px-3">
       {/* JOB POST */}
       <div className="shadow-lg p-3 bg-white dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (
@@ -113,7 +131,7 @@ const JobInfo = () => {
                 onClick={onClose}
               >
                 <XSquare className="h-4 w-4 mr-2" />
-                Close
+                Go back
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
@@ -164,6 +182,7 @@ const JobInfo = () => {
       </div>
 
       {/* COMMENTS FORM */}
+
       <section className="bg-white dark:bg-gray-800 py-3 antialiased shadow-lg rounded-md">
         <div className="max-w-2xl mx-auto px-4 space-y-3">
           {isCommenting && <CommentInput />}
@@ -188,5 +207,4 @@ const JobInfo = () => {
     </article>
   );
 };
-
-export default JobInfo;
+export default JobDetailPage;

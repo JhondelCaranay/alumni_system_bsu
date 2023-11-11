@@ -10,30 +10,10 @@ import { CommentSchemaType } from "@/schema/comment";
 import { SafeUser } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
-import { useCommentSocket } from "@/hooks/useCommentSocket";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const JobsClient = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 0,
-    height: typeof window !== "undefined" ? window.innerHeight : 0,
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-
-    // Add event listener to update window size on resize
-    window.addEventListener("resize", handleResize);
-
-    // Remove event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []); // Empty dependency array ensures that effect runs only once on mount
+  const windowSize = useWindowSize();
 
   const jobs = useQueryProcessor<
     (PostSchemaType & {
@@ -57,7 +37,7 @@ const JobsClient = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (jobs?.data && jobs?.data.length > 0 && !f && windowSize.width > 768) {
+    if (jobs?.data && jobs?.data.length > 0 && !f) {
       const url = qs.stringifyUrl(
         {
           url: pathname || "",
@@ -93,7 +73,7 @@ const JobsClient = () => {
           ))}
       </div>
       {/* <Separator orientation="vertical" className="flex h-full text-sm w-2" /> */}
-      <div className="order-first md:order-none max-h-[calc(100vh-120px)] overflow-auto">
+      <div className="hidden md:inline-flex order-first md:order-none max-h-[calc(100vh-120px)] overflow-auto">
         {f && <JobInfo />}
       </div>
     </main>

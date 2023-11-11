@@ -50,14 +50,14 @@ const PostAJobPage = () => {
   
 
   return (
-    <div className="p-5">
-      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5">
+    <div className="p-5 dark:bg-[#020817]">
+      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5 dark:bg-zinc-600 ">
         <Lightbulb className="text-[rgb(195,125,22)]" />{" "}
-        <h1 className=" text-zinc-500 text-sm">
+        <h1 className=" text-zinc-500 text-sm dark:text-white">
           {" "}
           Create a high quality job post, to learn more
-          <kbd className="mx-2">
-            <span className="bg-zinc-200 p-2 rounded-md text-xs">Ctrl + /</span>
+          <kbd className="mx-2 ">
+            <span className="bg-zinc-200 p-2 rounded-md text-xs dark:text-white dark:bg-zinc-400">Ctrl + /</span>
           </kbd>
           while you focus on the text editor.
         </h1>

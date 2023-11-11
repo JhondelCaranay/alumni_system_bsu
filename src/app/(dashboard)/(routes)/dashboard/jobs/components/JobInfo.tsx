@@ -138,7 +138,7 @@ const JobInfo = () => {
           <span className="font-medium dark:text-white">{job.data?.user?.name}</span>
           <span className="text-sm">{format(new Date(job.data.createdAt), DATE_FORMAT)}</span>
         </div>
-        <div className="my-5 p-2 bg-white">
+        <div className="my-5 p-2 bg-white dark:text-white dark:bg-[#1F2937]">
           <FroalaEditorView model={job.data.description} />
         </div>
 

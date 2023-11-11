@@ -73,7 +73,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
         <p className="text-sm">{format(new Date(post?.createdAt || new Date()), DATE_FORMAT)}</p>
       </div>
 
-      <div className="my-5 max-h-[350px] overflow-hidden truncate p-2 bg-white">
+      <div className="my-5 max-h-[350px] overflow-hidden truncate p-2 bg-white dark:text-white dark:bg-[#1F2937]">
         <FroalaEditorView
           model={post?.description}
           config={{

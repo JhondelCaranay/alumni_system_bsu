@@ -2,7 +2,6 @@ import { useSocket } from "@/components/providers/SocketProvider";
 import { CommentSchemaType } from "@/schema/comment";
 import { UserWithProfile } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 type ChatSocketProps = {
@@ -19,20 +18,21 @@ export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
       return;
     }
 
-    socket.on(postKey, (data: CommentSchemaType & { user: UserWithProfile }) => {
-      queryClient.setQueryData(
-        queryKey,
-        (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
-          const newData = [data, ...oldData];
-          return newData;
-        }
-      );
-    });
+    socket.on(
+      postKey,
+      (data: CommentSchemaType & { user: UserWithProfile }) => {
+        queryClient.setQueryData(
+          queryKey,
+          (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
+            const newData = [data, ...oldData];
+            return newData;
+          }
+        );
+      }
+    );
 
     return () => {
       socket.off(postKey);
     };
-
   }, [postKey, queryKey]);
-
 };

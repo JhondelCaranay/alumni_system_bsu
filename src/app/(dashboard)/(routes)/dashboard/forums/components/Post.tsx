@@ -12,7 +12,7 @@ const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 const Post = () => {
   const { data } = useSession();
   return (
-    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-10">
+    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937]">
       <div className="flex gap-x-2">
         <Avatar src={data?.user?.image} />
         <div className="flex flex-col">
@@ -26,7 +26,7 @@ const Post = () => {
       </div>
 
       <div>
-        <p>
+        <p className="dark:text-zinc-400">
           Hi @everyone, the new designs are attached. Go check them out and let
           me know if I missed anything. Thanks!
         </p>
@@ -40,6 +40,7 @@ const Post = () => {
           height={150}
           width={150}
           alt="post image"
+          className="rounded-md"
         />
         <Image
           src={
@@ -48,23 +49,24 @@ const Post = () => {
           height={150}
           width={150}
           alt="post image"
+          className="rounded-md"
         />
       </div>
 
-      <div className="border border-y-2 flex items-center h-10 border-x-0 ">
-        <Button
+      <div className="border border-y-2 flex items-center h-10 border-x-0 dark:border-[#71717A]">
+      <Button
           className="w-fit h-fit gap-x-2 text-zinc-500"
           variant={"link"}
           size={"sm"}
         >
-          <MessagesSquare className="w-4 h-4 fill-zinc-500" /> 7 comments{" "}
+          <Heart className="w-4 h-4 fill-zinc-500" /> 7 Likes{" "}
         </Button>
         <Button
           className="w-fit h-fit gap-x-2 text-zinc-500"
           variant={"link"}
           size={"sm"}
         >
-          <Heart className="w-4 h-4 fill-zinc-500" /> 7 Likes{" "}
+          <MessagesSquare className="w-4 h-4 fill-zinc-500" /> 7 comments{" "}
         </Button>
       </div>
 

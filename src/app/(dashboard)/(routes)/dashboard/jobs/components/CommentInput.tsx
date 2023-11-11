@@ -6,7 +6,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import EmojiPicker from "@/components/EmojiPicker";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { mutationFn, useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
@@ -19,7 +19,9 @@ const CommentInput = () => {
   });
 
   const searchParams = useSearchParams();
-  const f = searchParams?.get("f");
+  const params = useParams();
+  const jobId = params?.jobId as string;
+  const f = searchParams?.get("f") || jobId;
 
   type formType = z.infer<typeof formSchema>;
   const form = useForm<formType>({
@@ -36,8 +38,8 @@ const CommentInput = () => {
   };
 
   const addComment = useMutation({
-    mutationFn: (value: AddCommentSchema) => mutationFn('/comments', null, 'POST', value),
-  })
+    mutationFn: (value: AddCommentSchema) => mutationFn("/comments", null, "POST", value),
+  });
 
   const isLoading = form.formState.isSubmitting;
 
@@ -45,6 +47,10 @@ const CommentInput = () => {
   const { toast } = useToast();
 
   const onSubmit: SubmitHandler<formType> = async (values) => {
+    console.log(
+      "🚀 ~ file: CommentInput.tsx:48 ~ constonSubmit:SubmitHandler<formType>= ~ values:",
+      values
+    );
     try {
       addComment.mutate(
         {
@@ -86,11 +92,7 @@ const CommentInput = () => {
                     {...field}
                     placeholder="Write your thoughts"
                   />
-                  <Button
-                    variant={"ghost"}
-                    className="hover:bg-transparent"
-                    size={"icon"}
-                  >
+                  <Button variant={"ghost"} className="hover:bg-transparent" size={"icon"}>
                     <Send className="w-5 h-5" />{" "}
                   </Button>
                 </div>

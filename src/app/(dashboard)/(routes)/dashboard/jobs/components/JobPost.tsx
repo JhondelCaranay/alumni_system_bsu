@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import Avatar from "@/components/Avatar";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -27,30 +28,40 @@ type JobPostProps = {
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
+  const windowSize = useWindowSize();
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const f = searchParams?.get("f");
   const router = useRouter();
 
   const onClick = () => {
-    const url = qs.stringifyUrl(
-      {
-        url: pathname || "",
-        query: {
-          f: post.id,
+    if (windowSize.width > 768) {
+      //  when the screen is bigger than 768px, we will use query string to store the id of the job post
+      const url = qs.stringifyUrl(
+        {
+          url: pathname || "",
+          query: {
+            f: post.id,
+          },
         },
-      },
-      { skipNull: true }
-    );
+        { skipNull: true }
+      );
 
-    router.push(url);
+      router.push(url);
+    } else {
+      //  when the screen is smaller than 768px, redirect to the job post page
+      router.push(pathname + `/${post.id}/view`);
+    }
   };
 
   return (
     <article
       className={cn(
         "p-6 bg-white rounded-lg border shadow-md dark:bg-gray-800 cursor-pointer min-h-[200px] max-h-[350px] overflow-hidden relative",
-        post.id === f ? "border-blue-500 " : "border-gray-200 dark:border-gray-700"
+        post.id === f && windowSize.width > 768
+          ? "border-blue-500 "
+          : "border-gray-200 dark:border-gray-700"
       )}
       onClick={onClick}
     >

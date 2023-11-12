@@ -5,15 +5,17 @@ import { Smile } from "lucide-react";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 type EmojiPickerProps = {
   onChange: (value: Record<string, any>) => void;
+  className?: string;
 };
-const EmojiPicker: React.FC<EmojiPickerProps> = ({ onChange }) => {
+const EmojiPicker: React.FC<EmojiPickerProps> = ({ onChange, className }) => {
   const {resolvedTheme} = useTheme()
   return (
     <Popover>
       <PopoverTrigger>
-        <Smile className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+        <Smile className={ cn("text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition", className)} />
       </PopoverTrigger>
       <PopoverContent
         side="right"

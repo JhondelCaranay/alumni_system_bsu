@@ -1,0 +1,77 @@
+{
+  "id": "clowwwlj30001v95s0gtkdm9n",
+  "title": "optional",
+  "description": "required",
+  "company": "optional",
+  "location": "optional",
+  "isArchived": false,
+  "type": "FEED",
+  "createdAt": "2023-11-13T13:00:08.318Z",
+  "updatedAt": "2023-11-13T13:00:08.318Z",
+  "userId": "clo6w1zfq0007v9q8yieljh9r",
+  "comments": [],
+  "user": {
+    "profile": {
+      "id": "clo6w1zg0000fv9q8zijveabi",
+      "isEmployed": true,
+      "studentNumber": null,
+      "schoolYear": 3,
+      "yearEnrolled": null,
+      "yearGraduated": null,
+      "alternative_email": "Gust39@gmail.com",
+      "firstname": "Adalberto",
+      "lastname": "Hodkiewicz",
+      "middlename": "Lubowitz",
+      "age": 50,
+      "religion": null,
+      "gender": "MALE",
+      "placeOfBirth": null,
+      "dateOfBirth": null,
+      "homeNo": "554",
+      "street": "Fairfield Road",
+      "barangay": "South Carolina",
+      "city": "North Avahaven",
+      "corUrl": null,
+      "province": "New Mexico",
+      "contactNo": "756-246-2526 x19286",
+      "createdAt": "2023-10-26T07:54:19.441Z",
+      "updatedAt": "2023-10-26T07:54:19.441Z",
+      "userId": "clo6w1zfq0007v9q8yieljh9r"
+    },
+    "name": "Aric",
+    "email": "admin@bulsu.edu.ph",
+    "role": "ADMIN",
+    "createdAt": "2023-10-26T07:54:19.431Z",
+    "id": "clo6w1zfq0007v9q8yieljh9r"
+  },
+  "imageUrl": [
+    {
+      "id": "clowwwlj30002v95sc09xw6wr",
+      "url": "https://avatars.githubusercontent.com/u/48957070",
+      "postId": "clowwwlj30001v95s0gtkdm9n"
+    },
+    {
+      "id": "clowwwlj30003v95seeb7qhwe",
+      "url": "https://avatars.githubusercontent.com/u/48957070",
+      "postId": "clowwwlj30001v95s0gtkdm9n"
+    }
+  ],
+  "department": [
+    {
+      "id": "clo6w1z9a0000v9q8cqr4kt3s",
+      "name": "AUTOMOTIVE",
+      "isArchived": false,
+      "createdAt": "2023-10-26T07:54:19.198Z",
+      "updatedAt": "2023-11-13T13:00:08.318Z",
+      "postId": "clowwwlj30001v95s0gtkdm9n"
+    },
+    {
+      "id": "clo6w1z9b0001v9q8n9s5fb3k",
+      "name": "FOODS",
+      "isArchived": false,
+      "createdAt": "2023-10-26T07:54:19.198Z",
+      "updatedAt": "2023-11-13T13:00:08.318Z",
+      "postId": "clowwwlj30001v95s0gtkdm9n"
+    }
+  ]
+}

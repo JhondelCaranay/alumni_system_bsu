@@ -50,6 +50,8 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
             id: true,
           },
         },
+        photos: true,
+        department: true,
       },
     });
 
@@ -79,11 +81,26 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
+  const { department, photos, type, description, title, company, location } = result.data;
+
   try {
     const post = await prisma.post.create({
       data: {
-        ...result.data,
+        title,
+        description,
+        company,
+        location,
+        type,
         userId: currentUser.id,
+        photos: {
+          create: photos.map((photo) => ({
+            public_id: photo.public_id,
+            public_url: photo.public_url,
+          })),
+        },
+        department: {
+          connect: department.map((id) => ({ id })),
+        },
       },
     });
 

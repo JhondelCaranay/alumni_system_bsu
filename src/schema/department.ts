@@ -7,6 +7,7 @@ export const DepartmentSchema = z.object({
   isArchived: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  postId: z.string(),
 }) satisfies z.ZodType<Department>;
 
 export type DepartmentSchemaType = z.infer<typeof DepartmentSchema>;

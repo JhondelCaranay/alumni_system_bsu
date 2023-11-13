@@ -66,10 +66,11 @@ model Event {
   @@index([userId])
 }
 
-model ImageUrl {
+model Photos {
   id String @id @default(cuid())
 
-  url String @db.Text
+  public_url String @db.Text
+  public_id  String @db.Text
 
   Post   Post?   @relation(fields: [postId], references: [id])
   postId String?
@@ -93,7 +94,7 @@ model Post {
 
   comments   Comment[]
   department Department[]
-  imageUrl   ImageUrl[]
+  photos   Photos[]
   // user who owns the post
   user       User         @relation(fields: [userId], references: [id])
   userId     String

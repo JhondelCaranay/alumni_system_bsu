@@ -17,8 +17,8 @@ export async function GET(
 ) {
   const { postId } = params;
 
-  const {searchParams} = new URL(req.url)
-  const type = searchParams.get('type')
+  const { searchParams } = new URL(req.url);
+  const type = searchParams.get("type");
 
   const currentUser = await getCurrentUser();
 
@@ -30,7 +30,7 @@ export async function GET(
     const post = await prisma.post.findUnique({
       where: {
         id: postId,
-        type: type ? type.toUpperCase() as PostType : undefined,
+        type: type ? (type.toUpperCase() as PostType) : undefined,
         isArchived: false,
       },
       include: {
@@ -58,6 +58,8 @@ export async function GET(
             id: true,
           },
         },
+        photos: true,
+        department: true,
       },
     });
 
@@ -120,6 +122,8 @@ export async function PATCH(
           id: true,
         },
       },
+      photos: true,
+      department: true,
     },
   });
 
@@ -140,13 +144,56 @@ export async function PATCH(
     );
   }
 
+  const { department, photos, type, description, title, company, location } = result.data;
+
   try {
     const updatedPost = await prisma.post.update({
       where: {
         id: postId,
       },
-      data: result.data,
+      data: {
+        title,
+        description,
+        company,
+        location,
+        type,
+        userId: currentUser.id,
+      },
     });
+
+    // if photos update
+    if (photos) {
+      await prisma.photos.deleteMany({
+        where: {
+          postId: postId,
+        },
+      });
+
+      //TODO: DELETE ASSETS FROM CLOUDINARY
+
+      await prisma.photos.createMany({
+        data: photos.map((photo) => ({
+          postId: postId,
+          public_url: photo.public_url,
+          public_id: photo.public_id,
+        })),
+      });
+    }
+
+    // if department update post department
+    if (department) {
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          department: {
+            disconnect: posts.department.map((department) => ({ id: department.id })),
+            connect: department.map((id) => ({ id })),
+          },
+        },
+      });
+    }
 
     return NextResponse.json(updatedPost);
   } catch (error) {

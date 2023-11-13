@@ -12,29 +12,62 @@ export const PostSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().cuid(),
+  photos: z.array(
+    z.object({
+      id: z.string(),
+      public_url: z.string(),
+      public_id: z.string(),
+      postId: z.string(),
+    })
+  ),
+  department: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      isArchived: z.boolean(),
+      createdAt: z.string(),
+      updatedAt: z.string(),
+      postId: z.string(),
+    })
+  ),
 }) satisfies z.ZodType<Post>;
 
 export type PostSchemaType = z.infer<typeof PostSchema>;
 
-export const CreatePostSchema = PostSchema.omit({
-  userId: true,
-  isArchived: true,
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-}).partial({
+export const CreatePostSchema = PostSchema.pick({
+  department: true,
+  photos: true,
+  type: true,
+  description: true,
+  title: true,
   company: true,
-  location:true,
-  title:true,
-});
+  location: true,
+})
+  .extend({
+    photos: z.array(z.object({ public_url: z.string(), public_id: z.string() })),
+    department: z.string().array(),
+  })
+  .partial({
+    company: true,
+    location: true,
+    title: true,
+  });
 
 export type CreatePostSchemaType = z.infer<typeof CreatePostSchema>;
 
-export const UpdatePostSchema = PostSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  userId: true,
-}).partial();
+export const UpdatePostSchema = PostSchema.pick({
+  department: true,
+  photos: true,
+  type: true,
+  description: true,
+  title: true,
+  company: true,
+  location: true,
+})
+  .extend({
+    photos: z.array(z.object({ public_url: z.string(), public_id: z.string() })),
+    department: z.string().array(),
+  })
+  .partial();
 
 export type UpdatePostSchemaType = z.infer<typeof UpdatePostSchema>;

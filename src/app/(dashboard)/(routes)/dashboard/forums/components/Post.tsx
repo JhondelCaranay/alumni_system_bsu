@@ -7,50 +7,49 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import CommentInput from "./CommentInput";
+import { PostSchemaType } from "@/schema/post";
+import { UserWithProfile } from "@/types/types";
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
-const Post = () => {
-  const { data } = useSession();
+type PostTypeProps = {
+  postData: (PostSchemaType & {user: UserWithProfile})
+}
+const Post:React.FC<PostTypeProps> = ({postData}) => {
+  console.log(postData.user)
   return (
-    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937]">
+    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] ">
       <div className="flex gap-x-2">
-        <Avatar src={data?.user?.image} />
+        <Avatar src={postData?.user?.image} />
         <div className="flex flex-col">
-          <span>{data?.user.name}</span>
+          <span>{postData?.user?.name || `${postData?.user?.profile?.firstname} ${postData?.user?.profile?.lastname}`}</span>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            <time title={new Date()?.toString()}>
-              {format(new Date(), DATE_FORMAT)}
+            <time title={ postData?.updatedAt?.toString() || new Date()?.toString()}>
+              {format( new Date(postData?.updatedAt || new Date()) , DATE_FORMAT)}
             </time>
           </p>
         </div>
       </div>
 
-      <div>
-        <p className="dark:text-zinc-400">
-          Hi @everyone, the new designs are attached. Go check them out and let
-          me know if I missed anything. Thanks!
+      <div className="">
+        <p className="dark:text-zinc-400 whitespace-pre-wrap">
+          {postData?.description}
         </p>
       </div>
 
-      <div className="flex py-5 gap-x-5">
-        <Image
-          src={
-            "https://flowbite.com/application-ui/demo/images/feed/image-1.jpg"
-          }
-          height={150}
-          width={150}
-          alt="post image"
-          className="rounded-md"
-        />
-        <Image
-          src={
-            "https://flowbite.com/application-ui/demo/images/feed/image-2.jpg"
-          }
-          height={150}
-          width={150}
-          alt="post image"
-          className="rounded-md"
-        />
+      <div className="flex py-5 gap-5 flex-wrap gap justify-center">
+        {
+          postData?.photos?.map((photo) => ((
+            <Image
+            src={
+              photo.public_url
+            }
+            height={150}
+            width={150} 
+            alt="post image"
+            className="rounded-md object-cover"
+          />
+          )))
+        }
       </div>
 
       <div className="border border-y-2 flex items-center h-10 border-x-0 dark:border-[#71717A]">

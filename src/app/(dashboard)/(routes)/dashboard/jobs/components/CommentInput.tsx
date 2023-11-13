@@ -51,6 +51,7 @@ const CommentInput = () => {
       "🚀 ~ file: CommentInput.tsx:48 ~ constonSubmit:SubmitHandler<formType>= ~ values:",
       values
     );
+    if(isLoading) return;
     try {
       addComment.mutate(
         {
@@ -88,6 +89,7 @@ const CommentInput = () => {
                     }}
                   />
                   <Input
+                  disabled={isLoading}
                     className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm bg-inherit"
                     {...field}
                     placeholder="Write your thoughts"

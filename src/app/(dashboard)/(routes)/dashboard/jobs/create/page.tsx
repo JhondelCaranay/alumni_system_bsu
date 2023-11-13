@@ -7,6 +7,7 @@ import { useMutateProcessor } from '@/hooks/useTanstackQuery';
 import { CreatePostSchemaType, PostSchemaType } from '@/schema/post';
 import toast from 'react-hot-toast';
 import { Lightbulb } from 'lucide-react';
+import { PostType } from '@prisma/client';
 // import Editor from '../components/Editor'
 const Editor = dynamic(() => import("../components/Editor"), {
   ssr: false,
@@ -22,7 +23,7 @@ const PostAJobPage = () => {
 
   const onPost = () => {
     if(model !== '') {
-      createJob.mutate({description: model, type: 'JOBS'}, {
+      createJob.mutate({description: model, type: PostType.JOBS}, {
         onSuccess(data, variables, context) {
           localStorage.removeItem('savedContent')
           toast.success('Job has been uploaded.');

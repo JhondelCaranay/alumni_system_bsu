@@ -10,7 +10,7 @@ const ProfileSidebar = async () => {
     if(!user || !user.id) return redirect('/')
 
   return (
-    <div className='flex-[0.5] flex flex-col w-full gap-y-5'>
+    <div className='flex-[0.6] flex flex-col w-full gap-y-5'>
         <div className='flex flex-col gap-y-1'>
             <Avatar src={user.image} className='h-[80px] w-[80px] rounded-md object-contain'/>
             <span className='font-semibold text-md text-black dark:text-white'>{user.name}</span>

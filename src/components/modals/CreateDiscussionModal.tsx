@@ -22,6 +22,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { createId } from "@paralleldrive/cuid2";
+
 import { Textarea } from "@/components/ui/textarea";
 import { useModal } from "@/hooks/useModalStore";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -37,24 +39,34 @@ import {
   CommandInput,
   CommandItem,
 } from "../ui/command";
-import { useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  useMutateProcessor,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, GalleryHorizontal, Image } from "lucide-react";
+import { ChevronsUpDown, GalleryHorizontal, Image, X } from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
+import { Input } from "../ui/input";
+import axios from "axios";
+import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
+import { PostType } from "@prisma/client";
+import { useToast } from "../ui/use-toast";
 
-const CreateDiscussion = () => {
+const CreateDiscussionModal = () => {
   const { data: session } = useSession();
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "createDiscussion";
 
   const onHandleClose = () => {
     onClose();
+    setFilesToDisPlay([])
     form.reset();
   };
   const [open, setOpen] = useState(false);
+  const [filesToDisplay, setFilesToDisPlay] = useState<{url:string, id: number | string}[]>([]);
   const formSchema = z.object({
     description: z.string().min(1, { message: "Description is required" }),
     departments: z
@@ -62,6 +74,7 @@ const CreateDiscussion = () => {
       .refine((value) => value.some((item) => item), {
         message: "You have to select at least one department",
       }),
+    photos: z.any().optional(),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -71,12 +84,12 @@ const CreateDiscussion = () => {
     defaultValues: {
       description: "",
       departments: [],
+      photos: [],
     },
     mode: "all",
   });
 
   const isLoading = form.formState.isSubmitting;
-
   useEffect(() => {
     return () => {
       form.reset();
@@ -105,7 +118,7 @@ const CreateDiscussion = () => {
     null,
     ["departments"],
     {
-      enabled: isModalOpen
+      enabled: isModalOpen,
     }
   );
 
@@ -114,8 +127,88 @@ const CreateDiscussion = () => {
     value: department.id,
   }));
 
+  const uploadPhoto = async (data: {file:File, id: number | string}) => {
+    const formData = new FormData();
+    formData.append("upload_preset", "next-alumni-system");
+    formData.append("file", data.file);
+    const res = await axios.post(
+      `${"https://api.cloudinary.com/v1_1/iamprogrammer/auto/upload"}`,
+      formData,
+      {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      }
+    );
+
+    return {
+      public_url: res.data.url,
+      public_id: res.data.public_id,
+    };
+  };
+
+  const createDiscussion = useMutateProcessor<
+    CreatePostSchemaType,
+    PostSchemaType
+  >("/posts", null, "POST", ["discussions"]);
+          
+  const {toast} = useToast()
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
-    console.log(values);
+    // we append all the file into files array to make it iterateable
+    const files = [];
+    if (values.photos.length > 0) {
+      for (const file of values.photos) {
+        files.push(file);
+      }
+      const photos = await Promise.all(
+        files.map((data: {file:File, id: number | string}) => uploadPhoto(data))
+      );
+
+      createDiscussion.mutate({
+        description: values.description,
+        department: values.departments,
+        type: PostType.FEED,
+        photos,
+      }, {
+        onError(error, variables, context) {
+          console.log(error)
+          toast({
+            variant: "destructive",
+            description: "Something went wrong...",
+          });
+        },
+        onSuccess(data, variables, context) {
+          console.log(data)
+          toast({
+            variant: "default",
+            description: "Posted",
+          });
+          onHandleClose()
+        },
+      });
+      
+    }
+    else {
+      createDiscussion.mutate({
+        description: values.description,
+        department: values.departments,
+        type: PostType.FEED,
+      }, {
+        onError(error, variables, context) {
+          console.log(error)
+          toast({
+            variant: "destructive",
+            description: "Something went wrong...",
+          });
+        },
+        onSuccess(data, variables, context) {
+          console.log(data)
+          toast({
+            variant: "default",
+            description: "Posted",
+          });
+          onHandleClose()
+        },
+      });
+    }
   };
 
   return (
@@ -235,22 +328,101 @@ const CreateDiscussion = () => {
                     </FormItem>
                   )}
                 />
+                <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5">
+                  {filesToDisplay.map((file) => {
+                    const removeFiles = () => {
+                      const images = form.getValues('photos') as {file: File, id: number | string}[]
+                      const filteredImages = images.filter((formImages) => file.id != formImages.id)
+                      console.log(filteredImages)
+                      form.setValue('photos', filteredImages)
+                      const filteredImagesToDisplay = filesToDisplay.filter((fileToDisplay) => fileToDisplay.id != file.id)
+                      setFilesToDisPlay(filteredImagesToDisplay)
+                    }
+                    return<div className="relative rounded-md w-full max-h-[20em]">
+                      <X className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600" onClick={removeFiles} />
+                      <img
+                        key={file.id}
+                        src={file.url}
+                        alt="post image"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>;
+                  })}
+                </div>
               </div>
 
               <section className="border rounded-md py-2 px-3 border-zinc-500 flex justify-between items-center mt-5">
-                  <span className="text-sm font-semibold">Add to your post</span>
-                  <div className="flex gap-x-2">
-                    <ActionTooltip label="Photo/video">
-                      <Image className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
-                    </ActionTooltip>
-                    <ActionTooltip label="Add emoji">
-                      <div className="flex items-center">
-                      <EmojiPicker className="dark:text-white" onChange={(emoji) => form.setValue('description', `${form.getValues('description')}${emoji.native}`)} />
-                      </div>
-                    </ActionTooltip>
-                  </div>
+                <span className="text-sm font-semibold">Add to your post</span>
+                <div className="flex gap-x-2">
+                  <ActionTooltip label="Photo/video">
+                    <FormField
+                      control={form.control}
+                      name="photos"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <label htmlFor="photos">
+                            <Image className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
+                          </label>
+                          <FormControl>
+                            <Input
+                              {...form.register("photos")}
+                              className="hidden"
+                              id="photos"
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={async (e) => {
+                                setFilesToDisPlay([]);
+                                const files = e.target.files;
+                                if (files && files?.length > 0) {
+                                  const filesToDisplay = [];
+                                  for (
+                                    let index = 0;
+                                    index < files.length;
+                                    index++
+                                  ) {
+                                    filesToDisplay.push({file: files[index], id: createId()});
+                                  }
+                                  field.onChange(filesToDisplay.map((file) => file));
+                                  const convertToBase64 = (data: {file:File, id: number | string}) => {
+                                    const reader = new FileReader();
+                                    reader.readAsDataURL(data.file);
+                                    reader.onloadend = () => {
+                                      setFilesToDisPlay((prev) => [...prev, {url: reader.result as string, id: data.id},
+                                      ]);
+                                    };
+                                  };
+                                  await Promise.all(
+                                    filesToDisplay.map((data:{file:File, id: number | string}) =>
+                                      convertToBase64(data)
+                                    )
+                                  );
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </ActionTooltip>
+
+                  <ActionTooltip label="Add emoji">
+                    <div className="flex items-center">
+                      <EmojiPicker
+                        className="dark:text-white"
+                        onChange={(emoji) =>
+                          form.setValue(
+                            "description",
+                            `${form.getValues("description")}${emoji.native}`
+                          )
+                        }
+                      />
+                    </div>
+                  </ActionTooltip>
+                </div>
               </section>
-                
+
               <DialogFooter className=" py-4">
                 <Button
                   variant={"default"}
@@ -278,4 +450,4 @@ const CreateDiscussion = () => {
   );
 };
 
-export default CreateDiscussion;
+export default CreateDiscussionModal;

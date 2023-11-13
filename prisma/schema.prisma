@@ -66,11 +66,20 @@ model Event {
   @@index([userId])
 }
 
+model ImageUrl {
+  id String @id @default(cuid())
+
+  url String @db.Text
+
+  Post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
+}
+
 model Post {
   id String @id @default(cuid())
 
   title       String?
-  description String @db.Text
+  description String  @db.Text
 
   company  String?
   location String?
@@ -82,11 +91,12 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comments Comment[]
-
+  comments   Comment[]
+  department Department[]
+  imageUrl   ImageUrl[]
   // user who owns the post
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String
 
   @@index([userId])
 }
@@ -144,6 +154,9 @@ model Department {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
 }
 
 model Guardian {

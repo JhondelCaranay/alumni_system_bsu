@@ -5,7 +5,7 @@ import OtherSidebar from './OtherSidebar'
 
 const ForumsClient = () => {
   return (
-    <div className='flex justify-evenly bg-[#F9FAFB] w-full p-10'>
+    <div className='flex justify-evenly bg-[#F9FAFB] w-full p-10 dark:bg-[#020817]'>
         <ProfileSidebar />
         <Feed />
         <OtherSidebar />

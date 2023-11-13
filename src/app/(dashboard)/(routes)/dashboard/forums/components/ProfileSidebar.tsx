@@ -16,23 +16,23 @@ const ProfileSidebar = async () => {
             <span className='font-semibold text-md text-black dark:text-white'>{user.name}</span>
         </div>
         <div className='flex flex-col gap-y-1'>
-            <span className='flex text-sm gap-x-1 text-zinc-700'><Waypoints className='h-4 w-4' /> {user.department?.name}</span>
-            <span className='flex text-sm gap-x-1 text-zinc-700'><MapPin  className='h-4 w-4 ' /> Philippines, {user.profile?.city}</span>
+            <span className='flex text-sm gap-x-1 text-zinc-700 dark:text-zinc-400'><Waypoints className='h-4 w-4' /> {user.department?.name}</span>
+            <span className='flex text-sm gap-x-1 text-zinc-700 dark:text-zinc-400'><MapPin  className='h-4 w-4 ' /> Philippines, {user.profile?.city}</span>
         </div>
 
         <div className='flex flex-col gap-y-1'>
-            <label htmlFor="" className='text-md text-zinc-700'>Email address</label>
-            <span className='flex text-sm gap-x-1 text-black font-semibold'> {user.email || user.profile?.alternative_email}</span>
+            <label htmlFor="" className='text-md text-zinc-700 dark:text-zinc-400'>Email address</label>
+            <span className='flex text-sm gap-x-1 text-black font-semibold  dark:text-white'> {user.email || user.profile?.alternative_email}</span>
         </div>
 
         <div className='flex flex-col gap-y-1'>
-            <label htmlFor="" className='text-md text-zinc-700'>Home address</label>
-            <span className='flex text-sm gap-x-1 text-black font-semibold'>{user.profile?.province} {user.profile?.city} {user.profile?.street} {user.profile?.homeNo} {user.profile?.barangay}  </span>
+            <label htmlFor="" className='text-md text-zinc-700 dark:text-zinc-400'>Home address</label>
+            <span className='flex text-sm gap-x-1 text-black font-semibold dark:text-white' >{user.profile?.province} {user.profile?.city} {user.profile?.street} {user.profile?.homeNo} {user.profile?.barangay}  </span>
         </div>
 
         <div className='flex flex-col gap-y-1'>
-            <label htmlFor="" className='text-md text-zinc-700'>Phone number</label>
-            <span className='flex text-sm gap-x-1 text-black font-semibold'>{user.profile?.contactNo} </span>
+            <label htmlFor="" className='text-md text-zinc-700 dark:text-zinc-400'>Phone number</label>
+            <span className='flex text-sm gap-x-1 text-black font-semibold  dark:text-white'>{user.profile?.contactNo} </span>
         </div>
 
     </div>

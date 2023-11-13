@@ -81,10 +81,10 @@ const EditAJobPage = () => {
     router.push("/dashboard/jobs");
   };
   return (
-    <div className="p-5">
-      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5">
+    <div className="p-5 dark:bg-[#020817]">
+      <div className="flex items-center bg-[rgb(237,243,248)] my-10 rounded-md p-5 dark:bg-zinc-600 dark:text-white">
         <Lightbulb className="text-[rgb(195,125,22)]" />{" "}
-        <h1 className=" text-zinc-500 text-sm">Edit your job post.</h1>
+        <h1 className=" text-zinc-500 text-sm dark:text-white">Edit your job post.</h1>
       </div>
       <Editor
         model={model || (job.data?.description as string)}

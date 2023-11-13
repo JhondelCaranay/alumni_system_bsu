@@ -2,7 +2,7 @@ import { UserProfileWithDepartmentSection, UserWithProfile } from '@/types/types
 import { Profile, User } from '@prisma/client'
 import {create} from 'zustand'
 
-export type ModalType = 'importStudents'  | 'archiveUser' |'createEvent' | 'viewEvent'
+export type ModalType = 'importStudents'  | 'archiveUser' |'createEvent' | 'viewEvent' | 'createDiscussion'
 
 // you can extend this type if you have more modal
 

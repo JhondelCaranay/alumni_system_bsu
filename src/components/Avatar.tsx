@@ -11,7 +11,7 @@ type AvatarProps = {
 const Avatar = ({ src, className }: AvatarProps) => {
   return (
     <Image
-      className={cn(`rounded-full object-cover object-center ${className}`)}
+      className={cn(`rounded-full object-cover object-center`, className)}
       height={40}
       width={40}
       alt="Avatar"

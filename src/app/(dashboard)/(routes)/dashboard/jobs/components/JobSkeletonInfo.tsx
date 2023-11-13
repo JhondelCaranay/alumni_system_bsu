@@ -3,7 +3,7 @@ import React from "react";
 
 const JobSkeletonInfo = () => {
   return (
-    <div className="order-first md:order-none flex flex-col gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md self-start">
+    <div className="order-first md:order-none w-full flex flex-col gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md self-start">
       <div className="flex w-full">
         <Skeleton className="h-8 w-8 rounded-full" />
         <div className="space-y-2 ml-5 ">

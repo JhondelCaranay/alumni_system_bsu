@@ -65,12 +65,19 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
       )}
       onClick={onClick}
     >
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <Avatar className="w-7 h-7 rounded-full" src={user?.image} />
           <span className="font-medium dark:text-white">{user?.name}</span>
         </div>
         <p className="text-sm">{format(new Date(post?.createdAt || new Date()), DATE_FORMAT)}</p>
+      </div> */}
+      <div className="flex items-center space-x-4">
+        <Avatar className="w-7 h-7 rounded-full" src={user?.image} />
+        <span className="font-medium dark:text-white">{user?.name}</span>
+        <span className="text-sm">
+          {format(new Date(post?.createdAt || new Date()), DATE_FORMAT)}
+        </span>
       </div>
 
       <div className="my-5 max-h-[350px] overflow-hidden truncate p-2 bg-white">

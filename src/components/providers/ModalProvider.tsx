@@ -3,7 +3,7 @@ import ImportStudentsModal from '../modals/ImportStudentsModal'
 import ArchiveUserModal from '../modals/ArchiveUserModal';
 import CreateEventModal from '../modals/CreateEventModal';
 import ViewEventModal from '../modals/ViewEventModal';
-import CreateDiscussion from '../modals/CreateDiscussion';
+import CreateDiscussionModal from '../modals/CreateDiscussionModal';
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -21,7 +21,7 @@ const ModalProvider = () => {
         <ImportStudentsModal />
         <CreateEventModal />
         <ViewEventModal />
-        <CreateDiscussion />
+        <CreateDiscussionModal />
     </>
   )
 }

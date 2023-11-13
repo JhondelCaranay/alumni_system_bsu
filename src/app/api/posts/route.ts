@@ -1,8 +1,8 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
-import { CreatePostSchema } from "@/schema/post";
-import { PostType } from "@prisma/client";
+import { CreatePostSchema, PostSchemaType } from "@/schema/post";
+import { Post, PostType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
                 profile: true,
                 name: true,
                 email: true,
+                image:true,
                 role: true,
                 createdAt: true,
                 id: true,
@@ -45,6 +46,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
             profile: true,
             name: true,
             email: true,
+            image:true,
             role: true,
             createdAt: true,
             id: true,
@@ -84,25 +86,42 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   const { department, photos, type, description, title, company, location } = result.data;
 
   try {
-    const post = await prisma.post.create({
-      data: {
-        title,
-        description,
-        company,
-        location,
-        type,
-        userId: currentUser.id,
-        photos: {
-          create: photos.map((photo) => ({
-            public_id: photo.public_id,
-            public_url: photo.public_url,
-          })),
+    let post:Post;
+
+    if(type === 'FEED') {
+       post = await prisma.post.create({
+        data: {
+          title,
+          description,
+          company,
+          location,
+          type,
+          userId: currentUser.id,
+          photos: {
+            create: photos?.map((photo) => ({
+              public_id: photo.public_id,
+              public_url: photo.public_url,
+            })),
+          },
+          department: {
+            connect: department?.map((id) => ({ id })),
+          },
         },
-        department: {
-          connect: department.map((id) => ({ id })),
+      });
+    }
+
+    else  {
+      post = await prisma.post.create({
+        data: {
+          title,
+          description,
+          company,
+          location,
+          type,
+          userId: currentUser.id,
         },
-      },
-    });
+      });
+    }
 
     return NextResponse.json(post);
   } catch (error) {

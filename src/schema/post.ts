@@ -48,6 +48,8 @@ export const CreatePostSchema = PostSchema.pick({
     department: z.string().array(),
   })
   .partial({
+    department:true,
+    photos: true,
     company: true,
     location: true,
     title: true,

@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
-import JobSkeletonInfo from "./JobSkeletonInfo";
 
 const JobSkeletonList = () => {
   return (
@@ -8,10 +7,10 @@ const JobSkeletonList = () => {
       <div className="flex flex-col gap-10">
         {Array(5)
           .fill(0)
-          .map((list) => {
+          .map((list, index) => {
             return (
               <div
-                key={list}
+                key={index}
                 className="flex flex-col gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"
               >
                 <div className="flex w-full">

@@ -9,6 +9,7 @@ import {
 import { SafeUser } from "@/types/types";
 import Avatar from "./Avatar";
 import { ModeToggle } from "./ModeToggle";
+import { signOut } from "next-auth/react";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -42,7 +43,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         <DropdownMenuItem>
           <ModeToggle />
         </DropdownMenuItem>
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

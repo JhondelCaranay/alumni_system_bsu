@@ -157,7 +157,7 @@ export async function PATCH(
         company,
         location,
         type,
-        userId: currentUser.id,
+        // userId: currentUser.id,
       },
     });
 

@@ -8,11 +8,7 @@ const LoginPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (currentUser) {
-    if (isUserAllowed(currentUser?.role, ["ADMIN"])) {
-      redirect("/dashboard");
-    } else if (isUserAllowed(currentUser?.role, ["STUDENT", "ALUMNI"])) {
-      redirect("/client");
-    }
+    redirect("/dashboard/profile");
   }
 
   return (

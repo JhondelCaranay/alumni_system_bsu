@@ -13,6 +13,7 @@ import {
   MessagesSquare,
   Table,
   TableProperties,
+  UserCog,
   Users,
 } from "lucide-react";
 import { SidebarItem } from "./SidebarItem";
@@ -57,6 +58,11 @@ const routesList = [
     icon: Users,
     label: "Users",
     href: "/dashboard/users",
+  },
+  {
+    icon: UserCog,
+    label: "Profile",
+    href: "/dashboard/profile",
   },
 ];
 

@@ -58,12 +58,7 @@ const AuthForm = () => {
 
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
-
-        if (session?.user && isUserAllowed(session?.user?.role, ["ADMIN"])) {
-          router.push("/dashboard");
-        } else {
-          router.push("/client");
-        }
+        router.push("/dashboard/profile");
       }
     } catch (error) {
       toast.error("Something went wrong.");
@@ -77,7 +72,13 @@ const AuthForm = () => {
         className="bg-[#ffffffc0] flex flex-col w-[90%] md:w-[30%] items-center p-7 rounded-md z-10"
       >
         <div className="h-[110px] w-[110px] relative">
-          <Image src={`/assets/CIT.png`} className="object-contain" alt="logo" fill />
+          <Image
+            src={`/assets/CIT.png`}
+            className="object-contain"
+            alt="logo"
+            fill
+            sizes="(min-width: 808px) 50vw, 100vw"
+          />
         </div>
 
         <h1 className=" text-2xl font-semibold text-center mx-10">Alumni System</h1>

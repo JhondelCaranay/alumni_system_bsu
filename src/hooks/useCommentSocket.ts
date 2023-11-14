@@ -24,8 +24,14 @@ export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
         queryClient.setQueryData(
           queryKey,
           (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
+            if(oldData.length <= 0) {
+              const newData = [data];
+              return newData;
+            }
+            
             const newData = [data, ...oldData];
-            return newData;
+              return newData;
+            
           }
         );
       }

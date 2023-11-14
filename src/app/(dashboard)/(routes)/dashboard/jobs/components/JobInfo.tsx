@@ -31,7 +31,6 @@ import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import JobCommentSkeleton from "./JobCommentSkeleton";
-import { Skeleton } from "@/components/ui/skeleton";
 import JobSkeletonInfo from "./JobSkeletonInfo";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
@@ -66,12 +65,13 @@ const JobInfo = () => {
         isCommenting,
     }
   );
+  
+  useCommentSocket({ postKey: `posts:${f}:comments`, queryKey: ["jobs", f, "comments"] });
 
   const deleteJob = useMutateProcessor<string, unknown>(`/posts/${f}`, null, "DELETE", ["jobs"], {
     enabled: typeof f === "string" && typeof f !== "object" && typeof f !== "undefined",
   });
 
-  useCommentSocket({ postKey: `posts:${f}:comments`, queryKey: ["jobs", f, "comments"] });
 
   const onDelete = () => {
     deleteJob.mutate(f as string);

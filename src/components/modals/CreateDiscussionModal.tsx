@@ -427,17 +427,12 @@ const CreateDiscussionModal = () => {
                 <Button
                   variant={"default"}
                   type="submit"
-                  className=" dark:text-white"
+                  className=" dark:text-white w-fit"
                   disabled={isLoading}
                 >
                   {(() => {
                     if (isLoading)
-                      return (
-                        <div>
-                          {" "}
-                          Adding post <Loader />
-                        </div>
-                      );
+                      return (<Loader size={25} />);
                     return "Post";
                   })()}
                 </Button>

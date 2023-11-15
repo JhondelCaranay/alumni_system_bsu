@@ -7,13 +7,19 @@ import { NextApiResponseServerIo } from "@/types/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponseServerIo) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponseServerIo
+) {
   const currentUser = await getCurrentUserPages(req, res);
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
+  // const currentUser = {
+  //   id: "clo6w1zfq0007v9q8yieljh9r",
+  // };
   if (req.method === "GET") {
     /* 
       GET /api/comments
@@ -35,8 +41,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     try {
       const comments = await prisma.comment.findMany({
         where: {
-          isArchived: false,
-          postId: result.data.postId,
+          AND: [
+            {
+              isArchived: false,
+              postId: result.data.postId,
+            },
+            {
+              postId: {
+                not: null,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: "desc",
@@ -50,6 +65,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
               role: true,
               createdAt: true,
               id: true,
+            },
+          },
+          replies: {
+            include: {
+              user: {
+                select: {
+                  profile: true,
+                  name: true,
+                  email: true,
+                  role: true,
+                  createdAt: true,
+                  id: true,
+                },
+              },
             },
           },
         },
@@ -83,21 +112,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
         include: {
           user: {
             select: {
-                profile: true,
+              profile: true,
+              name: true,
+              email: true,
+              role: true,
+              createdAt: true,
+              id: true,
+            },
+          },
+          replies: {
+            include: {
+              user: {
+                select: {
+                  profile: true,
                   name: true,
                   email: true,
                   role: true,
                   createdAt: true,
                   id: true,
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       });
 
-    const Key = `posts:${result.data.postId}:comments`;
+      const Key = `posts:${result.data.postId}:comments`;
 
-    console.log("new message socket:", Key)
-    res.socket?.server?.io.emit(Key, comment);
+      console.log("new message socket:", Key);
+      res.socket?.server?.io.emit(Key, comment);
 
       return res.status(200).json(comment);
     } catch (error) {

@@ -8,7 +8,7 @@ export const CommentSchema = z.object({
   updatedAt: z.date(),
   userId: z.string().cuid(),
   postId: z.string().cuid(),
-  
+  commentId: z.string().cuid(),
 }) satisfies z.ZodType<Comment>;
 
 export type CommentSchemaType = z.infer<typeof CommentSchema>;
@@ -29,3 +29,11 @@ export const UpdateCommentSchema = CommentSchema.pick({
 }).partial();
 
 export type UpdateCommentSchemaType = z.infer<typeof UpdateCommentSchema>;
+
+export const CreateReplySchema = CommentSchema.pick({
+  description: true,
+}).extend({
+  description: z.string().min(1).max(1000),
+});
+
+export type CreateReplySchemaType = z.infer<typeof CreateReplySchema>;

@@ -23,6 +23,9 @@ export default withAuth(
         pathname.endsWith("jobs/create") &&
         !isUserAllowed(role, ["ADMIN", "BULSU_PARTNER", "PESO"])
       ) {
+        /* 
+          redirect to /denied if user is not allowed to create jobs
+        */
         return NextResponse.rewrite(new URL("/denied", request.url));
       } else {
         return NextResponse.next();

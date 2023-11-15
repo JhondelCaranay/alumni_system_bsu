@@ -3,7 +3,7 @@ import React from "react";
 
 const JobSkeletonList = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-5">
+    <div className="w-full">
       <div className="flex flex-col gap-10">
         {Array(5)
           .fill(0)
@@ -22,8 +22,8 @@ const JobSkeletonList = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <Skeleton className="w-[50%] h-5 my-1" />
-                  <Skeleton className="w-[50%] h-5 my-1" />
+                  <Skeleton className="w-full h-5 my-1" />
+                  <Skeleton className="w-full h-5 my-1" />
                 </div>
               </div>
             );

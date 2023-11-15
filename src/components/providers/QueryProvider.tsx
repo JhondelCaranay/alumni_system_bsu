@@ -8,14 +8,14 @@ function QueryProvider({ children }: React.PropsWithChildren) {
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 5,
-         retry: 2, // you can true, false, or number
+        retry: 2, // you can true, false, or number
       },
     },
   });
 
   return (
     <QueryClientProvider client={client}>
-      {/* <ReactQueryDevtools /> */}
+      <ReactQueryDevtools />
       {children}
     </QueryClientProvider>
   );

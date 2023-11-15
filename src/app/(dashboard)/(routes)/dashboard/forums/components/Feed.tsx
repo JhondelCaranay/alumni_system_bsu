@@ -8,20 +8,22 @@ import { PostSchemaType } from "@/schema/post";
 import { UserWithProfile } from "@/types/types";
 
 const Feed = () => {
-  const feed = useQueryProcessor<(PostSchemaType & { user: UserWithProfile })[]>(
-    "/posts",
-    { type: "feed" },
-    ["discussions"]
-  );
+  const feed = useQueryProcessor<
+    (PostSchemaType & { user: UserWithProfile })[]
+  >("/posts", { type: "feed" }, ["discussions"]);
 
   if (feed.status === "pending" || feed.isFetching) {
-    return <JobSkeletonList />;
+    return (
+      <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto">
+        <JobSkeletonList />
+      </div>
+    );
   }
   if (feed.status === "error") {
     return <div>someting went wrong...</div>;
   }
   return (
-    <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto px-10">
+    <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto">
       <CreateFeedInput />
       {feed.data.map((feedData) => (
         <Post key={feedData.id} postData={feedData} />

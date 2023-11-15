@@ -13,7 +13,7 @@ import JobSkeletonList from "./JobSkeletonList";
 import useWindowSize from "@/hooks/useWindowSize";
 
 const JobsClient = () => {
-  const windowSize = useWindowSize();
+  // const windowSize = useWindowSize();
 
   const jobs = useQueryProcessor<
     (PostSchemaType & {
@@ -60,16 +60,27 @@ const JobsClient = () => {
     jobs.refetch();
   }, []);
 
-  if (jobs.status === "pending") return <JobSkeletonList />;
+  if (jobs.status === "pending")
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
+        <JobSkeletonList />
+      </div>
+    );
 
-  if (jobs.status === "error") return <h1 className="text-zinc-500">Something went wrong</h1>;
+  if (jobs.status === "error")
+    return <h1 className="text-zinc-500">Something went wrong</h1>;
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
       <div className="flex flex-col gap-y-5 max-h-[calc(100vh-120px)] overflow-auto md:pr-1">
         {jobs.data.length > 0 &&
           jobs?.data?.map(({ user, comments, ...rest }) => (
-            <JobPost key={{ ...rest }.id} post={{ ...rest }} user={user} comments={comments} />
+            <JobPost
+              key={{ ...rest }.id}
+              post={{ ...rest }}
+              user={user}
+              comments={comments}
+            />
           ))}
       </div>
       {/* <Separator orientation="vertical" className="flex h-full text-sm w-2" /> */}

@@ -94,7 +94,7 @@ model Post {
 
   comments   Comment[]
   department Department[]
-  photos   Photos[]
+  photos     Photos[]
   // user who owns the post
   user       User         @relation(fields: [userId], references: [id])
   userId     String
@@ -116,6 +116,10 @@ model Comment {
 
   post   Post?   @relation(fields: [postId], references: [id])
   postId String?
+
+    commentId String?
+  comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
+  replies   Comment[] @relation("CommentReply")
 
   @@index([userId])
   @@index([postId])

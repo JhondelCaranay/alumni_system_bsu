@@ -18,13 +18,12 @@ const Provider: React.FC<React.PropsWithChildren> = ({ children }) => {
         storageKey="bsu-alumni-system"
       >
         <SocketIoProvider>
-
-        <QueryProvider>
-          <SessionProvider>
-            <ModalProvider />
-            {children}
-          </SessionProvider>
-        </QueryProvider>
+          <QueryProvider>
+            <SessionProvider>
+              <ModalProvider />
+              {children}
+            </SessionProvider>
+          </QueryProvider>
         </SocketIoProvider>
       </ThemeProvider>
     </>

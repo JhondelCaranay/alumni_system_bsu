@@ -1,3 +1,4 @@
+import { apiClient } from "@/hooks/useTanstackQuery";
 import { Role } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -22,3 +23,9 @@ export function capitalizeWords(str: string) {
 export function isUserAllowed(role: string, allowedRoles: (Role | "ALL")[]) {
   return allowedRoles.includes("ALL") || allowedRoles.includes(role as Role);
 }
+
+
+export const handleImageDeleteOrReplace = async (publicId: string) => {
+  apiClient.delete(`/cloudinary/${publicId}`);
+  // const {secure_url, public_id} = await cloudinaryUpload(file, 'next-alumni-system')
+};

@@ -46,7 +46,7 @@ import {
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, GalleryHorizontal, Image, X } from "lucide-react";
+import { ChevronsUpDown, Image, X } from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
@@ -129,6 +129,7 @@ const CreateDiscussionModal = () => {
     value: department.id,
   }));
 
+  // upload photo
   const uploadPhoto = async (data: { file: File; id: number | string }) => {
     const formData = new FormData();
     formData.append("upload_preset", "next-alumni-system");
@@ -147,12 +148,32 @@ const CreateDiscussionModal = () => {
     };
   };
 
+  // remove photo from state
+  const removeFiles = (file: {url: string; id: number | string}) => {
+    const images = form.getValues("photos") as {
+      file: File;
+      id: number | string;
+    }[];
+    const filteredImages = images.filter(
+      (formImages) => file.id != formImages.id
+    );
+    
+    form.setValue("photos", filteredImages);
+    const filteredImagesToDisplay = filesToDisplay.filter(
+      (fileToDisplay) => fileToDisplay.id != file.id
+    );
+
+    setFilesToDisPlay(filteredImagesToDisplay);
+  };
+
+  
   const createDiscussion = useMutateProcessor<
     CreatePostSchemaType,
     PostSchemaType
   >("/posts", null, "POST", ["discussions"]);
 
   const { toast } = useToast();
+
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
     // we append all the file into files array to make it iterateable
     const files = [];
@@ -218,6 +239,8 @@ const CreateDiscussionModal = () => {
       );
     }
   };
+
+ 
 
   return (
     <div>
@@ -338,26 +361,12 @@ const CreateDiscussionModal = () => {
                 />
                 <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5">
                   {filesToDisplay.map((file) => {
-                    const removeFiles = () => {
-                      const images = form.getValues("photos") as {
-                        file: File;
-                        id: number | string;
-                      }[];
-                      const filteredImages = images.filter(
-                        (formImages) => file.id != formImages.id
-                      );
-                      console.log(filteredImages);
-                      form.setValue("photos", filteredImages);
-                      const filteredImagesToDisplay = filesToDisplay.filter(
-                        (fileToDisplay) => fileToDisplay.id != file.id
-                      );
-                      setFilesToDisPlay(filteredImagesToDisplay);
-                    };
+                    
                     return (
                       <div className="relative rounded-md w-full max-h-[20em]">
                         <X
                           className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600"
-                          onClick={removeFiles}
+                          onClick={() => removeFiles(file)}
                         />
                         <img
                           key={file.id}

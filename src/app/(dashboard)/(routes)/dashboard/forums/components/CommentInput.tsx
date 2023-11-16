@@ -14,8 +14,9 @@ import { z } from "zod";
 type CommentInputProps = {
   postId: string;
   apiUrl: string;
+  placeholder: string;
 };
-const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl }) => {
+const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl, placeholder }) => {
   const formSchema = z.object({
     content: z.string().min(1),
   });
@@ -87,7 +88,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl }) => {
                     disabled={isLoading}
                     className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm bg-inherit"
                     {...field}
-                    placeholder="Write comment"
+                    placeholder={placeholder}
                   />
                 </div>
               </FormControl>

@@ -59,11 +59,6 @@ const routesList = [
     label: "Users",
     href: "/dashboard/users",
   },
-  {
-    icon: UserCog,
-    label: "Profile",
-    href: "/dashboard/profile",
-  },
 ];
 
 export const SidebarRoutes = () => {

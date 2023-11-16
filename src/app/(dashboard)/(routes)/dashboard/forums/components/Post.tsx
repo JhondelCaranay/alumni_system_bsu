@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import {
   Archive,
   Heart,
+  MessageSquareDashed,
   MessagesSquare,
   MoreHorizontal,
   Pencil,
@@ -56,6 +57,7 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
     queryKey: ["discussions", postData.id, "comments"],
   });
 
+  const commentsCount = comments.data?.reduce((count, comment) => (count + (1 + comment.replies.length || 0)), 0)
   return (
     <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative">
       <div className="flex gap-x-2 items-center">
@@ -138,14 +140,14 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
           onClick={() => setIsCommenting((prev) => !prev)}
         >
           <MessagesSquare className="w-4 h-4 fill-zinc-500" />{" "}
-          {comments?.data?.length || 0} comments{" "}
+          {commentsCount} comments{" "}
         </Button>
       </div>
 
       {isCommenting && (
         <>
           <div>
-            <CommentInput postId={postData.id} apiUrl="/comments" />
+            <CommentInput postId={postData.id} apiUrl="/comments" placeholder="Write a comment." />
           </div>
           <section className="flex flex-col">
             {(() => {
@@ -159,8 +161,8 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
 
               if (comments?.data?.length <= 0) {
                 return (
-                  <div className="text-center text-sm text-zinc-500 dark:text-white">
-                    No comments yet
+                  <div className=" flex justify-center items-center text-center text-sm text-zinc-500 dark:text-zinc-400 gap-x-2 ">
+                    <MessageSquareDashed /> No comments yet
                   </div>
                 );
               }

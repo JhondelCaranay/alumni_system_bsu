@@ -36,6 +36,7 @@ import "froala-editor/js/third_party/font_awesome.min.js";
 import { env } from "@/env.mjs";
 import axios from "axios";
 import { apiClient } from "@/hooks/useTanstackQuery";
+import { handleImageDeleteOrReplace } from "@/lib/utils";
 const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), { ssr: false });
 
 // Set your Cloudinary credentials
@@ -46,10 +47,7 @@ type EditorProps = {
 };
 
 const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
-  const handleImageDeleteOrReplace = async (publicId: string) => {
-    apiClient.delete(`/cloudinary/${publicId}`);
-    // const {secure_url, public_id} = await cloudinaryUpload(file, 'next-alumni-system')
-  };
+  
 
   return (
     <main className="editor">

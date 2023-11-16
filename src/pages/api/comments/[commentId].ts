@@ -1,16 +1,18 @@
-import getCurrentUser from "@/actions/getCurrentUser";
+import getCurrentUserPages from "@/actions/getCurrentUser-pages";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { UpdateCommentSchema, CreateReplySchema } from "@/schema/comment";
+import { NextApiResponseServerIo } from "@/types/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponseServerIo
 ) {
   const { commentId } = req.query;
 
-  const currentUser = await getCurrentUser();
+  // always use this in /pages/api it needs req, res arguments
+  const currentUser = await getCurrentUserPages(req, res);
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -19,6 +21,8 @@ export default async function handler(
   // const currentUser = {
   //   id: "clo6w1zfq0007v9q8yieljh9r",
   // };
+  
+  console.log(commentId)
   const comment = await prisma.comment.findUnique({
     where: {
       id: commentId as string,
@@ -59,6 +63,7 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
+    console.log('commentId post')
     const result = await CreateReplySchema.safeParseAsync(req.body);
 
     if (!result.success) {
@@ -110,7 +115,8 @@ export default async function handler(
           },
         },
       });
-
+      const Key = `posts:${updatedComment.postId}:reply`;
+      res.socket?.server?.io.emit(Key, updatedComment);
       return res.status(200).json(updatedComment);
     } catch (error) {
       console.log("[COMMENT_POST]", error);

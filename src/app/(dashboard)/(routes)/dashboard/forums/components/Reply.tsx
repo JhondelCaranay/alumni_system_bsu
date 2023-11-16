@@ -7,25 +7,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CommentSchema } from "@/types/types";
+import { CommentSchemaType } from "@/schema/comment";
+import { CommentSchema, UserWithProfile } from "@/types/types";
 import { format } from "date-fns";
 import { Archive, MoreHorizontal, Pencil } from "lucide-react";
-import React, { useState } from "react";
-import Reply from "./Reply";
-import CommentInput from "./CommentInput";
+import React from "react";
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
-type CommentProps = {
-  data: CommentSchema & { replies: CommentSchema[] };
+type ReplyProps = {
+  data: CommentSchema;
+  onReplyInput: () => void;
 };
-const Comment: React.FC<CommentProps> = ({ data }) => {
-  const [isReplying, setIsReplying] = useState(false);
-
-  const onReplyInput = () => {
-    setIsReplying((prev) => !prev);
-  };
+const Reply: React.FC<ReplyProps> = ({ data, onReplyInput }) => {
   return (
-    <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent">
+    <article className="mt-3 text-base bg-white rounded-lg dark:bg-transparent">
       <footer className="flex justify-between items-center mb-1">
         <div className="flex items-center">
           <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
@@ -79,8 +74,8 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
 
         <button
           type="button"
-          onClick={onReplyInput}
           className="flex items-center text-gray-500 hover:underline dark:text-gray-400 font-medium text-xs"
+          onClick={onReplyInput}
         >
           <svg
             className="mr-1.5 w-3.5 h-3.5"
@@ -100,21 +95,8 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
           Reply
         </button>
       </div>
-
-      <section className="flex flex-col px-6 py-0">
-        {data.replies.map((reply) => (
-          <Reply data={reply} onReplyInput={onReplyInput} />
-        ))}
-
-        {isReplying && (
-          <CommentInput
-            postId={data?.postId}
-            apiUrl={`/comments/${data?.id}`}
-          />
-        )}
-      </section>
     </article>
   );
 };
 
-export default Comment;
+export default Reply;

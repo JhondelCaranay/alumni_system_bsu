@@ -13,8 +13,9 @@ import { z } from "zod";
 
 type CommentInputProps = {
   postId: string;
+  apiUrl: string;
 };
-const CommentInput: React.FC<CommentInputProps> = ({ postId }) => {
+const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl }) => {
   const formSchema = z.object({
     content: z.string().min(1),
   });
@@ -35,14 +36,13 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId }) => {
 
   const addComment = useMutation({
     mutationFn: (value: AddCommentSchema) =>
-      mutationFn("/comments", null, "POST", value),
+      mutationFn(apiUrl, null, "POST", value),
   });
 
   const isLoading = form.formState.isSubmitting || addComment.isPending;
 
   const { handleSubmit } = form;
   const { toast } = useToast();
-
   const onSubmit: SubmitHandler<formType> = async (values) => {
     try {
       addComment.mutate(
@@ -57,6 +57,9 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId }) => {
               description: "Your comment has been sent.",
             });
             form.reset();
+          },
+          onError(error, variables, context) {
+            console.log(error);
           },
         }
       );

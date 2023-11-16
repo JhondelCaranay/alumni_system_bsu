@@ -13,7 +13,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import CommentInput from "./CommentInput";
 import { PostSchemaType } from "@/schema/post";
-import { UserWithProfile } from "@/types/types";
+import { CommentSchema, UserWithProfile } from "@/types/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +36,7 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
   const [isCommenting, setIsCommenting] = useState(false);
 
   const comments = useQueryProcessor<
-    (CommentSchemaType & { user: UserWithProfile })[]
+    (CommentSchema & { replies: CommentSchema[] })[]
   >(
     `/comments`,
     { postId: postData?.id },
@@ -51,7 +51,8 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
   );
 
   useCommentSocket({
-    postKey: `posts:${postData.id}:comments`,
+    commentsKey: `posts:${postData.id}:comments`,
+    repliesKey: `posts:${postData.id}:reply`,
     queryKey: ["discussions", postData.id, "comments"],
   });
 
@@ -144,7 +145,7 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
       {isCommenting && (
         <>
           <div>
-            <CommentInput postId={postData.id} />
+            <CommentInput postId={postData.id} apiUrl="/comments" />
           </div>
           <section className="flex flex-col">
             {(() => {

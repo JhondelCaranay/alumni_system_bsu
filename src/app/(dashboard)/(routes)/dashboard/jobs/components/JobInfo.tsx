@@ -73,7 +73,8 @@ const JobInfo = () => {
   });
 
   useCommentSocket({
-    postKey: `posts:${f}:comments`,
+    commentsKey: `posts:${f}:comments`,
+    repliesKey: `posts/${f}:reply`,
     queryKey: ["jobs", f, "comments"],
   });
 

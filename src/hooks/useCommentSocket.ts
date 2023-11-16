@@ -1,15 +1,16 @@
 import { useSocket } from "@/components/providers/SocketProvider";
 import { CommentSchemaType } from "@/schema/comment";
-import { UserWithProfile } from "@/types/types";
+import { CommentSchema, UserWithProfile } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 type ChatSocketProps = {
-  postKey: string;
+  commentsKey:string;
+  repliesKey: string;
   queryKey: (string | any)[];
 };
 
-export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
+export const useCommentSocket = ({ queryKey, repliesKey, commentsKey }: ChatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 
@@ -18,12 +19,13 @@ export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
       return;
     }
 
+    // comment listener
     socket.on(
-      postKey,
-      (data: CommentSchemaType & { user: UserWithProfile }) => {
+      commentsKey,
+      (data: CommentSchema) => {
         queryClient.setQueryData(
           queryKey,
-          (oldData: CommentSchemaType & { user: UserWithProfile }[]) => {
+          (oldData:CommentSchema[]) => {
             if(oldData.length <= 0) {
               const newData = [data];
               return newData;
@@ -37,8 +39,30 @@ export const useCommentSocket = ({ postKey, queryKey }: ChatSocketProps) => {
       }
     );
 
+    // reply listener
+    socket.on(
+      repliesKey,
+      (data:CommentSchema) => {
+        queryClient.setQueryData(
+          queryKey,
+          (oldData:CommentSchema[]) => {
+            if(oldData.length <= 0) {
+              const newData = [data];
+              return newData;
+            }
+
+            return oldData.map((comments) => {
+              if(comments.id !== data.id) return comments;
+              return data;
+            })
+          }
+        );
+      }
+    );
+
     return () => {
-      socket.off(postKey);
+      socket.off(commentsKey);
+      socket.off(repliesKey);
     };
-  }, [postKey, queryKey]);
+  }, [commentsKey, queryKey, repliesKey]);
 };

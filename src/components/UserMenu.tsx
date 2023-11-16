@@ -10,6 +10,7 @@ import { SafeUser } from "@/types/types";
 import Avatar from "./Avatar";
 import { ModeToggle } from "./ModeToggle";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -39,7 +40,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem> <Link href={'/dashboard/profile'}>Profile</Link> </DropdownMenuItem>
         <DropdownMenuItem>
           <ModeToggle />
         </DropdownMenuItem>

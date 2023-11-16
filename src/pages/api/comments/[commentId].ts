@@ -21,8 +21,7 @@ export default async function handler(
   // const currentUser = {
   //   id: "clo6w1zfq0007v9q8yieljh9r",
   // };
-  
-  console.log(commentId)
+
   const comment = await prisma.comment.findUnique({
     where: {
       id: commentId as string,
@@ -37,6 +36,7 @@ export default async function handler(
           role: true,
           createdAt: true,
           id: true,
+          image:true,
         },
       },
       replies: {
@@ -49,6 +49,7 @@ export default async function handler(
               role: true,
               createdAt: true,
               id: true,
+              image:true,
             },
           },
         },
@@ -63,7 +64,7 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    console.log('commentId post')
+    console.log("commentId post");
     const result = await CreateReplySchema.safeParseAsync(req.body);
 
     if (!result.success) {
@@ -97,6 +98,7 @@ export default async function handler(
               role: true,
               createdAt: true,
               id: true,
+              image: true,
             },
           },
           replies: {
@@ -109,6 +111,7 @@ export default async function handler(
                   role: true,
                   createdAt: true,
                   id: true,
+                  image: true,
                 },
               },
             },

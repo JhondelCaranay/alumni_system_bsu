@@ -65,6 +65,7 @@ export default async function handler(
               role: true,
               createdAt: true,
               id: true,
+              image:true,
             },
           },
           replies: {
@@ -77,6 +78,7 @@ export default async function handler(
                   role: true,
                   createdAt: true,
                   id: true,
+                  image:true,
                 },
               },
             },
@@ -118,6 +120,7 @@ export default async function handler(
               role: true,
               createdAt: true,
               id: true,
+              image: true,
             },
           },
           replies: {
@@ -130,6 +133,7 @@ export default async function handler(
                   role: true,
                   createdAt: true,
                   id: true,
+                  image: true,
                 },
               },
             },

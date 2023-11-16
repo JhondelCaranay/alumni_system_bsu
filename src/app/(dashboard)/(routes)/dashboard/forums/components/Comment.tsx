@@ -24,6 +24,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
   const onReplyInput = () => {
     setIsReplying((prev) => !prev);
   };
+
   return (
     <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent">
       <footer className="flex justify-between items-center mb-1">
@@ -109,6 +110,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
         {isReplying && (
           <CommentInput
             postId={data?.postId}
+            placeholder="Write a reply."
             apiUrl={`/comments/${data?.id}`}
           />
         )}

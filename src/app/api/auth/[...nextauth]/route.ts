@@ -36,8 +36,7 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
-          },
-        });
+          }});
 
         if (!user || !user?.hashedPassword) {
           throw new Error("Invalid credentials");
@@ -47,7 +46,6 @@ export const authOptions: AuthOptions = {
         if (!isCorrectPassword) {
           throw new Error("Invalid credentials");
         }
-
         return user;
         // return { ...user, role: user.role.toString() };
         /* 
@@ -60,11 +58,15 @@ export const authOptions: AuthOptions = {
   callbacks: {
     // Ref: https://authjs.dev/guides/basics/role-based-access-control#with-jwt
     jwt({ token, user }) {
-      if (user) token.role = user.role;
+      if (user) {
+        token.role = user.role;
+        token.departmentId = user.departmentId
+      }
       return token;
     },
     session({ session, token }) {
       session.user.role = token.role;
+      session.user.departmentId = token.departmentId
       return session;
     },
   },

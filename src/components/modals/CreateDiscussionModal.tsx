@@ -57,16 +57,18 @@ import { useToast } from "../ui/use-toast";
 
 const CreateDiscussionModal = () => {
   const { data: session } = useSession();
-  const { isOpen, type, onClose, data } = useModal();
+  const { isOpen, type, onClose } = useModal();
   const isModalOpen = isOpen && type === "createDiscussion";
 
   const onHandleClose = () => {
     onClose();
-    setFilesToDisPlay([])
+    setFilesToDisPlay([]);
     form.reset();
   };
   const [open, setOpen] = useState(false);
-  const [filesToDisplay, setFilesToDisPlay] = useState<{url:string, id: number | string}[]>([]);
+  const [filesToDisplay, setFilesToDisPlay] = useState<
+    { url: string; id: number | string }[]
+  >([]);
   const formSchema = z.object({
     description: z.string().min(1, { message: "Description is required" }),
     departments: z
@@ -127,7 +129,7 @@ const CreateDiscussionModal = () => {
     value: department.id,
   }));
 
-  const uploadPhoto = async (data: {file:File, id: number | string}) => {
+  const uploadPhoto = async (data: { file: File; id: number | string }) => {
     const formData = new FormData();
     formData.append("upload_preset", "next-alumni-system");
     formData.append("file", data.file);
@@ -149,8 +151,8 @@ const CreateDiscussionModal = () => {
     CreatePostSchemaType,
     PostSchemaType
   >("/posts", null, "POST", ["discussions"]);
-          
-  const {toast} = useToast()
+
+  const { toast } = useToast();
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
     // we append all the file into files array to make it iterateable
     const files = [];
@@ -159,55 +161,61 @@ const CreateDiscussionModal = () => {
         files.push(file);
       }
       const photos = await Promise.all(
-        files.map((data: {file:File, id: number | string}) => uploadPhoto(data))
+        files.map((data: { file: File; id: number | string }) =>
+          uploadPhoto(data)
+        )
       );
 
-      createDiscussion.mutate({
-        description: values.description,
-        department: values.departments,
-        type: PostType.FEED,
-        photos,
-      }, {
-        onError(error, variables, context) {
-          console.log(error)
-          toast({
-            variant: "destructive",
-            description: "Something went wrong...",
-          });
+      createDiscussion.mutate(
+        {
+          description: values.description,
+          department: values.departments,
+          type: PostType.FEED,
+          photos,
         },
-        onSuccess(data, variables, context) {
-          console.log(data)
-          toast({
-            variant: "default",
-            description: "Posted",
-          });
-          onHandleClose()
+        {
+          onError(error, variables, context) {
+            console.log(error);
+            toast({
+              variant: "destructive",
+              description: "Something went wrong...",
+            });
+          },
+          onSuccess(data, variables, context) {
+            console.log(data);
+            toast({
+              variant: "default",
+              description: "Posted",
+            });
+            onHandleClose();
+          },
+        }
+      );
+    } else {
+      createDiscussion.mutate(
+        {
+          description: values.description,
+          department: values.departments,
+          type: PostType.FEED,
         },
-      });
-      
-    }
-    else {
-      createDiscussion.mutate({
-        description: values.description,
-        department: values.departments,
-        type: PostType.FEED,
-      }, {
-        onError(error, variables, context) {
-          console.log(error)
-          toast({
-            variant: "destructive",
-            description: "Something went wrong...",
-          });
-        },
-        onSuccess(data, variables, context) {
-          console.log(data)
-          toast({
-            variant: "default",
-            description: "Posted",
-          });
-          onHandleClose()
-        },
-      });
+        {
+          onError(error, variables, context) {
+            console.log(error);
+            toast({
+              variant: "destructive",
+              description: "Something went wrong...",
+            });
+          },
+          onSuccess(data, variables, context) {
+            console.log(data);
+            toast({
+              variant: "default",
+              description: "Posted",
+            });
+            onHandleClose();
+          },
+        }
+      );
     }
   };
 
@@ -331,22 +339,34 @@ const CreateDiscussionModal = () => {
                 <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5">
                   {filesToDisplay.map((file) => {
                     const removeFiles = () => {
-                      const images = form.getValues('photos') as {file: File, id: number | string}[]
-                      const filteredImages = images.filter((formImages) => file.id != formImages.id)
-                      console.log(filteredImages)
-                      form.setValue('photos', filteredImages)
-                      const filteredImagesToDisplay = filesToDisplay.filter((fileToDisplay) => fileToDisplay.id != file.id)
-                      setFilesToDisPlay(filteredImagesToDisplay)
-                    }
-                    return<div className="relative rounded-md w-full max-h-[20em]">
-                      <X className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600" onClick={removeFiles} />
-                      <img
-                        key={file.id}
-                        src={file.url}
-                        alt="post image"
-                        className="h-full w-full object-cover"
-                      />
-                    </div>;
+                      const images = form.getValues("photos") as {
+                        file: File;
+                        id: number | string;
+                      }[];
+                      const filteredImages = images.filter(
+                        (formImages) => file.id != formImages.id
+                      );
+                      console.log(filteredImages);
+                      form.setValue("photos", filteredImages);
+                      const filteredImagesToDisplay = filesToDisplay.filter(
+                        (fileToDisplay) => fileToDisplay.id != file.id
+                      );
+                      setFilesToDisPlay(filteredImagesToDisplay);
+                    };
+                    return (
+                      <div className="relative rounded-md w-full max-h-[20em]">
+                        <X
+                          className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600"
+                          onClick={removeFiles}
+                        />
+                        <img
+                          key={file.id}
+                          src={file.url}
+                          alt="post image"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    );
                   })}
                 </div>
               </div>
@@ -381,20 +401,36 @@ const CreateDiscussionModal = () => {
                                     index < files.length;
                                     index++
                                   ) {
-                                    filesToDisplay.push({file: files[index], id: createId()});
+                                    filesToDisplay.push({
+                                      file: files[index],
+                                      id: createId(),
+                                    });
                                   }
-                                  field.onChange(filesToDisplay.map((file) => file));
-                                  const convertToBase64 = (data: {file:File, id: number | string}) => {
+                                  field.onChange(
+                                    filesToDisplay.map((file) => file)
+                                  );
+                                  const convertToBase64 = (data: {
+                                    file: File;
+                                    id: number | string;
+                                  }) => {
                                     const reader = new FileReader();
                                     reader.readAsDataURL(data.file);
                                     reader.onloadend = () => {
-                                      setFilesToDisPlay((prev) => [...prev, {url: reader.result as string, id: data.id},
+                                      setFilesToDisPlay((prev) => [
+                                        ...prev,
+                                        {
+                                          url: reader.result as string,
+                                          id: data.id,
+                                        },
                                       ]);
                                     };
                                   };
                                   await Promise.all(
-                                    filesToDisplay.map((data:{file:File, id: number | string}) =>
-                                      convertToBase64(data)
+                                    filesToDisplay.map(
+                                      (data: {
+                                        file: File;
+                                        id: number | string;
+                                      }) => convertToBase64(data)
                                     )
                                   );
                                 }
@@ -431,8 +467,7 @@ const CreateDiscussionModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if (isLoading)
-                      return (<Loader size={25} />);
+                    if (isLoading) return <Loader size={25} />;
                     return "Post";
                   })()}
                 </Button>

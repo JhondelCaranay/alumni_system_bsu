@@ -35,6 +35,7 @@ export type SafeSection = Omit<Section, "createdAt" | "updatedAt"> & {
 };
 
 export type SafeUserWithProfileWithDapartmentWithSection = SafeUser & {
+  
   profile: SafeProfile;
   department: SafeDeparment;
   section: SafeSection;

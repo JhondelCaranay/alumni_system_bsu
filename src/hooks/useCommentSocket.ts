@@ -26,7 +26,7 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey }: ChatSock
         queryClient.setQueryData(
           queryKey,
           (oldData:CommentSchema[]) => {
-            if(oldData?.length <= 0 || typeof oldData === 'undefined') {
+            if(typeof oldData === 'undefined' || oldData?.length <= 0) {
               const newData = [data];
               return newData;
             }
@@ -46,7 +46,7 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey }: ChatSock
         queryClient.setQueryData(
           queryKey,
           (oldData:CommentSchema[]) => {
-            if(oldData?.length <= 0 || typeof oldData === 'undefined') {
+            if( typeof oldData === 'undefined' || oldData?.length <= 0) {
               const newData = [data];
               return newData;
             }

@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function getSession() {
   return await getServerSession(authOptions);
 }
-
+export type GetCurrentUserType = Awaited<ReturnType<typeof getCurrentUser>>
 export default async function getCurrentUser() {
   try {
     const session = await getSession();
@@ -19,9 +19,14 @@ export default async function getCurrentUser() {
         email: session.user.email,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            parents:true
+          }
+        },
         section:true,
         department:true,
+        
       }
     });
 

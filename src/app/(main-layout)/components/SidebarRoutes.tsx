@@ -1,19 +1,11 @@
 "use client";
 
 import {
-  BarChart,
   Briefcase,
   CalendarDays,
-  Compass,
-  GraduationCap,
   Home,
-  Layout,
-  List,
-  MessageSquare,
   MessagesSquare,
-  Table,
   TableProperties,
-  UserCog,
   Users,
 } from "lucide-react";
 import { SidebarItem } from "./SidebarItem";
@@ -27,47 +19,51 @@ const routesList = [
   {
     icon: TableProperties,
     label: "Course",
-    href: "/dashboard/courses",
+    href: "/courses",
   },
   {
     icon: Users,
     label: "Alumni / Students",
-    href: "/dashboard/students",
+    href: "/students",
   },
-  // {
-  //   icon: Users,
-  //   label: "Students",
-  //   href: "/dashboard/students",
-  // },
   {
     icon: Briefcase,
     label: "Jobs",
-    href: "/dashboard/jobs",
+    href: "/jobs",
   },
   {
     icon: CalendarDays,
     label: "Events",
-    href: "/dashboard/events",
+    href: "/events",
   },
   {
     icon: MessagesSquare,
     label: "Forum",
-    href: "/dashboard/forums",
+    href: "/forums",
   },
   {
     icon: Users,
     label: "Users",
-    href: "/dashboard/users",
+    href: "/users",
   },
 ];
 
-export const SidebarRoutes = () => {
+type SidebarRoutesProps = {
+  role: string;
+};
+
+export const SidebarRoutes = ({ role }: SidebarRoutesProps) => {
   const routes = routesList;
 
   return (
     <div className="flex flex-col w-full ">
       {routes.map((route) => (
-        <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
+        <SidebarItem
+          key={route.href}
+          icon={route.icon}
+          label={route.label}
+          href={`/${role}${route.href}`}
+        />
       ))}
     </div>
   );

@@ -26,7 +26,11 @@ const ActionCell = ({ data }: Props) => {
   return (
     <>
       {isOpen ? (
-        <UpdateDepartmentModal department={data} isOpen={isOpen} onClose={() => setOpen(false)} />
+        <UpdateDepartmentModal
+          department={data}
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+        />
       ) : null}
 
       <div className="flex justify-end">

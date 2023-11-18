@@ -11,11 +11,13 @@ import Avatar from "./Avatar";
 import { ModeToggle } from "./ModeToggle";
 import { signOut } from "next-auth/react";
 import { capitalizeWords } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
 };
 const UserMenu = ({ currentUser }: UserMenuProps) => {
+  const router = useRouter()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -42,6 +44,9 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           {capitalizeWords(currentUser?.role!)}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => router.push(`/${currentUser?.role.toLowerCase()}/profile`)}>
+           Profile
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <ModeToggle />
         </DropdownMenuItem>

@@ -2,13 +2,12 @@ import React from "react";
 import AuthForm from "../components/AuthForm";
 import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
-import { isUserAllowed } from "@/lib/utils";
 
 const LoginPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (currentUser) {
-    redirect("/dashboard/profile");
+    redirect(`/${currentUser.role.toLowerCase()}/profile`);
   }
 
   return (

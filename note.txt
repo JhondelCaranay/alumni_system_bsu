@@ -1,4 +1,2 @@
 Database name
     lms_system_bsu_db
-
-

@@ -10,7 +10,7 @@ import { SafeUser } from "@/types/types";
 import Avatar from "./Avatar";
 import { ModeToggle } from "./ModeToggle";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
+import { capitalizeWords } from "@/lib/utils";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -38,9 +38,10 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {capitalizeWords(currentUser?.role!)}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem> <Link href={'/dashboard/profile'}>Profile</Link> </DropdownMenuItem>
         <DropdownMenuItem>
           <ModeToggle />
         </DropdownMenuItem>

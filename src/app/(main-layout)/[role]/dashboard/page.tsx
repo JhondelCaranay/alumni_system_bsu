@@ -1,4 +1,4 @@
-import Widget from "./_components/Widget";
+import Widget from "./components/Widget";
 import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 
 type DashBoardHomePageProps = {};

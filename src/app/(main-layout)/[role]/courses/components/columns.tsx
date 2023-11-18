@@ -1,22 +1,19 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { Archive, ArrowUpDown, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import {
+  Archive,
+  ArrowUpDown,
+  Copy,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+} from "lucide-react";
+
 import { DepartmentSchemaType } from "@/schema/department";
-import UpdateDepartmentModal from "@/components/modals/department/UpdateDepartmentModal";
-import { useState } from "react";
 import ActionCell from "./ActionCell";
 
 export const columns: ColumnDef<DepartmentSchemaType>[] = [
@@ -85,51 +82,4 @@ export const columns: ColumnDef<DepartmentSchemaType>[] = [
       return <ActionCell data={row.original} />;
     },
   },
-
-  // {
-  //   accessorKey: "price",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Price
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const price = parseFloat(row.getValue("price") || "0");
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(price);
-
-  //     return <div>{formatted}</div>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "isPublished",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Published
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const isPublished = row.getValue("isPublished") || false;
-
-  //     return (
-  //       <Badge className={cn("bg-slate-500", isPublished && "bg-sky-700")}>
-  //         {isPublished ? "Published" : "Draft"}
-  //       </Badge>
-  //     );
-  //   },
-  // },
 ];

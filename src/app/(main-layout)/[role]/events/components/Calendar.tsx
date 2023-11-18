@@ -5,7 +5,11 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useModal } from "@/hooks/useModalStore";
-import { apiClient, useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  apiClient,
+  useMutateProcessor,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
 import { Events } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -42,7 +46,12 @@ const Calendar = () => {
     allDay: boolean;
   };
 
-  const createEvent = useMutateProcessor<EventData, null>(`/events`, null, "POST", ["events"]);
+  const createEvent = useMutateProcessor<EventData, null>(
+    `/events`,
+    null,
+    "POST",
+    ["events"]
+  );
 
   const handleAddEvent = ({ event }: any) => {
     const eventData = {
@@ -65,7 +74,10 @@ const Calendar = () => {
     });
   };
 
-  const updateEvent = async (eventId: string, data: Omit<EventData, "description">) => {
+  const updateEvent = async (
+    eventId: string,
+    data: Omit<EventData, "description">
+  ) => {
     try {
       await apiClient.patch(`/events/${eventId}`, data);
     } catch (error) {
@@ -126,7 +138,7 @@ const Calendar = () => {
         height={"100vh"}
         initialView="dayGridMonth"
         // longPressDelay={0}
-        editable={true}
+        editable={false}
         selectable={true}
         selectMirror={true}
         droppable={true}

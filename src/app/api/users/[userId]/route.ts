@@ -1,5 +1,6 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
+import { UpdateUserSchemaType, UpdateUsersSchema } from "@/schema/users";
 import { Role } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -85,31 +86,17 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
 
   const currentUser = await getCurrentUser();
 
-  const formSchema = z.object({
-    firstname: z.string().min(1, { message: "Required field" }),
-    lastname: z.string().min(1, { message: "Required field" }),
-    email: z
-      .string()
-      .min(1, { message: "Required field" })
-      .email({ message: "Invalid email" }),
-    middlename: z.string().min(1, { message: "Required field" }),
-    city: z.string().min(1, { message: "Required field" }),
-    homeNo: z.string().min(1, { message: "Required field" }),
-    street: z.string().min(1, { message: "Required field" }),
-    barangay: z.string().min(1, { message: "Required field" }),
-    province: z.string().min(1, { message: "Required field" }),
-    contactNo: z.string().min(1, { message: "Required field" }),
-  });
-
-  type formSchemaType = z.infer<typeof formSchema>;
-
   try {
-    const data = await request.json() as formSchemaType
-    
-    const validatedData = formSchema.safeParse(data);
+    const result = UpdateUsersSchema.safeParse(await request.json());
 
-    if(!validatedData.success) {
-      return new NextResponse("Missing field in form data", { status: 400 });
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          errors: result.error.flatten().fieldErrors,
+          message: "Invalid body parameters",
+        },
+        { status: 400 }
+      );
     }
     const {userId} = params;
 
@@ -128,7 +115,7 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
       return new NextResponse("User not found", { status: 404 });
     }
 
-    const {email, ...rest} = validatedData.data
+    const {email, image, ...rest} = result.data
 
     const updatedUser = await prisma.user.update({
       where: {
@@ -136,6 +123,7 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
       },
       data: {
          email,
+         image,
         profile: {
           update: {
             ...rest,

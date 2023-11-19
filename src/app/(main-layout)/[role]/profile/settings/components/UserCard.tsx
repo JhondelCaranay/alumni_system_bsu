@@ -6,14 +6,19 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
   Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
+import { useMutateProcessor } from "@/hooks/useTanstackQuery";
+import { handleImageDeleteOrReplace, uploadPhoto } from "@/lib/utils";
+import { UpdateUserSchemaType } from "@/schema/users";
+import { UserWithProfile } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadCloud } from "lucide-react";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 
 type UserCardProps = {
@@ -34,7 +39,17 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
     console.log(values)
   };
-  console.log(form.getValues("imageUrl"))
+
+  const updateProfile = useMutateProcessor<UpdateUserSchemaType, UserWithProfile>(
+    `/users/${data?.id}`,
+    null,
+    "PATCH",
+    ["users", data?.id],
+    {
+      enabled: typeof data?.id !== "undefined",
+    }
+  );
+  
   return (
     <Form {...form}>
       <form
@@ -42,7 +57,10 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
         autoComplete="off"
         className="flex bg-[#1F2937] p-5 rounded-lg items-center gap-2"
       >
-        <Avatar src={data?.image} className="h-[110px] w-[110px] rounded-sm" />
+
+        {
+          updateProfile.status === 'pending' ? <Loader size={30} /> : <img src={ (form.getValues('imageUrl') || data?.image) as string} className="h-[110px] w-[110px] rounded-sm object-cover" />
+        }
 
         <div className="flex flex-col ml-2 justify-between h-full">
 
@@ -72,6 +90,27 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
                     id="upload"
                     type="file"
                     accept="image/*"
+                    onChange={ async (e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if(file) {
+                        const previousImg = data?.image
+                        ?.split("next-alumni-system/")[1]
+                        .substring(
+                          0,
+                          data?.image?.split("next-alumni-system/")[1].lastIndexOf(".")
+                        );
+                        handleImageDeleteOrReplace(previousImg as string)
+                        const res = await uploadPhoto(file)
+                        field.onChange(res.url)
+                        updateProfile.mutate({
+                          image: res.url
+                        }, {
+                          onSuccess(data, variables, context) {
+                            toast.success('Image updated')
+                          },
+                        })
+                      }
+                    }}
                   />
                 </FormControl>
                 {/* <FormMessage /> */}

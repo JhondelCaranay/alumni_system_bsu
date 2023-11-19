@@ -1,6 +1,5 @@
 import { GetCurrentUserType } from '@/actions/getCurrentUser'
 import Avatar from '@/components/Avatar'
-import { SafeUserWithProfileWithDapartmentWithSection, UserWithProfile } from '@/types/types'
 import { MapPin, Waypoints } from 'lucide-react'
 import React from 'react'
 
@@ -14,7 +13,7 @@ const InitialUserInfo:React.FC<IntialUserInfoProps> = ({data}) => {
       <div className="flex flex-col gap-y-1">
         <Avatar
           src={data?.image}
-          className="h-[80px] w-[80px] rounded-md object-contain"
+          className="h-[80px] w-[80px] rounded-md"
         />
         <span className="font-semibold text-md text-black dark:text-white">
           {data?.name}

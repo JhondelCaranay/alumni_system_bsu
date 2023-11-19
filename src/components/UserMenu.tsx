@@ -36,7 +36,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           transition
           "
         >
-          <Avatar src={currentUser?.image} />
+          <img src={currentUser?.image as string} className="rounded-full object-cover h-[40px] w-[40px]" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

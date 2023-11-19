@@ -76,6 +76,7 @@ export const UpdateTitleAndDescriptionEventSchema = EventSchema.pick({
   title: true,
   description: true,
 }).partial();
+
 export type UpdateTitleAndDescriptionEventSchemaType = z.infer<
   typeof UpdateTitleAndDescriptionEventSchema
 >;

@@ -1,5 +1,6 @@
 import { apiClient } from "@/hooks/useTanstackQuery";
 import { Role } from "@prisma/client";
+import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -29,3 +30,15 @@ export const handleImageDeleteOrReplace = async (publicId: string) => {
   apiClient.delete(`/cloudinary/${publicId}`);
   // const {secure_url, public_id} = await cloudinaryUpload(file, 'next-alumni-system')
 };
+
+export const uploadPhoto = async (file:File) => {
+  const formData = new FormData()
+  formData.append('upload_preset', 'next-alumni-system')
+  formData.append('file', file)
+
+  const res = await axios.post(`https://api.cloudinary.com/v1_1/iamprogrammer/auto/upload`, formData,{
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  });
+
+  return res.data;
+}

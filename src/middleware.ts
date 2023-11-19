@@ -6,44 +6,63 @@ import { isUserAllowed } from "./lib/utils";
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
   function middleware(request: NextRequestWithAuth) {
-    console.log(
-      "🚀 ~ file: middleware.ts:16 ~ middleware ~ pathname:",
-      request.nextUrl.pathname
-    );
-
     // console.log(request.nextUrl.pathname)
     // console.log(request.nextauth.token)
-    const role = request.nextauth.token?.role as string;
+    const role = request.nextauth.token?.role || "";
+    const roleLowerCase = role.toLowerCase();
     const pathname = request.nextUrl.pathname;
-    // if (pathname.startsWith("/dashboard") && isUserAllowed(role, ["ADMIN"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/course") && isUserAllowed(role, ["ADMIN"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/students") && isUserAllowed(role, ["ADMIN"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/jobs") && isUserAllowed(role, ["ALL"])) {
-    //   if (
-    //     pathname.endsWith("jobs/create") &&
-    //     !isUserAllowed(role, ["ADMIN", "BULSU_PARTNER", "PESO"])
-    //   ) {
-    //     /*
-    //       redirect to /denied if user is not allowed to create jobs
-    //     */
-    //     return NextResponse.rewrite(new URL("/denied", request.url));
-    //   } else {
-    //     return NextResponse.next();
-    //   }
-    // } else if (pathname.startsWith("/dashboard/events") && isUserAllowed(role, ["ALL"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/forums") && isUserAllowed(role, ["ALL"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/users") && isUserAllowed(role, ["ADMIN"])) {
-    //   return NextResponse.next();
-    // } else if (pathname.startsWith("/dashboard/profile") && isUserAllowed(role, ["ALL"])) {
-    //   return NextResponse.next();
-    // } else {
-    //   return NextResponse.rewrite(new URL("/denied", request.url));
-    // }
+    // console.log("🚀 ~ file: middleware.ts:13 role:", role);
+    // console.log("🚀 ~ file: middleware.ts:14 pathname:", pathname);
+
+    /* 
+      check if role in path name is valid
+    */
+    if (!pathname.startsWith("/" + roleLowerCase)) {
+      return NextResponse.rewrite(new URL("/not-found", request.url));
+    }
+
+    const isPathMatch = (pathname: string, matcher: string) => {
+      return pathname.startsWith(matcher);
+    };
+
+    if (
+      isPathMatch(pathname, `/${roleLowerCase}/dashboard`) &&
+      isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/course`) &&
+      isUserAllowed(roleLowerCase, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/students`) &&
+      isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/events`) &&
+      isUserAllowed(role, ["ALL"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/forums`) &&
+      isUserAllowed(role, ["ALL"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/users`) &&
+      isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/profile`) &&
+      isUserAllowed(role, ["ALL"])
+    ) {
+      return NextResponse.next();
+    } else {
+      return NextResponse.rewrite(new URL("/denied", request.url));
+    }
   },
   {
     callbacks: {
@@ -55,5 +74,15 @@ export default withAuth(
 // Applies next-auth only to matching routes - can be regex
 // Ref: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|$|assets|images).*)",
+  ],
+  // matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

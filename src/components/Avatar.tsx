@@ -10,13 +10,17 @@ type AvatarProps = {
 
 const Avatar = ({ src, className }: AvatarProps) => {
   return (
-    <Image
-      className={cn(`rounded-full object-cover object-center`, className)}
-      height={40}
-      width={40}
-      alt="Avatar"
-      src={src || "/images/placeholder.jpg"}
-    />
+    <div className={cn("relative w-10 h-10", className)}>
+      <Image
+        className={`rounded-full object-cover object-center`}
+        // height={40}
+        // width={40}
+        fill
+        // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        alt="Avatar"
+        src={src || "/images/placeholder.jpg"}
+      />
+    </div>
   );
 };
 export default Avatar;

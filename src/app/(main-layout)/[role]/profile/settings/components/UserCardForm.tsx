@@ -55,7 +55,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         autoComplete="off"
-        className="flex bg-[#1F2937] p-5 rounded-lg items-center gap-2"
+        className="flex bg-white dark:bg-[#1F2937] p-5 rounded-lg items-center gap-2"
       >
 
         {
@@ -64,9 +64,9 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
 
         <div className="flex flex-col ml-2 justify-between h-full">
 
-            <div className="flex flex-col">
-                <span className="text-md font-semibold">Jese Leos</span>
-                <span className="text-sm font-semibold">Software Engineer</span>
+            <div className="flex flex-col gap-y-1">
+                <span className="text-md font-semibold text-zinc-600 dark:text-white">{data?.name}</span>
+                <span className="text-sm font-semibold text-zinc-600 dark:text-white capitalize" >{data?.department?.name.toLowerCase()}</span>
             </div>
           
           <FormField
@@ -76,10 +76,10 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
               <FormItem className="">
                 <label
                   htmlFor="upload"
-                  className="cursor-pointer flex items-center bg-[#2563EB] dark:text-white gap-x-1 py-2 px-3 rounded-md text-sm font-semibold "
+                  className="cursor-pointer flex items-center bg-[#2563EB] text-white gap-x-1 py-2 px-3 rounded-md text-sm font-semibold "
                 >
                     <UploadCloud className="" />
-                        <span>
+                        <span className="text-white">
                             Change picture
                         </span>
                 </label>

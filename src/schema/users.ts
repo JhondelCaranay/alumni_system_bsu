@@ -19,7 +19,8 @@ export const UserSchema = z.object({
 export const UpdateUsersSchema = UserSchema.extend({
   firstname: z.string(),
   lastname: z.string(),
-  email: z.string().email(),
+  bsu_email: z.string().email(),
+  personal_email: z.string().email(),
   image: z.string(),
   middlename: z.string(),
   city: z.string(),
@@ -30,8 +31,11 @@ export const UpdateUsersSchema = UserSchema.extend({
   contactNo: z.string(),
   password: z.string(),
   confirmPassword: z.string(),
+  currentPassword: z.string(),
 })
-  .partial()
+  .partial(
+    
+  )
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],

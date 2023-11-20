@@ -7,7 +7,7 @@ type GeneralUserInfoProps = {
 
 const GeneralUserInfo: React.FC<GeneralUserInfoProps> = ({ data }) => {
   return (
-    <div className="flex flex-1 flex-col bg-[#1F2937] p-5 rounded-lg gap-y-10">
+    <div className="flex flex-1 flex-col bg-white dark:bg-[#1F2937] p-5 rounded-lg gap-y-10">
       <h1 className="text-3xl">General Information</h1>
 
       <div className="flex flex-col">

@@ -3,6 +3,7 @@ import { useModal } from '@/hooks/useModalStore';
 import { SafeDeparment, SafeUser, UserProfileWithDepartmentSection, UserWithProfile } from '@/types/types';
 import { User } from '@prisma/client';
 import { Archive, MoreHorizontal, Pencil } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
@@ -13,6 +14,7 @@ type ActionButtonProps = {
 const ActionButton:React.FC<ActionButtonProps> = ({user}) => {
   const { onOpen } = useModal();
   const router = useRouter()
+  const {data} = useSession()
   return (
     <div className={`h-full w-full cursor-pointer`}>
           <DropdownMenu>
@@ -20,7 +22,7 @@ const ActionButton:React.FC<ActionButtonProps> = ({user}) => {
               <MoreHorizontal className="h-4 w-4 text-zinc-500" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => router.push(`/dashboard/users/${user.id}`)}>
+              <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => router.push(`/${data?.user.role.toLocaleLowerCase()}/users/${user.id}`)}>
 <Pencil className="h-4 w-4 mr-2" />
                  Update
               </DropdownMenuItem>

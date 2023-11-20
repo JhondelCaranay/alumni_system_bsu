@@ -41,7 +41,7 @@ const UserIdPageClient = () => {
   const formSchema = z.object({
     firstname: z.string().min(1, { message: "Required field" }),
     lastname: z.string().min(1, { message: "Required field" }),
-    email: z.string().min(1, { message: "Required field" }).email({ message: "Invalid email" }),
+    bsu_email: z.string().min(1, { message: "Required field" }).email({ message: "Invalid email" }),
     middlename: z.string().min(1, { message: "Required field" }),
     city: z.string().min(1, { message: "Required field" }),
     homeNo: z.string().min(1, { message: "Required field" }),
@@ -70,7 +70,7 @@ const UserIdPageClient = () => {
       firstname: data?.profile.firstname as string,
       lastname: data?.profile.lastname as string,
       middlename: data?.profile.middlename as string,
-      email: data?.profile.alternative_email as string,
+      bsu_email: data?.email as string,
       city: data?.profile.city as string,
       homeNo: data?.profile.homeNo as string,
       street: data?.profile.street as string,
@@ -84,7 +84,7 @@ const UserIdPageClient = () => {
 
   useEffect(() => {
     if (data) {
-      form.setValue("email", data?.profile.alternative_email || "");
+      form.setValue("bsu_email", data?.email || "");
       form.setValue("firstname", data?.profile.firstname || "");
       form.setValue("lastname", data?.profile.lastname || "");
       form.setValue("middlename", data?.profile.middlename || "");
@@ -138,7 +138,7 @@ const UserIdPageClient = () => {
 
       <main className="flex flex-col">
         <section className="border-[2px] border-zinc-200 rounded-md p-3 flex items-center">
-          <Avatar className="w-[80px] object-contain" src={data?.image as string} />
+          <Avatar className="w-[80px] h-[80px] object-cover rounded-sm" src={data?.image as string} />
           <div className="flex flex-col ml-3">
             <span className="text-black font-semibold dark:text-white">
               {data.profile.firstname} {data.profile.lastname}
@@ -225,7 +225,7 @@ const UserIdPageClient = () => {
 
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="bsu_email"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="uppercase text-xs font-bold text-zinc-500  dark:text-white ">

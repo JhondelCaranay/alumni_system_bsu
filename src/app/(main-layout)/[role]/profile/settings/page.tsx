@@ -1,22 +1,27 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import React from "react";
-import InitialUserInfo from "../components/InitialUserInfo";
-import GeneralUserInfo from "../components/GeneralUserInfo";
-import UserCard from "./components/UserCard";
+import UserCardForm from "./components/UserCardForm";
+import GeneralInfoForm from "./components/GeneralInfoForm";
+import PasswordsForm from "./components/PasswordsForm";
+import GuardianInfoForm from "./components/GuardianInfoForm";
 
 const UserSettingsPage = async () => {
   const user = await getCurrentUser();
   return (
-    <div className="flex flex-col p-5 ">
-        <div className="flex">
-            <div className="flex flex-col">
-                <UserCard data={user} />
-                2
+    <div className="flex flex-col p-5 gap-3 dark:bg-transparent bg-[#F9FAFB]">
+        <div className="flex gap-3">
+            <div className="flex flex-col gap-3 flex-[0.4]">
+                <UserCardForm data={user} />
+                <PasswordsForm data={user} />
             </div>
-            <div>
-                3
+            <div className="flex-1">
+              <GeneralInfoForm data={user} />
+
             </div>
         </div>
+
+        <GuardianInfoForm />
+
     </div>
   );
 };

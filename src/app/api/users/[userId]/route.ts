@@ -115,17 +115,18 @@ export async function PATCH (request:Request, {params}: {params: {userId: string
       return new NextResponse("User not found", { status: 404 });
     }
 
-    const {email, image, ...rest} = result.data
+    const {personal_email, bsu_email, image, ...rest} = result.data
 
     const updatedUser = await prisma.user.update({
       where: {
         id: userId as string
       },
       data: {
-         email,
+         email: bsu_email,
          image,
         profile: {
           update: {
+            alternative_email: personal_email,
             ...rest,
           }
         }

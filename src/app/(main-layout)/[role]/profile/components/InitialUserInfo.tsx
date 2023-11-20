@@ -9,7 +9,7 @@ type IntialUserInfoProps = {
 const InitialUserInfo:React.FC<IntialUserInfoProps> = ({data}) => {
     
   return (
-    <div className="flex-[0.6] flex flex-col w-full gap-y-5 p-5 bg-[#1F2937] rounded-lg">
+    <div className="flex-[0.6] flex flex-col w-full gap-y-5 p-5 bg-white dark:bg-[#1F2937] rounded-lg">
       <div className="flex flex-col gap-y-1">
         <Avatar
           src={data?.image}

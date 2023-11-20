@@ -9,7 +9,7 @@ const Page = async () => {
   const user = await getCurrentUser();
   
   return (
-    <div className="flex flex-col p-5">
+    <div className="flex flex-col p-5 dark:bg-transparent bg-[#F9FAFB]">
       <div className="flex justify-between items-center">
       <h1 className="my-5 text-3xl">Profile</h1>
       <Link href={`${user?.role.toLowerCase()}/profile/settings` }> <UserCog /> </Link>

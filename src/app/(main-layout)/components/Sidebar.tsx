@@ -13,9 +13,7 @@ export const Sidebar = ({ currentUser }: SidebarProps) => {
         <Logo />
       </div>
       <div className="flex flex-col w-full">
-        {currentUser?.role && (
-          <SidebarRoutes role={currentUser?.role.toLowerCase()} />
-        )}
+        {currentUser?.role && <SidebarRoutes role={currentUser?.role} />}
       </div>
     </div>
   );

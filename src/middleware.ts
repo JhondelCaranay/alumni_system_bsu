@@ -36,8 +36,18 @@ export default withAuth(
     ) {
       return NextResponse.next();
     } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/users`) &&
+      isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
       isPathMatch(pathname, `/${roleLowerCase}/students`) &&
       isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/jobs`) &&
+      isUserAllowed(role, ["ALL"])
     ) {
       return NextResponse.next();
     } else if (
@@ -48,11 +58,6 @@ export default withAuth(
     } else if (
       isPathMatch(pathname, `/${roleLowerCase}/forums`) &&
       isUserAllowed(role, ["ALL"])
-    ) {
-      return NextResponse.next();
-    } else if (
-      isPathMatch(pathname, `/${roleLowerCase}/users`) &&
-      isUserAllowed(role, ["ADMIN"])
     ) {
       return NextResponse.next();
     } else if (

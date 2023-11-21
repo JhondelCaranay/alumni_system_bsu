@@ -57,6 +57,8 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
         ) : (
           <Image
             src={(form.getValues("imageUrl") || data?.image) as string}
+            width={110}
+            height={110}
             className="h-[110px] w-[110px] rounded-sm object-cover"
             alt="user profile picture"
           />

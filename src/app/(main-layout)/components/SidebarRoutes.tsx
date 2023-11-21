@@ -8,6 +8,7 @@ import {
   TableProperties,
   Users,
 } from "lucide-react";
+import { MdHive } from "react-icons/md";
 import { SidebarItem } from "./SidebarItem";
 import { isUserAllowed } from "@/lib/utils";
 import { Role } from "@prisma/client";
@@ -51,8 +52,8 @@ const routesList: routeListType[] = [
     roles: ["ALL"],
   },
   {
-    icon: MessagesSquare,
-    label: "Forum",
+    icon: MdHive,
+    label: "CitZen",
     href: "/forums",
     roles: ["ALL"],
   },

@@ -53,10 +53,10 @@ const JobsClient = () => {
       console.log("jobs exit");
     };
   }, [jobs?.data, f, pathname, router]);
-  
-  // useEffect(() => {
-  //   jobs.refetch();
-  // }, []);
+
+  useEffect(() => {
+    jobs.refetch();
+  }, []);
 
   if (jobs.status === "pending")
     return (

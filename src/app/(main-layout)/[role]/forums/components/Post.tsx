@@ -57,7 +57,10 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
     queryKey: ["discussions", postData.id, "comments"],
   });
 
-  const commentsCount = comments.data?.reduce((count, comment) => (count + (1 + comment.replies.length || 0)), 0)
+  const commentsCount = comments.data?.reduce(
+    (count, comment) => count + (1 + comment.replies.length || 0),
+    0
+  );
   return (
     <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative">
       <div className="flex gap-x-2 items-center">
@@ -139,15 +142,19 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
           size={"sm"}
           onClick={() => setIsCommenting((prev) => !prev)}
         >
-          <MessagesSquare className="w-4 h-4 fill-zinc-500" />{" "}
-          {commentsCount} comments{" "}
+          <MessagesSquare className="w-4 h-4 fill-zinc-500" /> {commentsCount}{" "}
+          comments{" "}
         </Button>
       </div>
 
       {isCommenting && (
         <>
           <div>
-            <CommentInput postId={postData.id} apiUrl="/comments" placeholder="Write a comment." />
+            <CommentInput
+              postId={postData.id}
+              apiUrl="/comments"
+              placeholder="Write a comment."
+            />
           </div>
           <section className="flex flex-col">
             {(() => {
@@ -168,7 +175,7 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
               }
 
               return comments.data?.map((comment) => (
-                <Comment data={comment} />
+                <Comment key={comment.id} data={comment} />
               ));
             })()}
           </section>

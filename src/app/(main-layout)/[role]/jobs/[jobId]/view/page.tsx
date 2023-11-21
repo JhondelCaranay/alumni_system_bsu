@@ -1,6 +1,9 @@
 "use client";
 
-import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  useMutateProcessor,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { SafeUser, UserWithProfile } from "@/types/types";
@@ -34,9 +37,12 @@ import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 
-const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
-  ssr: false,
-});
+const FroalaEditorView = dynamic(
+  () => import("react-froala-wysiwyg/FroalaEditorView"),
+  {
+    ssr: false,
+  }
+);
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
@@ -65,18 +71,15 @@ const JobDetailPage = (props: Props) => {
     }
   );
 
-  const comments = useQueryProcessor<(CommentSchemaType & { user: UserWithProfile })[]>(
-    `/comments`,
-    { postId: job.data?.id },
-    ["jobs", job.data?.id, "comments"],
-    {
-      enabled:
-        typeof job.data?.id === "string" &&
-        typeof job.data?.id !== "object" &&
-        typeof job.data?.id !== "undefined" &&
-        isCommenting,
-    }
-  );
+  const comments = useQueryProcessor<
+    (CommentSchemaType & { user: UserWithProfile })[]
+  >(`/comments`, { postId: job.data?.id }, ["jobs", job.data?.id, "comments"], {
+    enabled:
+      typeof job.data?.id === "string" &&
+      typeof job.data?.id !== "object" &&
+      typeof job.data?.id !== "undefined" &&
+      isCommenting,
+  });
 
   const deleteJob = useMutateProcessor<string, unknown>(
     `/posts/${jobId}`,
@@ -85,11 +88,30 @@ const JobDetailPage = (props: Props) => {
     ["jobs"],
     {
       enabled:
-        typeof jobId === "string" && typeof jobId !== "object" && typeof jobId !== "undefined",
+        typeof jobId === "string" &&
+        typeof jobId !== "object" &&
+        typeof jobId !== "undefined",
     }
   );
 
-  useCommentSocket({ postKey: `posts:${jobId}:comments`, queryKey: ["jobs", jobId, "comments"] });
+  /*  
+  
+  useCommentSocket({
+    postKey: `posts:${jobId}:comments`,
+    queryKey: ["jobs", jobId, "comments"],
+  });
+
+  ./src/app/(main-layout)/[role]/jobs/[jobId]/view/page.tsx:92:22
+  Type error: Argument of type '{ postKey: string; queryKey: string[]; }' is not assignable to parameter of type 'ChatSocketProps'.
+  Object literal may only specify known properties, and 'postKey' does not exist in type 'ChatSocketProps'.
+
+> 92 |   useCommentSocket({ postKey: `posts:${jobId}:comments`, queryKey: ["jobs", jobId, "comments"] });
+ */
+  useCommentSocket({
+    commentsKey: `posts:${jobId}:comments`,
+    repliesKey: `posts/${jobId}:reply`,
+    queryKey: ["jobs", jobId, "comments"],
+  });
 
   const onDelete = () => {
     deleteJob.mutate(jobId as string);
@@ -135,7 +157,9 @@ const JobDetailPage = (props: Props) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
-                onClick={() => router.push(`/dashboard/jobs/${job.data.id}/edit`)}
+                onClick={() =>
+                  router.push(`/dashboard/jobs/${job.data.id}/edit`)
+                }
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update
@@ -152,9 +176,16 @@ const JobDetailPage = (props: Props) => {
         )}
 
         <div className="flex items-center space-x-4">
-          <Avatar className="w-7 h-7 rounded-full" src={job.data?.user?.image as string} />
-          <span className="font-medium dark:text-white">{job.data?.user?.name}</span>
-          <span className="text-sm">{format(new Date(job.data.createdAt), DATE_FORMAT)}</span>
+          <Avatar
+            className="w-7 h-7 rounded-full"
+            src={job.data?.user?.image as string}
+          />
+          <span className="font-medium dark:text-white">
+            {job.data?.user?.name}
+          </span>
+          <span className="text-sm">
+            {format(new Date(job.data.createdAt), DATE_FORMAT)}
+          </span>
         </div>
         <div className="my-5 p-2 bg-white">
           <FroalaEditorView model={job.data.description} />
@@ -198,9 +229,12 @@ const JobDetailPage = (props: Props) => {
           {(() => {
             if (comments.status === "pending") return <JobCommentSkeleton />;
 
-            if (comments.status === "error") return <h1>Loading comments error</h1>;
+            if (comments.status === "error")
+              return <h1>Loading comments error</h1>;
 
-            return comments.data.map((comment) => <Comment data={comment} key={comment.id} />);
+            return comments.data.map((comment) => (
+              <Comment data={comment} key={comment.id} />
+            ));
           })()}
         </div>
       </section>

@@ -31,8 +31,8 @@ export default withAuth(
     ) {
       return NextResponse.next();
     } else if (
-      isPathMatch(pathname, `/${roleLowerCase}/course`) &&
-      isUserAllowed(roleLowerCase, ["ADMIN"])
+      isPathMatch(pathname, `/${roleLowerCase}/courses`) &&
+      isUserAllowed(role, ["ADMIN"])
     ) {
       return NextResponse.next();
     } else if (

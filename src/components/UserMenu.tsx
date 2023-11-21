@@ -12,12 +12,13 @@ import { ModeToggle } from "./ModeToggle";
 import { signOut } from "next-auth/react";
 import { capitalizeWords } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
 };
 const UserMenu = ({ currentUser }: UserMenuProps) => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,7 +37,11 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           transition
           "
         >
-          <img src={currentUser?.image as string} className="rounded-full object-cover h-[40px] w-[40px]" />
+          <Image
+            src={currentUser?.image as string}
+            className="rounded-full object-cover h-[40px] w-[40px]"
+            alt="profile image"
+          />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -44,8 +49,12 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           {capitalizeWords(currentUser?.role!)}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push(`/${currentUser?.role.toLowerCase()}/profile`)}>
-           Profile
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/${currentUser?.role.toLowerCase()}/profile`)
+          }
+        >
+          Profile
         </DropdownMenuItem>
         <DropdownMenuItem>
           <ModeToggle />

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 type ChatSocketProps = {
-  commentsKey:string;
+  commentsKey?:string;
   repliesKey: string;
   queryKey: (string | any)[];
 };

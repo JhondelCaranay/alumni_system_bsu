@@ -76,7 +76,6 @@ export default function DepartmentCheckbox({
     ["departments"]
   );
 
-
   if (departments.status === "error")
     return <span>Something went wrong...</span>;
   if (
@@ -85,11 +84,10 @@ export default function DepartmentCheckbox({
   )
     return <Loader size={20} />;
 
-    const selectableDepartments = departments.data.map((department) => ({
-        label: department.name,
-        value: department.id,
-      }));
-
+  const selectableDepartments = departments.data.map((department) => ({
+    label: department.name,
+    value: department.id,
+  }));
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -118,41 +116,43 @@ export default function DepartmentCheckbox({
                   <FormItem>
                     <CommandGroup className="">
                       {selectableDepartments.map((item) => (
-                        <CommandItem>
-                        <FormField
-                          key={item.value}
-                          control={form.control}
-                          name="items"
-                          render={({ field }) => {
-                            return (
-                              <FormItem
-                                key={item.value}
-                                className="flex flex-row items-start space-x-3 space-y-0"
-                              >
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(item.value)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...field.value,
-                                            item.value,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== item.value
-                                            )
-                                          );
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel className="font-normal">
-                                  {item.label}
-                                </FormLabel>
-                              </FormItem>
-                            );
-                          }}
-                        />
+                        <CommandItem key={item.value}>
+                          <FormField
+                            key={item.value}
+                            control={form.control}
+                            name="items"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={item.value}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(
+                                        item.value
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.value,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.value
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {item.label}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
                         </CommandItem>
                       ))}
                     </CommandGroup>

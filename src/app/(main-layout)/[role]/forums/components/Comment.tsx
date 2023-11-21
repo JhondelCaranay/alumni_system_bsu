@@ -104,7 +104,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
 
       <section className="flex flex-col px-6 py-0">
         {data.replies.map((reply) => (
-          <Reply data={reply} onReplyInput={onReplyInput} />
+          <Reply key={reply.id} data={reply} onReplyInput={onReplyInput} />
         ))}
 
         {isReplying && (

@@ -100,9 +100,14 @@ const JobInfo = () => {
     router.push("/dashboard/jobs");
   };
 
+  /* 
+106:6  Warning: React Hook useEffect has missing dependencies: 'comments' and 'job'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+  */
   useEffect(() => {
-    job.refetch();
-    comments.refetch();
+    if (f) {
+      job.refetch();
+      comments.refetch();
+    }
   }, [f]);
 
   const session = useSession();

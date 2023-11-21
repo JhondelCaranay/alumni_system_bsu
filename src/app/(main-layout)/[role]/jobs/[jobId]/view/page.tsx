@@ -50,7 +50,7 @@ type Props = {};
 const JobDetailPage = (props: Props) => {
   const [isCommenting, setIsCommenting] = useState(true);
   const params = useParams();
-
+  const role = params?.role as string;
   const jobId = params?.jobId as string;
 
   const job = useQueryProcessor<
@@ -115,11 +115,11 @@ const JobDetailPage = (props: Props) => {
 
   const onDelete = () => {
     deleteJob.mutate(jobId as string);
-    router.push("/dashboard/jobs");
+    router.push(`/${role}/jobs`);
   };
 
   const onClose = () => {
-    router.push("/dashboard/jobs");
+    router.push(`/${role}/jobs`);
   };
 
   const session = useSession();
@@ -157,9 +157,7 @@ const JobDetailPage = (props: Props) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
-                onClick={() =>
-                  router.push(`/dashboard/jobs/${job.data.id}/edit`)
-                }
+                onClick={() => router.push(`/${role}/jobs/${job.data.id}/edit`)}
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update

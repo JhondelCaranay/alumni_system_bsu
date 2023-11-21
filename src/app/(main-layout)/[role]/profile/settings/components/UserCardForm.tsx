@@ -59,7 +59,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
       >
 
         {
-          updateProfile.status === 'pending' ? <Loader size={30} /> : <img src={ (form.getValues('imageUrl') || data?.image) as string} className="h-[110px] w-[110px] rounded-sm object-cover" />
+          updateProfile.status === 'pending' ? <div className="h-[110px] w-[110px]"><Loader size={30} /></div>  : <img src={ (form.getValues('imageUrl') || data?.image) as string} className="h-[110px] w-[110px] rounded-sm object-cover" />
         }
 
         <div className="flex flex-col ml-2 justify-between h-full">

@@ -169,7 +169,7 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
               </ul>
         </div>
 
-        <Button className="w-fit mt-auto text-white" type="submit" >{
+        <Button className="w-fit mt-auto text-white" type="submit" disabled={isLoading} >{
           (() => {
             if(isLoading) return <div className="flex items-center gap-x-2"> <Loader  size={20} /> Saving</div>
 

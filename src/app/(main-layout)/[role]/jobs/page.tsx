@@ -26,7 +26,10 @@ const JobsPage = async (props: JobsPageProps) => {
   return (
     <div className="flex flex-col p-5 md:p-10 pb-0">
       {currentUser && allowedRoles.includes(currentUser?.role) && (
-        <Link href={"/dashboard/jobs/create"} className="self-end pb-2">
+        <Link
+          href={`/${currentUser.role.toLowerCase()}/jobs/create`}
+          className="self-end pb-2"
+        >
           <Button className="w-fit dark:text-white">
             <PenSquare className="w-5 h-5 mr-2" /> Post a job.{" "}
           </Button>

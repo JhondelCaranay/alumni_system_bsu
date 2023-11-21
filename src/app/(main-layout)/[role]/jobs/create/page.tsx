@@ -1,54 +1,62 @@
-"use client"
-import React, { useEffect, useState } from 'react'
+"use client";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { useMutateProcessor } from '@/hooks/useTanstackQuery';
-import { CreatePostSchemaType, PostSchemaType } from '@/schema/post';
-import toast from 'react-hot-toast';
-import { Lightbulb } from 'lucide-react';
-import { PostType } from '@prisma/client';
+import { Button } from "@/components/ui/button";
+import { useParams, useRouter } from "next/navigation";
+import { useMutateProcessor } from "@/hooks/useTanstackQuery";
+import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
+import toast from "react-hot-toast";
+import { Lightbulb } from "lucide-react";
+import { PostType } from "@prisma/client";
 // import Editor from '../components/Editor'
 const Editor = dynamic(() => import("../components/Editor"), {
   ssr: false,
 });
 
 const PostAJobPage = () => {
+  const [model, setModel] = useState("");
+  const params = useParams();
+  const role = params?.role as string;
 
-  const [model, setModel] = useState('');
+  const router = useRouter();
 
-  const router = useRouter()
-
-  const createJob = useMutateProcessor<CreatePostSchemaType, PostSchemaType>(`/posts`, null, 'POST', ['jobs']);
+  const createJob = useMutateProcessor<CreatePostSchemaType, PostSchemaType>(
+    `/posts`,
+    null,
+    "POST",
+    ["jobs"]
+  );
 
   const onPost = () => {
-    if(model !== '') {
-      createJob.mutate({description: model, type: PostType.JOBS}, {
-        onSuccess(data, variables, context) {
-          localStorage.removeItem('savedContent')
-          toast.success('Job has been uploaded.');
+    if (model !== "") {
+      createJob.mutate(
+        { description: model, type: PostType.JOBS },
+        {
+          onSuccess(data, variables, context) {
+            localStorage.removeItem("savedContent");
+            toast.success("Job has been uploaded.");
 
-            router.push('/dashboard/jobs')
-        },
-      })
+            router.push(`/${role}/jobs`);
+          },
+        }
+      );
     }
-  }
+  };
   const onCancel = () => {
-    localStorage.removeItem('savedContent')
-    router.push('/dashboard/jobs')
-  }
+    localStorage.removeItem("savedContent");
+    router.push("/dashboard/jobs");
+  };
 
   useEffect(() => {
     const savedContent = localStorage.getItem("savedContent");
-    if(savedContent) {
-      setModel( savedContent)
+    if (savedContent) {
+      setModel(savedContent);
     }
 
     return () => {
-      localStorage.removeItem('savedContent')
-    }
-  }, [])
-  
+      localStorage.removeItem("savedContent");
+    };
+  }, []);
 
   return (
     <div className="p-5 dark:bg-[#020817]">
@@ -58,7 +66,9 @@ const PostAJobPage = () => {
           {" "}
           Create a high quality job post, to learn more
           <kbd className="mx-2 ">
-            <span className="bg-zinc-200 p-2 rounded-md text-xs dark:text-white dark:bg-zinc-400">Ctrl + /</span>
+            <span className="bg-zinc-200 p-2 rounded-md text-xs dark:text-white dark:bg-zinc-400">
+              Ctrl + /
+            </span>
           </kbd>
           while you focus on the text editor.
         </h1>
@@ -66,9 +76,13 @@ const PostAJobPage = () => {
 
       <Editor model={model} onChange={(value) => setModel(value)} />
 
-      <div className='flex justify-end mt-10 gap-x-3'>
-        <Button variant={'outline'} onClick={onCancel}>Cancel</Button>
-        <Button variant={'default'} onClick={onPost}>Post</Button>
+      <div className="flex justify-end mt-10 gap-x-3">
+        <Button variant={"outline"} onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant={"default"} onClick={onPost}>
+          Post
+        </Button>
       </div>
     </div>
   );

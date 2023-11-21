@@ -1,7 +1,6 @@
 "use client";
 import qs from "query-string";
-import React, { useEffect, useState } from "react";
-import { Separator } from "@/components/ui/separator";
+import React, { useEffect } from "react";
 import JobPost from "./JobPost";
 import JobInfo from "./JobInfo";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
@@ -10,7 +9,6 @@ import { CommentSchemaType } from "@/schema/comment";
 import { SafeUser } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
-import useWindowSize from "@/hooks/useWindowSize";
 
 const JobsClient = () => {
   // const windowSize = useWindowSize();
@@ -58,7 +56,7 @@ const JobsClient = () => {
 
   useEffect(() => {
     jobs.refetch();
-  }, []);
+  }, undefined);
 
   if (jobs.status === "pending")
     return (

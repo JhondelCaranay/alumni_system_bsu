@@ -46,7 +46,7 @@ import {
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, Image, X } from "lucide-react";
+import { ChevronsUpDown, X } from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
@@ -54,6 +54,7 @@ import axios from "axios";
 import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
 import { PostType } from "@prisma/client";
 import { useToast } from "../ui/use-toast";
+import Image from "next/image";
 
 const CreateDiscussionModal = () => {
   const { data: session } = useSession();
@@ -105,9 +106,11 @@ const CreateDiscussionModal = () => {
     textAreaRef.current = textArea;
   }, []);
 
+  const description = form.getValues("description");
+
   useLayoutEffect(() => {
     updateTextAreaHeight(textAreaRef.current);
-  }, [form.getValues("description")]);
+  }, [description]);
 
   const updateTextAreaHeight = (textArea?: HTMLTextAreaElement) => {
     if (!textArea) return;
@@ -149,7 +152,7 @@ const CreateDiscussionModal = () => {
   };
 
   // remove photo from state
-  const removeFiles = (file: {url: string; id: number | string}) => {
+  const removeFiles = (file: { url: string; id: number | string }) => {
     const images = form.getValues("photos") as {
       file: File;
       id: number | string;
@@ -157,7 +160,7 @@ const CreateDiscussionModal = () => {
     const filteredImages = images.filter(
       (formImages) => file.id != formImages.id
     );
-    
+
     form.setValue("photos", filteredImages);
     const filteredImagesToDisplay = filesToDisplay.filter(
       (fileToDisplay) => fileToDisplay.id != file.id
@@ -166,7 +169,6 @@ const CreateDiscussionModal = () => {
     setFilesToDisPlay(filteredImagesToDisplay);
   };
 
-  
   const createDiscussion = useMutateProcessor<
     CreatePostSchemaType,
     PostSchemaType
@@ -240,8 +242,6 @@ const CreateDiscussionModal = () => {
     }
   };
 
- 
-
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -286,7 +286,7 @@ const CreateDiscussionModal = () => {
                               <CommandEmpty>No department found.</CommandEmpty>
                               <CommandGroup className="">
                                 {selectableDepartments?.map((item) => (
-                                  <CommandItem>
+                                  <CommandItem key={item.value}>
                                     <FormField
                                       key={item.value}
                                       control={form.control}
@@ -361,15 +361,16 @@ const CreateDiscussionModal = () => {
                 />
                 <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5">
                   {filesToDisplay.map((file) => {
-                    
                     return (
-                      <div className="relative rounded-md w-full max-h-[20em]">
+                      <div
+                        key={file.id}
+                        className="relative rounded-md w-full max-h-[20em]"
+                      >
                         <X
                           className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600"
                           onClick={() => removeFiles(file)}
                         />
-                        <img
-                          key={file.id}
+                        <Image
                           src={file.url}
                           alt="post image"
                           className="h-full w-full object-cover"
@@ -390,7 +391,11 @@ const CreateDiscussionModal = () => {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <label htmlFor="photos">
-                            <Image className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
+                            <Image
+                              src={field.value}
+                              alt="photo"
+                              className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300"
+                            />
                           </label>
                           <FormControl>
                             <Input

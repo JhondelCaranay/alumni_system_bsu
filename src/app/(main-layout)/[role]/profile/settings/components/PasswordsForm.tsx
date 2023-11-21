@@ -26,7 +26,16 @@ type PasswordsProps = {
 const Passwords: React.FC<PasswordsProps> = ({ data }) => {
   const formSchema = z
     .object({
-      newPassword: z.string().min(1, { message: "New Password is required" }),
+      password: z.string()
+      .min(1, { message: "New Password is required" })
+      .refine(
+        (value) =>
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+            value
+          ),
+        "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
+      )
+      ,
       confirmPassword: z
         .string()
         .min(1, { message: "Confirmation Password is required" }),
@@ -34,7 +43,7 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
         .string()
         .min(1, { message: "Current Password is required" }),
     })
-    .refine((data) => data.newPassword === data.confirmPassword, {
+    .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords don't match",
       path: ["confirmPassword"],
     });
@@ -45,7 +54,7 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
     defaultValues: {
       confirmPassword: "",
       currentPassword: "",
-      newPassword: "",
+      password: "",
     },
     resolver: zodResolver(formSchema),
     mode: "all",
@@ -65,6 +74,7 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
     updatePassword.mutate(values, {
       onSuccess(data, variables, context) {
         toast.success('Password updated')
+        form.reset()
       },
     });
   };
@@ -78,11 +88,11 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
       >
         <h1 className="text-2xl">Password Information</h1>
 
-        <div className="flex flex-col justify-between mt-10">
+        <div className="flex flex-col justify-between mt-5">
           <div className="flex flex-col mb-10 gap-y-5">
             <FormField
               control={form.control}
-              name="newPassword"
+              name="password"
               render={({ field }) => (
                 <FormItem className="flex flex-col items-start flex-1">
                   <FormLabel className="text-sm text-black dark:text-zinc-400">
@@ -146,6 +156,17 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="my-auto">
+            <h3 className="text-sm font-semibold">Password requirements:</h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Ensure that these requirements are met:</p>
+
+              <ul className="text-xs text-zinc-500 py-1 px-2 dark:text-zinc-400">
+                <li>At least 8 characters</li>
+                <li>At least one uppercase & lowercase character</li>
+                <li>At least one special & number character, e.g., ! @ # ?</li>
+              </ul>
         </div>
 
         <Button className="w-fit mt-auto text-white" type="submit" >{

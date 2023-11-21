@@ -29,13 +29,19 @@ export const UpdateUsersSchema = UserSchema.extend({
   barangay: z.string(),
   province: z.string(),
   contactNo: z.string(),
-  password: z.string(),
+  password: z.string()
+  .refine(
+    (value) =>
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+        value
+      ),
+    "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
+  )
+  ,
   confirmPassword: z.string(),
   currentPassword: z.string(),
 })
-  .partial(
-    
-  )
+  .partial()
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],

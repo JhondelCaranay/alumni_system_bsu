@@ -181,7 +181,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                  disabled={true}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     type="email"
                     placeholder={`Enter bsu email`}
@@ -325,7 +325,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
           </div>
 
 
-        <Button className="w-fit text-white" type="submit" >{
+        <Button className="w-fit text-white" type="submit" disabled={isLoading} >{
           (() => {
             if(isLoading) return <div className="flex items-center gap-x-2"> <Loader  size={20} /> Saving</div>
 

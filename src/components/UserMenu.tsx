@@ -34,14 +34,16 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           rounded-full 
           cursor-pointer 
           hover:shadow-md 
-          transition
-          "
+          transition"
         >
-          <Image
-            src={currentUser?.image as string}
-            className="rounded-full object-cover h-[40px] w-[40px]"
-            alt="profile image"
-          />
+          <div className=" relative w-10 h-10">
+            <Image
+              src={currentUser?.image as string}
+              fill
+              className="rounded-full object-cover"
+              alt="profile image"
+            />
+          </div>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

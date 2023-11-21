@@ -13,8 +13,8 @@ const Avatar = ({ src, className }: AvatarProps) => {
     <div className={cn("relative w-10 h-10", className)}>
       <Image
         className={`rounded-full object-cover object-center`}
-        // height={40}
-        // width={40}
+        // height={500}
+        // width={500}
         fill
         // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         alt="Avatar"

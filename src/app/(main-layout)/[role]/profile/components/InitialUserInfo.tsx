@@ -1,20 +1,16 @@
-import { GetCurrentUserType } from '@/actions/getCurrentUser'
-import Avatar from '@/components/Avatar'
-import { MapPin, Waypoints } from 'lucide-react'
-import React from 'react'
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
+import Avatar from "@/components/Avatar";
+import { MapPin, Waypoints } from "lucide-react";
+import React from "react";
 
 type IntialUserInfoProps = {
-    data: GetCurrentUserType 
-}
-const InitialUserInfo:React.FC<IntialUserInfoProps> = ({data}) => {
-    
+  data: GetCurrentUserType;
+};
+const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
   return (
     <div className="flex-[0.6] flex flex-col w-full gap-y-5 p-5 bg-white dark:bg-[#1F2937] rounded-lg">
       <div className="flex flex-col gap-y-1">
-        <Avatar
-          src={data?.image}
-          className="h-[80px] w-[80px] rounded-md"
-        />
+        <Avatar src={data?.image} className="h-[80px] w-[80px] rounded-md" />
         <span className="font-semibold text-md text-black dark:text-white">
           {data?.name}
         </span>
@@ -42,8 +38,9 @@ const InitialUserInfo:React.FC<IntialUserInfoProps> = ({data}) => {
           Home address
         </label>
         <span className="flex text-sm gap-x-1 text-black font-semibold dark:text-white">
-          {data?.profile?.province} {data?.profile?.city} {data?.profile?.street}{" "}
-          {data?.profile?.homeNo} {data?.profile?.barangay}{" "}
+          {data?.profile?.province} {data?.profile?.city}{" "}
+          {data?.profile?.street} {data?.profile?.homeNo}{" "}
+          {data?.profile?.barangay}{" "}
         </span>
       </div>
 
@@ -56,7 +53,7 @@ const InitialUserInfo:React.FC<IntialUserInfoProps> = ({data}) => {
         </span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InitialUserInfo
+export default InitialUserInfo;

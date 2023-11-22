@@ -22,12 +22,10 @@ import { useModal } from "@/hooks/useModalStore";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { createId } from "@paralleldrive/cuid2";
 import { Input } from "../ui/input";
 import { Loader } from "../ui/loader";
 import { Pencil } from "lucide-react";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
-import { useQueryClient } from "@tanstack/react-query";
 import { Event } from "@prisma/client";
 import toast from "react-hot-toast";
 

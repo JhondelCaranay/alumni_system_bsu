@@ -4,6 +4,7 @@ import ArchiveUserModal from '../modals/ArchiveUserModal';
 import CreateEventModal from '../modals/CreateEventModal';
 import ViewEventModal from '../modals/ViewEventModal';
 import CreateDiscussionModal from '../modals/CreateDiscussionModal';
+import CreateGuardianModal from '../modals/CreateGuardianModal';
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -22,6 +23,7 @@ const ModalProvider = () => {
         <CreateEventModal />
         <ViewEventModal />
         <CreateDiscussionModal />
+        <CreateGuardianModal />
     </>
   )
 }

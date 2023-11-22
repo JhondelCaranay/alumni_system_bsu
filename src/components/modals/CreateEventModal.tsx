@@ -82,7 +82,7 @@ const CreateEventModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="text-black overflow-hidden dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Create Event{" "}
@@ -107,7 +107,7 @@ const CreateEventModal = () => {
                       <FormControl>
                         <Input
                         disabled={isLoading}
-                          className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                          className="focus-visible:ring-0 focus-visible:ring-offset-0"
                           type="type"
                           placeholder={`Enter title`}
                           {...field}
@@ -133,7 +133,7 @@ const CreateEventModal = () => {
                         disabled={isLoading}
                         cols={7}
                         rows={7}
-                          className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none"
+                          className="focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
                           placeholder={`Enter description`}
                           {...field}
                         />

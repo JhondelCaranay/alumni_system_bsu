@@ -46,7 +46,7 @@ import {
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, X } from "lucide-react";
+import { ChevronsUpDown, X, Image as ImageUpload} from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
@@ -391,9 +391,7 @@ const CreateDiscussionModal = () => {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <label htmlFor="photos">
-                            <Image
-                              src={field.value}
-                              alt="photo"
+                            <ImageUpload
                               className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300"
                             />
                           </label>

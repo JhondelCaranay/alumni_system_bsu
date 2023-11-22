@@ -23,14 +23,14 @@ import { z } from "zod";
 import { Input } from "../ui/input";
 import { Loader } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
-import { Relationship } from "@prisma/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+// import { Relationship } from "@prisma/client";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "../ui/select";
 
 const CreateGuardianModal = () => {
   const { isOpen, type, onClose } = useModal();
@@ -60,7 +60,7 @@ const CreateGuardianModal = () => {
     mode: "all",
   });
 
-  const relations = Object.values(Relationship);
+  // const relations = Object.values(Relationship);
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit: SubmitHandler<formGuardianSchemaType> = async (values) => {
@@ -156,7 +156,7 @@ const CreateGuardianModal = () => {
               </div>
 
               <div className="w-full">
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="relationship"
                   render={({ field }) => (
@@ -184,7 +184,29 @@ const CreateGuardianModal = () => {
                       <FormMessage />
                     </FormItem>
                   )}
+                /> */}
+
+                <FormField
+                  control={form.control}
+                  name="relationship"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                        Relationship
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                          placeholder={`Enter relationship to this guardian`}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+
               </div>
 
               <DialogFooter className="py-4">

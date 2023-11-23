@@ -38,11 +38,11 @@ enum PostType {
   FEED
 }
 
-enum Relationship {
-  FATHER
-  MOTHER
-  GUARDIAN
-}
+// enum Relationship {
+//   FATHER
+//   MOTHER
+//   GUARDIAN
+// }
 
 model Event {
   id String @id @default(cuid())
@@ -168,18 +168,20 @@ model Guardian {
   id String @id @unique @default(cuid())
 
   firstname  String
-  lastName   String
+  lastname   String
   occupation String
 
-  relationShip Relationship
+  relationship String
+  isArchived   Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id])
+  // STUDENT ID
+  childrenId String
+  profile    Profile @relation(fields: [childrenId], references: [id])
 
-  @@index([profileId])
+  @@index([childrenId])
 }
 
 model Profile {

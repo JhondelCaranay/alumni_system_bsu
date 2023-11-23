@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Loader } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
-import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType } from "@/schema/guardian";
+import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType, UpdateGuardianInput } from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
 
@@ -36,9 +36,9 @@ import toast from "react-hot-toast";
 //   SelectValue,
 // } from "../ui/select";
 
-const CreateGuardianModal = () => {
+const UpdateGuardianModal = () => {
   const { isOpen, type, onClose, data } = useModal();
-  const isModalOpen = isOpen && type === "createGuardian";
+  const isModalOpen = isOpen && type === "updateGuardian";
 
   const onHandleClose = () => {
     onClose();
@@ -65,22 +65,26 @@ const CreateGuardianModal = () => {
   });
 
   const setChildren = () => {
-    form.setValue('childrenId', data?.user?.profile?.id as string)
+    form.setValue('childrenId', data?.guardian?.childrenId as string)
+    form.setValue('firstname', data?.guardian?.firstname as string)
+    form.setValue('lastname', data?.guardian?.lastname as string)
+    form.setValue('occupation', data?.guardian?.occupation as string)
+    form.setValue('relationship', data?.guardian?.relationship as string)
   }
 
   useEffect(() => {
     setChildren()
   }, [isModalOpen])
 
-  const createGuardian = useMutateProcessor<CreateGuardianInput, GuardianSchemaType>('/guardians', null, 'POST', ['guardians'])
-  const isLoading = form.formState.isSubmitting || createGuardian.status === 'pending';
+  const updateGuardian = useMutateProcessor<UpdateGuardianInput, GuardianSchemaType>(`/guardians/${data.guardian?.id}`, null, 'PATCH', ['guardians'])
+  const isLoading = form.formState.isSubmitting || updateGuardian.status === 'pending';
 
   const onSubmit: SubmitHandler<CreateGuardianInput> = async (values) => {
-    createGuardian.mutate(values, {
+    updateGuardian.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Information has been added')
+        toast.success('Information has been updated')
         form.reset()
-        setChildren()
+        onClose()
       },
     })
   };
@@ -91,11 +95,11 @@ const CreateGuardianModal = () => {
         <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
-              Add Guardian
+              Edit Guardian
             </DialogTitle>
 
             <DialogDescription className="text-center text-zinc m-2 font-semibold dark:text-white">
-              Add information about your family/guardian.
+              Edit information about your family/guardian.
             </DialogDescription>
           </DialogHeader>
 
@@ -242,7 +246,7 @@ const CreateGuardianModal = () => {
                           saving <Loader size={20} />
                         </div>
                       );
-                    return "Add guardian";
+                    return "Update guardian";
                   })()}
                 </Button>
               </DialogFooter>
@@ -254,4 +258,4 @@ const CreateGuardianModal = () => {
   );
 };
 
-export default CreateGuardianModal;
+export default UpdateGuardianModal;

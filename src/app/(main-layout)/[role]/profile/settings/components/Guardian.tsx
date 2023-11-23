@@ -1,14 +1,20 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useModal } from '@/hooks/useModalStore'
+import { GuardianSchemaType } from '@/schema/guardian'
 import { Archive, MoreHorizontal, Pencil, XSquare } from 'lucide-react'
 import React from 'react'
 
-const Guardian = () => {
+type GuardianProps = {
+  data:GuardianSchemaType
+}
+const Guardian:React.FC<GuardianProps> = ({data}) => {
+  const {onOpen} = useModal()
   return (
     <div className='flex justify-between'>
               <div className='flex flex-col gap-y-1'>
-                  <span className='font-semibold'>{'John Doe'}</span>
-                  <span className='text-zinc-400 text-xs flex items-center'> {'Father'}</span>
-                  <span className='text-zinc-400 text-xs flex items-center'> {'Graphic Designer'}</span>
+                  <span className='font-semibold capitalize'>{data?.firstname} {data?.lastname}</span>
+                  <span className='text-zinc-400 text-xs flex items-center capitalize'> {data?.relationship}</span>
+                  <span className='text-zinc-400 text-xs flex items-center capitalize'> {data?.occupation}</span>
               </div>
 
               <DropdownMenu>
@@ -24,19 +30,21 @@ const Guardian = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
+                onClick={() => onOpen('updateGuardian', {guardian: data})}
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+                onClick={() => onOpen('deleteGuardian', {guardian: data})}
+
               >
                 <Archive className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
             </div>
   )
 }

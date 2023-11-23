@@ -5,6 +5,8 @@ import CreateEventModal from '../modals/CreateEventModal';
 import ViewEventModal from '../modals/ViewEventModal';
 import CreateDiscussionModal from '../modals/CreateDiscussionModal';
 import CreateGuardianModal from '../modals/CreateGuardianModal';
+import UpdateGuardianModal from '../modals/UpdateGuardianModal';
+import DeleteGurdianModal from '../modals/DeleteGuardianModal';
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -24,6 +26,8 @@ const ModalProvider = () => {
         <ViewEventModal />
         <CreateDiscussionModal />
         <CreateGuardianModal />
+        <UpdateGuardianModal />
+        <DeleteGurdianModal />
     </>
   )
 }

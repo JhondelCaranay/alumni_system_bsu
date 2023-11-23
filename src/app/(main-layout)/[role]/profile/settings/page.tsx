@@ -16,11 +16,10 @@ const UserSettingsPage = async () => {
             </div>
             <div className="flex-1">
               <GeneralInfoForm data={user} />
-
             </div>
         </div>
 
-        <GuardianInfoForm />
+        <GuardianInfoForm data={user} />
 
     </div>
   );

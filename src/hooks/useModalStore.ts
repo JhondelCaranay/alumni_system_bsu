@@ -1,16 +1,19 @@
+import { GetCurrentUserType } from '@/actions/getCurrentUser'
+import { GuardianSchemaType } from '@/schema/guardian'
 import { UserProfileWithDepartmentSection, UserWithProfile } from '@/types/types'
 import { Profile, User } from '@prisma/client'
 import {create} from 'zustand'
 
-export type ModalType = 'importStudents'  | 'archiveUser' |'createEvent' | 'viewEvent' | 'createDiscussion' | 'createGuardian'
+export type ModalType = 'importStudents'  | 'archiveUser' |'createEvent' | 'viewEvent' | 'createDiscussion' | 'createGuardian' | 'updateGuardian' | 'deleteGuardian'
 
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."
 
 type ModalData = {
-    user?: User | UserWithProfile | UserProfileWithDepartmentSection;
-    calendarApi?: any
+    user?: UserWithProfile | UserProfileWithDepartmentSection | GetCurrentUserType;
+    calendarApi?: any;
+    guardian?: GuardianSchemaType;
 }
 
 type ModalStore = {

@@ -1,4 +1,5 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useModal } from '@/hooks/useModalStore'
 import { GuardianSchemaType } from '@/schema/guardian'
 import { Archive, MoreHorizontal, Pencil, XSquare } from 'lucide-react'
 import React from 'react'
@@ -7,6 +8,7 @@ type GuardianProps = {
   data:GuardianSchemaType
 }
 const Guardian:React.FC<GuardianProps> = ({data}) => {
+  const {onOpen} = useModal()
   return (
     <div className='flex justify-between'>
               <div className='flex flex-col gap-y-1'>
@@ -28,12 +30,15 @@ const Guardian:React.FC<GuardianProps> = ({data}) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
+                onClick={() => onOpen('updateGuardian', {guardian: data})}
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+                onClick={() => onOpen('deleteGuardian', {guardian: data})}
+
               >
                 <Archive className="h-4 w-4 mr-2" />
                 Delete

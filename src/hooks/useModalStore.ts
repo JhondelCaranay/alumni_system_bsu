@@ -1,3 +1,4 @@
+import { GetCurrentUserType } from '@/actions/getCurrentUser'
 import { UserProfileWithDepartmentSection, UserWithProfile } from '@/types/types'
 import { Profile, User } from '@prisma/client'
 import {create} from 'zustand'
@@ -9,7 +10,7 @@ export type ModalType = 'importStudents'  | 'archiveUser' |'createEvent' | 'view
 // export type ModalType = "..." | "...." | "...."
 
 type ModalData = {
-    user?: User | UserWithProfile | UserProfileWithDepartmentSection;
+    user?: UserWithProfile | UserProfileWithDepartmentSection | GetCurrentUserType;
     calendarApi?: any
 }
 

@@ -19,10 +19,14 @@ import {
 } from "../ui/form";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+// import { z } from "zod";
 import { Input } from "../ui/input";
 import { Loader } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
+import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType } from "@/schema/guardian";
+import { useMutateProcessor } from "@/hooks/useTanstackQuery";
+import toast from "react-hot-toast";
+
 // import { Relationship } from "@prisma/client";
 // import {
 //   Select,
@@ -33,38 +37,52 @@ import { useModal } from "@/hooks/useModalStore";
 // } from "../ui/select";
 
 const CreateGuardianModal = () => {
-  const { isOpen, type, onClose } = useModal();
+  const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "createGuardian";
 
   const onHandleClose = () => {
     onClose();
   };
 
-  const formGuardianSchema = z.object({
-    firstname: z.string().min(1, { message: "Required" }),
-    lastName: z.string().min(1, { message: "Required" }),
-    occupation: z.string().min(1, { message: "Required" }),
-    relationship: z.string().min(1, { message: "Required" }),
-  });
+  // const formGuardianSchema = z.object({
+  //   firstname: z.string().min(1, { message: "Required" }),
+  //   lastname: z.string().min(1, { message: "Required" }),
+  //   occupation: z.string().min(1, { message: "Required" }),
+  //   relationship: z.string().min(1, { message: "Required" }),
+  // });
 
-  type formGuardianSchemaType = z.infer<typeof formGuardianSchema>;
-
-  const form = useForm<formGuardianSchemaType>({
-    resolver: zodResolver(formGuardianSchema),
+  // type formGuardianSchemaType = z.infer<typeof formGuardianSchema>;
+  
+  const form = useForm<CreateGuardianInput>({
+    resolver: zodResolver(CreateGuardianSchema),
     defaultValues: {
       firstname: "",
-      lastName: "",
+      lastname: "",
       occupation: "",
       relationship: "",
     },
     mode: "all",
   });
 
-  // const relations = Object.values(Relationship);
-  const isLoading = form.formState.isSubmitting;
+  const setChildren = () => {
+    form.setValue('childrenId', data?.user?.profile?.id as string)
+  }
 
-  const onSubmit: SubmitHandler<formGuardianSchemaType> = async (values) => {
-    console.log(values);
+  useEffect(() => {
+    setChildren()
+  }, [isModalOpen])
+
+  const createGuardian = useMutateProcessor<CreateGuardianInput, GuardianSchemaType>('/guardians', null, 'POST', ['guardians'])
+  const isLoading = form.formState.isSubmitting || createGuardian.status === 'pending';
+
+  const onSubmit: SubmitHandler<CreateGuardianInput> = async (values) => {
+    createGuardian.mutate(values, {
+      onSuccess(data, variables, context) {
+        toast.success('Information has been added')
+        form.reset()
+        setChildren()
+      },
+    })
   };
 
   return (
@@ -112,7 +130,7 @@ const CreateGuardianModal = () => {
               <div className="w-full">
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="lastname"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">

@@ -30,6 +30,6 @@ export const UpdateGuardianSchema = GuardianSchema.partial().pick({
   relationship: true,
   childrenId: true,
 });
-
+export type GuardianSchemaType = z.infer<typeof GuardianSchema>
 export type CreateGuardianInput = z.infer<typeof CreateGuardianSchema>;
 export type UpdateGuardianInput = z.infer<typeof UpdateGuardianSchema>;

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DepartmentSchemaType } from "@/schema/department";
 import { Archive, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -45,12 +44,12 @@ const ActionCell = ({ data }: Props) => {
             <DropdownMenuItem onClick={() => onCopy(data.id)}>
               <Copy className="mr-2 h-4 w-4" /> Copy Id
             </DropdownMenuItem>
-            <Link href={`/departments/${data.id}/view`}>
+            {/* <Link href={`/departments/${data.id}/view`}>
               <DropdownMenuItem>
                 <Eye className="h-4 w-4 mr-2" />
                 View
               </DropdownMenuItem>
-            </Link>
+            </Link> */}
             <DropdownMenuItem onClick={() => setOpen(true)}>
               <Pencil className="h-4 w-4 mr-2" />
               Edit

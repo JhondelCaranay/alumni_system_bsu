@@ -35,6 +35,7 @@ import CommentInput from "./CommentInput";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import JobCommentSkeleton from "./JobCommentSkeleton";
 import JobSkeletonInfo from "./JobSkeletonInfo";
+import useRouterPush from "@/hooks/useRouterPush";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -46,6 +47,7 @@ const FroalaEditorView = dynamic(
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 const JobInfo = () => {
+  const { redirectTo } = useRouterPush();
   const [isCommenting, setIsCommenting] = useState(true);
   const searchParams = useSearchParams();
   const f = searchParams?.get("f");
@@ -93,11 +95,11 @@ const JobInfo = () => {
 
   const onDelete = () => {
     deleteJob.mutate(f as string);
-    router.push("/dashboard/jobs");
+    redirectTo("jobs");
   };
 
   const onClose = () => {
-    router.push("/dashboard/jobs");
+    redirectTo("jobs");
   };
 
   /* 
@@ -142,9 +144,7 @@ const JobInfo = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
-                onClick={() =>
-                  router.push(`/dashboard/jobs/${job.data.id}/edit`)
-                }
+                onClick={() => redirectTo(`jobs/${job.data.id}/edit`)}
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update

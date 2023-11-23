@@ -36,6 +36,7 @@ import CommentInput from "../../components/CommentInput";
 import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
+import useRouterPush from "@/hooks/useRouterPush";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -48,9 +49,9 @@ const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type Props = {};
 const JobDetailPage = (props: Props) => {
+  const { redirectTo } = useRouterPush();
   const [isCommenting, setIsCommenting] = useState(true);
   const params = useParams();
-  const role = params?.role as string;
   const jobId = params?.jobId as string;
 
   const job = useQueryProcessor<
@@ -115,11 +116,11 @@ const JobDetailPage = (props: Props) => {
 
   const onDelete = () => {
     deleteJob.mutate(jobId as string);
-    router.push(`/${role}/jobs`);
+    redirectTo("jobs");
   };
 
   const onClose = () => {
-    router.push(`/${role}/jobs`);
+    redirectTo("jobs");
   };
 
   const session = useSession();
@@ -157,7 +158,7 @@ const JobDetailPage = (props: Props) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
-                onClick={() => router.push(`/${role}/jobs/${job.data.id}/edit`)}
+                onClick={() => redirectTo(`jobs/${job.data.id}/edit`)}
               >
                 <Pencil className="h-4 w-4 mr-2" />
                 Update

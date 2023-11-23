@@ -1,31 +1,46 @@
-import { GetCurrentUserType } from "@/actions/getCurrentUser";
-import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "lucide-react";
-import React from "react";
-import Guardian from "./Guardian";
+"use client"
+import { UserX } from 'lucide-react'
+import React from 'react'
+import Guardian from './Guardian'
+import { GetCurrentUserType } from '@/actions/getCurrentUser'
+import { useQueryProcessor } from '@/hooks/useTanstackQuery'
+import { GuardianSchemaType } from '@/schema/guardian'
+import { Loader } from '@/components/ui/loader'
 
-type GuardiansInfoProps = {
+type GuardianInfoProps = {
   data: GetCurrentUserType;
 };
 
-const GuardiansInfo: React.FC<GuardiansInfoProps> = ({ data }) => {
+const GuardianInfo:React.FC<GuardianInfoProps> = ({data}) => {
+
+  const guardians = useQueryProcessor<GuardianSchemaType[]>('/guardians', null, ['guardians'])
+
   return (
-    <div className="flex flex-col bg-white dark:bg-[#1F2937] w-full p-5 rounded-lg gap-5">
-      <h1 className="text-3xl">Family and relationships</h1>
-      {(() => {
-        // if(typeof data?.profile?.parents === 'undefined' || data?.profile?.parents?.length <= 0) {
-        //   return <div className='text-center'>No Guardians</div>
-        // }
+    <div className='flex flex-col  w-full p-5 rounded-lg gap-5 bg-white dark:bg-[#1F2937]'>
+      <h1 className='text-3xl'>Family and relationships</h1>
 
-        return (
-          <section className="flex flex-col gap-y-5">
-            <Guardian />
-            <Guardian />
+      {
+        (() => {
+
+          if(guardians.status === 'pending' || guardians.isFetching) {
+            return <Loader size={30} />
+          }
+
+          if(typeof guardians.data === 'undefined' || guardians.data.length <= 0) {
+            return <div className='text-center gap-x-2 flex items-center justify-center text-zinc-500'> <UserX /> No Guardians</div>
+          }
+          
+          return <section className='flex flex-col gap-y-5'>
+            {
+              guardians.data.map((guardian) => (
+                <Guardian data={guardian} />
+              ))
+            }
           </section>
-        );
-      })()}
+        })()
+      }
     </div>
-  );
-};
+  )
+}
 
-export default GuardiansInfo;
+export default GuardianInfo

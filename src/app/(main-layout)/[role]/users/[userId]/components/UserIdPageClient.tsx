@@ -1,5 +1,8 @@
 "use client";
-import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  useMutateProcessor,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import UserSkeleton from "./UserSkeleton";
@@ -22,9 +25,11 @@ import { ArrowBigLeft, ArrowLeft, Loader2, SkipBack } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/useModalStore";
 import toast from "react-hot-toast";
+import useRouterPush from "@/hooks/useRouterPush";
 
 const UserIdPageClient = () => {
   // const { userId } = useParams();
+  const { redirectTo } = useRouterPush();
   const params = useParams();
 
   const userId = params?.userId as string;
@@ -41,7 +46,10 @@ const UserIdPageClient = () => {
   const formSchema = z.object({
     firstname: z.string().min(1, { message: "Required field" }),
     lastname: z.string().min(1, { message: "Required field" }),
-    bsu_email: z.string().min(1, { message: "Required field" }).email({ message: "Invalid email" }),
+    bsu_email: z
+      .string()
+      .min(1, { message: "Required field" })
+      .email({ message: "Invalid email" }),
     middlename: z.string().min(1, { message: "Required field" }),
     city: z.string().min(1, { message: "Required field" }),
     homeNo: z.string().min(1, { message: "Required field" }),
@@ -55,15 +63,12 @@ const UserIdPageClient = () => {
 
   const router = useRouter();
 
-  const { mutate, isPending } = useMutateProcessor<formSchemaType, UserWithProfile>(
-    `/users/${userId}`,
-    null,
-    "PATCH",
-    ["users", userId],
-    {
-      enabled: typeof userId !== "undefined",
-    }
-  );
+  const { mutate, isPending } = useMutateProcessor<
+    formSchemaType,
+    UserWithProfile
+  >(`/users/${userId}`, null, "PATCH", ["users", userId], {
+    enabled: typeof userId !== "undefined",
+  });
 
   const form = useForm<formSchemaType>({
     defaultValues: {
@@ -120,11 +125,15 @@ const UserIdPageClient = () => {
   }
 
   if (status === "error") {
-    return <h1 className="text-center font-semibold text-zinc-300">Error fetching user</h1>;
+    return (
+      <h1 className="text-center font-semibold text-zinc-300">
+        Error fetching user
+      </h1>
+    );
   }
 
   if (data.isArchived) {
-    router.push("/dashboard/users");
+    redirectTo("users");
   }
 
   return (
@@ -132,18 +141,23 @@ const UserIdPageClient = () => {
       <header>
         <ArrowLeft
           className=" cursor-pointer hover:text-zinc-500 transition-all"
-          onClick={() => router.push("/dashboard/users")}
+          onClick={() => redirectTo("users")}
         />
       </header>
 
       <main className="flex flex-col">
         <section className="border-[2px] border-zinc-200 rounded-md p-3 flex items-center">
-          <Avatar className="w-[80px] h-[80px] object-cover rounded-sm" src={data?.image as string} />
+          <Avatar
+            className="w-[80px] h-[80px] object-cover rounded-sm"
+            src={data?.image as string}
+          />
           <div className="flex flex-col ml-3">
             <span className="text-black font-semibold dark:text-white">
               {data.profile.firstname} {data.profile.lastname}
             </span>
-            <span className="text-zinc-500 text-xs">@{data.profile.alternative_email}</span>
+            <span className="text-zinc-500 text-xs">
+              @{data.profile.alternative_email}
+            </span>
           </div>
         </section>
         <Separator className="my-10 bg-zinc-200 h-2 dark:bg-zinc-600" />
@@ -372,12 +386,18 @@ const UserIdPageClient = () => {
             </section>
 
             <section className="mt-10">
-              <Button type="submit" variant={"default"} className="w-fit" disabled={formSubmitting}>
+              <Button
+                type="submit"
+                variant={"default"}
+                className="w-fit"
+                disabled={formSubmitting}
+              >
                 {(() => {
                   if (formSubmitting) {
                     return (
                       <div className="flex items-center">
-                        <span>Saving</span> <Loader2 className="animate-spin ml-2 w-5 h-5" />
+                        <span>Saving</span>{" "}
+                        <Loader2 className="animate-spin ml-2 w-5 h-5" />
                       </div>
                     );
                   }

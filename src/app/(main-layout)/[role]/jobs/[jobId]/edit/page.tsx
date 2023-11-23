@@ -13,18 +13,18 @@ import { CommentSchemaType } from "@/schema/comment";
 import { SafeUser } from "@/types/types";
 import { setEnvironmentData } from "worker_threads";
 import toast from "react-hot-toast";
+import useRouterPush from "@/hooks/useRouterPush";
 // import Editor from "../../components/Editor"
 const Editor = dynamic(() => import("../../components/Editor"), {
   ssr: false,
 });
 
 const EditAJobPage = () => {
+  const { redirectTo } = useRouterPush();
   const [model, setModel] = useState("");
   const router = useRouter();
 
-  // const { jobId } = useParams();
   const params = useParams();
-  const role = params?.role as string;
 
   const jobId = params?.jobId as string;
 
@@ -74,7 +74,7 @@ const EditAJobPage = () => {
         onSuccess(data, variables, context) {
           localStorage.removeItem("savedContent");
           toast.success("Job has been updated.");
-          router.push(`/${role}/jobs`);
+          redirectTo("jobs");
         },
       }
     );
@@ -82,7 +82,7 @@ const EditAJobPage = () => {
 
   const onCancel = () => {
     localStorage.removeItem("savedContent");
-    router.push(`/${role}/jobs`);
+    redirectTo("jobs");
   };
   return (
     <div className="p-5 dark:bg-[#020817]">

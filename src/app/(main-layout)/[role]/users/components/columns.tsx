@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserProfileWithDepartmentSection } from "@/types/types";
-import { useModal } from "@/hooks/useModalStore";
 import { capitalizeWords, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +17,31 @@ import ActionButton from "./ActionButton";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
+  {
+    accessorKey: "id",
+    header: () => {
+      return <div className="sr-only dark:text-white">Id</div>;
+    },
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+
+      return <div className="sr-only dark:text-white">{id}</div>;
+    },
+  },
+  {
+    accessorKey: "len",
+    accessorFn: (row) => {
+      const studentNumber = row.profile.studentNumber;
+      return studentNumber;
+    },
+    header: ({ column }) => {
+      return <div className="sr-only dark:text-white">LRN</div>;
+    },
+    cell: ({ row }) => {
+      const studentNumber = row.original.profile.studentNumber;
+      return <div className="sr-only dark:text-white">{studentNumber}</div>;
+    },
+  },
   {
     accessorKey: "email",
     accessorFn: (row) => {
@@ -123,10 +147,20 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       // const yearEnrolled = row.getValue('') as Date
       const gender = row.original.profile?.gender as string;
 
-      return <div className={`text-center`}> <Badge className={cn('dark:text-white bg-slate-500', 
-      gender === 'FEMALE' && 'bg-rose-500',
-      gender === 'MALE' && 'bg-sky-700',
-      )}>{ capitalizeWords(gender)}</Badge> </div>;
+      return (
+        <div className={`text-center`}>
+          {" "}
+          <Badge
+            className={cn(
+              "dark:text-white bg-slate-500",
+              gender === "FEMALE" && "bg-rose-500",
+              gender === "MALE" && "bg-sky-700"
+            )}
+          >
+            {capitalizeWords(gender)}
+          </Badge>{" "}
+        </div>
+      );
     },
   },
 
@@ -150,22 +184,21 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     },
     cell: ({ row }) => {
       const role = row.original?.role as string;
-      const final = capitalizeWords(role).replaceAll('_', ' ');
+      const final = capitalizeWords(role).replaceAll("_", " ");
 
       const upperRole = ["ADVISER", "COORDINATOR", "BULSU_PARTNER", "PESO"];
       return (
         <div className="text-center">
-          
-        <Badge
-          className={cn(
-            "bg-slate-500 dark:text-white",
-            role === "ALUMNI" && "bg-sky-700",
-            upperRole.includes(role) && "bg-indigo-500"
+          <Badge
+            className={cn(
+              "bg-slate-500 dark:text-white",
+              role === "ALUMNI" && "bg-sky-700",
+              upperRole.includes(role) && "bg-indigo-500"
             )}
-            >
-          {final}
-        </Badge>
-          </div>
+          >
+            {final}
+          </Badge>
+        </div>
       );
     },
   },
@@ -187,7 +220,7 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     cell: ({ row }) => {
       const { name } = row.original.department || {};
 
-      return <div className={`text-center`}>{capitalizeWords(name) }</div>;
+      return <div className={`text-center`}>{capitalizeWords(name)}</div>;
     },
   },
   {
@@ -199,10 +232,7 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
       <div className="text-[#003171]  flex items-center cursor-pointer dark:text-white flex-1"></div>
     ),
     cell: ({ row }) => {
-      
-      return (
-        <ActionButton user={row.original} />
-      );
+      return <ActionButton user={row.original} />;
     },
   },
 ];

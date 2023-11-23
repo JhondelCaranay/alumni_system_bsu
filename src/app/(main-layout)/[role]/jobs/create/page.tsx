@@ -2,23 +2,20 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
 import toast from "react-hot-toast";
 import { Lightbulb } from "lucide-react";
 import { PostType } from "@prisma/client";
+import useRouterPush from "@/hooks/useRouterPush";
 // import Editor from '../components/Editor'
 const Editor = dynamic(() => import("../components/Editor"), {
   ssr: false,
 });
 
 const PostAJobPage = () => {
+  const { redirectTo } = useRouterPush();
   const [model, setModel] = useState("");
-  const params = useParams();
-  const role = params?.role as string;
-
-  const router = useRouter();
 
   const createJob = useMutateProcessor<CreatePostSchemaType, PostSchemaType>(
     `/posts`,
@@ -36,7 +33,7 @@ const PostAJobPage = () => {
             localStorage.removeItem("savedContent");
             toast.success("Job has been uploaded.");
 
-            router.push(`/${role}/jobs`);
+            redirectTo("jobs");
           },
         }
       );
@@ -44,7 +41,7 @@ const PostAJobPage = () => {
   };
   const onCancel = () => {
     localStorage.removeItem("savedContent");
-    router.push("/dashboard/jobs");
+    redirectTo("jobs");
   };
 
   useEffect(() => {

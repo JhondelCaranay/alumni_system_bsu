@@ -11,10 +11,7 @@ import {
 import { useModal } from "@/hooks/useModalStore";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
-import { User } from "@prisma/client";
-import { UserProfileWithDepartmentSection, UserWithProfile } from "@/types/types";
 import { GuardianSchemaType } from "@/schema/guardian";
 
 const DeleteGurdianModal = () => {

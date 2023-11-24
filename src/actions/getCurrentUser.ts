@@ -24,7 +24,8 @@ export default async function getCurrentUser() {
             parents:true
           }
         },
-        section:true,
+        // section:true,
+        
         department:true,
         
       }

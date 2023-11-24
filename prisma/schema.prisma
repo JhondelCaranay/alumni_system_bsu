@@ -44,6 +44,43 @@ enum PostType {
 //   GUARDIAN
 // }
 
+model GroupChatMessage {
+  id String @id @default(cuid())
+
+  message String @db.Text
+
+  groupChat   GroupChat? @relation(fields: [groupChatId], references: [id])
+  groupChatId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupChatId])
+}
+
+model GroupChat {
+  id String @id @default(cuid())
+
+  name    String  @unique
+  section String?
+  year    Int?
+
+  messages GroupChatMessage[]
+  students User[]             @relation("GroupChatStudents")
+
+  adviser   User?   @relation(name: "GroupChatAdviser", fields: [adviserId], references: [id])
+  adviserId String?
+
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([departmentId])
+  @@index([adviserId])
+}
+
 model Event {
   id String @id @default(cuid())
 
@@ -125,27 +162,27 @@ model Comment {
   @@index([postId])
 }
 
-model Section {
-  id String @id @default(cuid())
+// model Section {
+//   id String @id @default(cuid())
 
-  name  String
-  year  String
-  batch String // 2019-2020
+//   name  String
+//   year  String
+//   batch String // 2019-2020
 
-  isArchived Boolean @default(false)
+//   isArchived Boolean @default(false)
 
-  members User[]
+//   members User[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  // TODO: ADD GROUP CHAT PER SECTION
+//   // TODO: ADD GROUP CHAT PER SECTION
 
-  department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId String?
+//   department   Department? @relation(fields: [departmentId], references: [id])
+//   departmentId String?
 
-  @@index([departmentId])
-}
+//   @@index([departmentId])
+// }
 
 // change course to department
 model Department {
@@ -154,14 +191,15 @@ model Department {
   name       String
   isArchived Boolean @default(false)
 
-  sections Section[]
-  users    User[]
+  users User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   post   Post?   @relation(fields: [postId], references: [id])
   postId String?
+
+  groupChat GroupChat[]
 }
 
 model Guardian {
@@ -244,14 +282,18 @@ model User {
   events   Event[]
   comments Comment[]
 
-  section   Section? @relation(fields: [sectionId], references: [id])
-  sectionId String?
+  // section   Section? @relation(fields: [sectionId], references: [id])
+  // sectionId String?
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
   posts        Post[]
 
-  @@index([sectionId])
+  groupChat        GroupChat?  @relation(name: "GroupChatStudents", fields: [groupChatId], references: [id])
+  groupChatId      String?
+  adviserGroupChat GroupChat[] @relation(name: "GroupChatAdviser")
+
+  // @@index([sectionId])
   @@index([departmentId])
 }
 

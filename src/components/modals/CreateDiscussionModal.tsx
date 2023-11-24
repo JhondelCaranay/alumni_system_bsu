@@ -52,7 +52,7 @@ import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
 import axios from "axios";
 import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
-import { PostType } from "@prisma/client";
+import { PostType, Role } from "@prisma/client";
 import { useToast } from "../ui/use-toast";
 import Image from "next/image";
 
@@ -93,11 +93,13 @@ const CreateDiscussionModal = () => {
   });
 
   const isLoading = form.formState.isSubmitting;
+  
   useEffect(() => {
+    form.setValue('departments', [session?.user?.departmentId as string])
     return () => {
       form.reset();
     };
-  }, [form]);
+  }, [form, session]);
 
   const [_, textareaHeightUpdater] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
@@ -131,6 +133,8 @@ const CreateDiscussionModal = () => {
     label: department.name,
     value: department.id,
   }));
+
+  const currentDepartment = departments.data?.find((department) => department.id == session?.user.departmentId)
 
   // upload photo
   const uploadPhoto = async (data: { file: File; id: number | string }) => {
@@ -242,6 +246,7 @@ const CreateDiscussionModal = () => {
     }
   };
 
+  const upperRole = ['ADMIN', 'COORDINATOR', 'BULSU_PARTNER', 'PESO', 'ADVISER']
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -268,68 +273,73 @@ const CreateDiscussionModal = () => {
                     name="departments"
                     render={() => (
                       <FormItem>
-                        <Popover open={open} onOpenChange={setOpen}>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="link"
-                              role="combobox"
-                              aria-expanded={open}
-                              className="justify-between text-zinc-500 p-0 capitalize"
-                            >
-                              Select department
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="max-w-[200px] p-0">
-                            <Command>
-                              <CommandInput placeholder="Search departments." />
-                              <CommandEmpty>No department found.</CommandEmpty>
-                              <CommandGroup className="">
-                                {selectableDepartments?.map((item) => (
-                                  <CommandItem key={item.value}>
-                                    <FormField
-                                      key={item.value}
-                                      control={form.control}
-                                      name="departments"
-                                      render={({ field }) => {
-                                        return (
-                                          <FormItem
-                                            key={item.value}
-                                            className="flex flex-row items-start space-x-3 space-y-0"
-                                          >
-                                            <FormControl>
-                                              <Checkbox
-                                                checked={field.value?.includes(
-                                                  item.value
-                                                )}
-                                                onCheckedChange={(checked) => {
-                                                  return checked
-                                                    ? field.onChange([
-                                                        ...field.value,
-                                                        item.value,
-                                                      ])
-                                                    : field.onChange(
-                                                        field.value?.filter(
-                                                          (value) =>
-                                                            value !== item.value
-                                                        )
-                                                      );
-                                                }}
-                                              />
-                                            </FormControl>
-                                            <FormLabel className="font-normal capitalize">
-                                              {item.label.toLowerCase()}
-                                            </FormLabel>
-                                          </FormItem>
-                                        );
-                                      }}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
+                        {
+                           upperRole.includes(session?.user?.role as string) ? 
+                           (<Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="link"
+                                role="combobox"
+                                aria-expanded={open}
+                                className="justify-between text-zinc-500 p-0 capitalize"
+                              >
+                                Select department
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="max-w-[200px] p-0">
+                              <Command>
+                                <CommandInput placeholder="Search departments." />
+                                <CommandEmpty>No department found.</CommandEmpty>
+                                <CommandGroup className="">
+                                  {selectableDepartments?.map((item) => (
+                                    <CommandItem key={item.value}>
+                                      <FormField
+                                        key={item.value}
+                                        control={form.control}
+                                        name="departments"
+                                        render={({ field }) => {
+                                          return (
+                                            <FormItem
+                                              key={item.value}
+                                              className="flex flex-row items-start space-x-3 space-y-0"
+                                            >
+                                              <FormControl>
+                                                <Checkbox
+                                                  checked={field.value?.includes(
+                                                    item.value
+                                                  )}
+                                                  onCheckedChange={(checked) => {
+                                                    return checked
+                                                      ? field.onChange([
+                                                          ...field.value,
+                                                          item.value,
+                                                        ])
+                                                      : field.onChange(
+                                                          field.value?.filter(
+                                                            (value) =>
+                                                              value !== item.value
+                                                          )
+                                                        );
+                                                  }}
+                                                />
+                                              </FormControl>
+                                              <FormLabel className="font-normal capitalize">
+                                                {item.label.toLowerCase()}
+                                              </FormLabel>
+                                            </FormItem>
+                                          );
+                                        }}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </Command>
+                            </PopoverContent>
+                          </Popover> )
+                          : <span className="justify-between text-zinc-500 p-0 capitalize">{currentDepartment?.name.toLowerCase()}</span>
+                        }
+                         
                         <FormMessage />
                       </FormItem>
                     )}

@@ -2,10 +2,9 @@ import React from "react";
 import AuthForm from "../components/AuthForm";
 import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
-import CitBg from "../../../../public/assets/CIT_1.jpg";
 const LoginPage = async () => {
   const currentUser = await getCurrentUser();
-
+  console.log(currentUser)
   if (currentUser) {
     redirect(`/${currentUser.role.toLowerCase()}/profile`);
   }

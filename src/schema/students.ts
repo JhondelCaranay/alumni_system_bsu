@@ -13,6 +13,7 @@ export const StudentSchema = z.object({
   updatedAt: z.date(),
   role: z.nativeEnum(Role),
   sectionId: z.string().nullable(),
+  groupChatId: z.string().nullable(),
   departmentId: z.string().nullable(),
 }) satisfies z.ZodType<User>;
 

@@ -77,7 +77,7 @@ const PostAJobPage = () => {
         <Button variant={"outline"} onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant={"default"} onClick={onPost}>
+        <Button className="text-white" variant={"default"} onClick={onPost}>
           Post
         </Button>
       </div>

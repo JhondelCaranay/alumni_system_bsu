@@ -40,7 +40,7 @@ const GuardianInfo:React.FC<GuardianInfoProps> = ({data}) => {
           return <section className='flex flex-col gap-y-5'>
             {
               guardians.data.map((guardian) => (
-                <Guardian data={guardian} />
+                <Guardian data={guardian} key={guardian.id} />
               ))
             }
           </section>

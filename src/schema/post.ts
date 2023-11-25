@@ -44,11 +44,13 @@ export const CreatePostSchema = PostSchema.pick({
   location: true,
 })
   .extend({
-    photos: z.array(z.object({ public_url: z.string(), public_id: z.string() })),
+    photos: z.array(
+      z.object({ public_url: z.string(), public_id: z.string() })
+    ),
     department: z.string().array(),
   })
   .partial({
-    department:true,
+    department: true,
     photos: true,
     company: true,
     location: true,
@@ -67,7 +69,9 @@ export const UpdatePostSchema = PostSchema.pick({
   location: true,
 })
   .extend({
-    photos: z.array(z.object({ public_url: z.string(), public_id: z.string() })),
+    photos: z.array(
+      z.object({ public_url: z.string(), public_id: z.string() })
+    ),
     department: z.string().array(),
   })
   .partial();

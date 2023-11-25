@@ -12,6 +12,7 @@ export const UserSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   role: z.nativeEnum(Role),
+  groupChatId: z.string().nullable(),
   sectionId: z.string().nullable(),
   departmentId: z.string().nullable(),
 }) satisfies z.ZodType<User>;
@@ -29,15 +30,15 @@ export const UpdateUsersSchema = UserSchema.extend({
   barangay: z.string(),
   province: z.string(),
   contactNo: z.string(),
-  password: z.string()
-  .refine(
-    (value) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
-        value
-      ),
-    "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
-  )
-  ,
+  password: z
+    .string()
+    .refine(
+      (value) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+          value
+        ),
+      "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
+    ),
   confirmPassword: z.string(),
   currentPassword: z.string(),
 })

@@ -101,7 +101,7 @@ const EditAJobPage = () => {
         <Button variant={"outline"} onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant={"default"} onClick={onUpdate}>
+        <Button  className="text-white" variant={"default"} onClick={onUpdate}>
           Update
         </Button>
       </div>

@@ -162,27 +162,27 @@ model Comment {
   @@index([postId])
 }
 
-// model Section {
-//   id String @id @default(cuid())
+model Section {
+  id String @id @default(cuid())
 
-//   name  String
-//   year  String
-//   batch String // 2019-2020
+  name  String
+  year  String
+  batch String // 2019-2020
 
-//   isArchived Boolean @default(false)
+  isArchived Boolean @default(false)
 
-//   members User[]
+  members User[]
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   // TODO: ADD GROUP CHAT PER SECTION
+  // TODO: ADD GROUP CHAT PER SECTION
 
-//   department   Department? @relation(fields: [departmentId], references: [id])
-//   departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
 
-//   @@index([departmentId])
-// }
+  @@index([departmentId])
+}
 
 // change course to department
 model Department {
@@ -200,6 +200,7 @@ model Department {
   postId String?
 
   groupChat GroupChat[]
+  sections   Section[]
 }
 
 model Guardian {
@@ -292,6 +293,8 @@ model User {
   groupChat        GroupChat?  @relation(name: "GroupChatStudents", fields: [groupChatId], references: [id])
   groupChatId      String?
   adviserGroupChat GroupChat[] @relation(name: "GroupChatAdviser")
+  section          Section?    @relation(fields: [sectionId], references: [id])
+  sectionId        String?
 
   // @@index([sectionId])
   @@index([departmentId])

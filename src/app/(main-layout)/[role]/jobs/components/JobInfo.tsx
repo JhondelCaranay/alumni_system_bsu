@@ -36,6 +36,7 @@ import { useCommentSocket } from "@/hooks/useCommentSocket";
 import JobCommentSkeleton from "./JobCommentSkeleton";
 import JobSkeletonInfo from "./JobSkeletonInfo";
 import useRouterPush from "@/hooks/useRouterPush";
+import { useModal } from "@/hooks/useModalStore";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -47,6 +48,7 @@ const FroalaEditorView = dynamic(
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 const JobInfo = () => {
+  const { onOpen } = useModal();
   const { redirectTo } = useRouterPush();
   const [isCommenting, setIsCommenting] = useState(true);
   const searchParams = useSearchParams();
@@ -80,24 +82,6 @@ const JobInfo = () => {
     queryKey: ["jobs", f, "comments"],
   });
 
-  const deleteJob = useMutateProcessor<string, unknown>(
-    `/posts/${f}`,
-    null,
-    "DELETE",
-    ["jobs"],
-    {
-      enabled:
-        typeof f === "string" &&
-        typeof f !== "object" &&
-        typeof f !== "undefined",
-    }
-  );
-
-  const onDelete = () => {
-    deleteJob.mutate(f as string);
-    redirectTo("jobs");
-  };
-
   const onClose = () => {
     redirectTo("jobs");
   };
@@ -114,7 +98,6 @@ const JobInfo = () => {
   }, [f]);
 
   const session = useSession();
-  const router = useRouter();
 
   if (job.status === "pending" || job.fetchStatus === "fetching")
     return <JobSkeletonInfo />;
@@ -151,7 +134,7 @@ const JobInfo = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
-                onClick={onDelete}
+                onClick={() => onOpen("deletePost", { post: job.data })}
               >
                 <Archive className="h-4 w-4 mr-2" />
                 Delete

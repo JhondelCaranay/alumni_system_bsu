@@ -9,6 +9,7 @@ import { CommentSchemaType } from "@/schema/comment";
 import { SafeUser } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
+import { Briefcase } from "lucide-react";
 
 const JobsClient = () => {
   // const windowSize = useWindowSize();
@@ -70,9 +71,9 @@ const JobsClient = () => {
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
-      <div className="flex flex-col gap-y-5 max-h-[calc(100vh-120px)] overflow-auto md:pr-1">
-        {jobs.data.length > 0 &&
-          jobs?.data?.map(({ user, comments, ...rest }) => (
+      {jobs.data.length > 0 ? (
+        <div className="flex flex-col gap-y-5 max-h-[calc(100vh-120px)] overflow-y-auto md:pr-1">
+          {jobs?.data?.map(({ user, comments, ...rest }) => (
             <JobPost
               key={{ ...rest }.id}
               post={{ ...rest }}
@@ -80,7 +81,13 @@ const JobsClient = () => {
               comments={comments}
             />
           ))}
-      </div>
+        </div>
+      ) : (
+        <h1 className="flex items-center text-center justify-center gap-x-2 text-md text-zinc-400">
+          <Briefcase className="w-10 h-10" /> No job post yet
+        </h1>
+      )}
+
       {/* <Separator orientation="vertical" className="flex h-full text-sm w-2" /> */}
       <div className="hidden md:inline-flex order-first md:order-none max-h-[calc(100vh-120px)] overflow-auto">
         {f && <JobInfo />}

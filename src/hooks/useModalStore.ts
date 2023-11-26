@@ -16,8 +16,8 @@ export type ModalType =
   | "createGuardian"
   | "updateGuardian"
   | "deleteGuardian"
-  | "deletePost";
-
+  | "deletePost"
+  | "editDiscussion"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

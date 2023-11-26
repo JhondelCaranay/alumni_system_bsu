@@ -8,6 +8,7 @@ import CreateGuardianModal from '../modals/CreateGuardianModal';
 import UpdateGuardianModal from '../modals/UpdateGuardianModal';
 import DeleteGurdianModal from '../modals/DeleteGuardianModal';
 import DeletePostModal from '../modals/DeletePostModal';
+import EditDiscussionModal from '../modals/EditDiscussionModal';
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -30,6 +31,7 @@ const ModalProvider = () => {
         <UpdateGuardianModal />
         <DeleteGurdianModal />
         <DeletePostModal />
+        <EditDiscussionModal />
     </>
   )
 }

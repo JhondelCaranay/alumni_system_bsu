@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       },
       include: {
         comments: {
-          include: {
+          include: {  
             user: {
               select: {
                 profile: true,

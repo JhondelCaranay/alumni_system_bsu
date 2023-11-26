@@ -202,8 +202,9 @@ model Department {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post   Post?   @relation(fields: [postId], references: [id])
-  postId String?
+  // post   Post?   @relation(fields: [postId], references: [id])
+  // postId String?
+  posts Post[]
 
   groupChat GroupChat[]
   sections  Section[]

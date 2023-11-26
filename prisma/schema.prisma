@@ -49,6 +49,9 @@ model GroupChatMessage {
 
   message String @db.Text
 
+  sender   User?   @relation("GroupChatMessages", fields: [senderId], references: [id])
+  senderId String?
+
   groupChat   GroupChat? @relation(fields: [groupChatId], references: [id])
   groupChatId String?
 
@@ -287,8 +290,9 @@ model User {
   comments Comment[]
   posts    Post[]
 
-  groupChats        GroupChat[] @relation("GroupChatStudents")
-  adviserGroupChats GroupChat[] @relation("GroupChatAdviser")
+  groupChatMessages GroupChatMessage[] @relation("GroupChatMessages")
+  groupChats        GroupChat[]        @relation("GroupChatStudents")
+  adviserGroupChats GroupChat[]        @relation("GroupChatAdviser")
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?

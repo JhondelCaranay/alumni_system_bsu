@@ -61,9 +61,8 @@ model GroupChatMessage {
 model GroupChat {
   id String @id @default(cuid())
 
-  name    String  @unique
-  section String?
-  year    Int?
+  name String @unique
+  year Int?
 
   messages GroupChatMessage[]
   students User[]             @relation("GroupChatStudents")
@@ -73,6 +72,9 @@ model GroupChat {
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
+
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -171,7 +173,8 @@ model Section {
 
   isArchived Boolean @default(false)
 
-  members User[]
+  members   User[]
+  groupChat GroupChat[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -200,7 +203,7 @@ model Department {
   postId String?
 
   groupChat GroupChat[]
-  sections   Section[]
+  sections  Section[]
 }
 
 model Guardian {
@@ -282,21 +285,18 @@ model User {
   profile  Profile?
   events   Event[]
   comments Comment[]
+  posts    Post[]
 
-  // section   Section? @relation(fields: [sectionId], references: [id])
-  // sectionId String?
+  groupChats        GroupChat[] @relation("GroupChatStudents")
+  adviserGroupChats GroupChat[] @relation("GroupChatAdviser")
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
-  posts        Post[]
 
-  groupChat        GroupChat?  @relation(name: "GroupChatStudents", fields: [groupChatId], references: [id])
-  groupChatId      String?
-  adviserGroupChat GroupChat[] @relation(name: "GroupChatAdviser")
-  section          Section?    @relation(fields: [sectionId], references: [id])
-  sectionId        String?
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
 
-  // @@index([sectionId])
+  @@index([sectionId])
   @@index([departmentId])
 }
 

@@ -16,6 +16,12 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        students: true,
+        adviser: true,
+        section: true,
+        department: true,
+      },
     });
 
     return NextResponse.json(groupChats);

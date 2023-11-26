@@ -56,50 +56,64 @@ import { PostType, Role } from "@prisma/client";
 import { useToast } from "../ui/use-toast";
 import Image from "next/image";
 
-const CreateDiscussionModal = () => {
+const EditDiscussionModal = () => {
   const { data: session } = useSession();
-  const { isOpen, type, onClose } = useModal();
-  const isModalOpen = isOpen && type === "createDiscussion";
+  const { isOpen, type, onClose, data } = useModal();
+  const isModalOpen = isOpen && type === "editDiscussion";
+  const [filesToDisplay, setFilesToDisPlay] = useState<{ url: string; id: number | string }[]
+>([]);
 
   const onHandleClose = () => {
     onClose();
-    setFilesToDisPlay([]);
     form.reset();
   };
+
   const [open, setOpen] = useState(false);
-  const [filesToDisplay, setFilesToDisPlay] = useState<
-    { url: string; id: number | string }[]
-  >([]);
-  const formSchema = z.object({
+
+  const updateformSchema = z.object({
     description: z.string().min(1, { message: "Description is required" }),
     departments: z
       .array(z.string())
       .refine((value) => value.some((item) => item), {
         message: "You have to select at least one department",
       }),
-    photos: z.any().optional(),
+    photosToCreate: z.any().optional(),
+    photosToDelete: z.any().optional(),
   });
 
-  type formSchemaType = z.infer<typeof formSchema>;
+  type updateFormSchemaType = z.infer<typeof updateformSchema>;
 
-  const form = useForm<formSchemaType>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<updateFormSchemaType>({
+    resolver: zodResolver(updateformSchema),
     defaultValues: {
       description: "",
       departments: [],
-      photos: [],
+      photosToCreate: [],
+      photosToDelete: [],
     },
     mode: "all",
   });
 
   const isLoading = form.formState.isSubmitting;
-  
+
+  const setInitialPhotos = () => {
+    if(data.post && data.post?.photos.length > 0) {
+        setFilesToDisPlay(data?.post?.photos.map((photo) => ({url: photo.public_url, id: photo.public_id})) || [])
+    }
+  }
+
   useEffect(() => {
-    form.setValue('departments', [session?.user?.departmentId as string])
+    if(data.post && data.post?.department.length > 0) {
+        form.setValue('departments', [...data?.post?.department?.map(d => d.id)])
+    } else {
+        form.setValue('departments', [session?.user?.departmentId as string])
+    }
+    form.setValue('description', data?.post?.description as string)
+    setInitialPhotos()
     return () => {
       form.reset();
     };
-  }, [form, session]);
+  }, [form, session, isModalOpen]);
 
   const [_, textareaHeightUpdater] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
@@ -137,123 +151,30 @@ const CreateDiscussionModal = () => {
   const currentDepartment = departments.data?.find((department) => department.id == session?.user.departmentId)
 
   // upload photo
-  const uploadPhoto = async (data: { file: File; id: number | string }) => {
-    const formData = new FormData();
-    formData.append("upload_preset", "next-alumni-system");
-    formData.append("file", data.file);
-    const res = await axios.post(
-      `${"https://api.cloudinary.com/v1_1/iamprogrammer/auto/upload"}`,
-      formData,
-      {
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }
-    );
 
-    return {
-      public_url: res.data.url,
-      public_id: res.data.public_id,
-    };
-  };
-
-  // remove photo from state
+  // remove file
   const removeFiles = (file: { url: string; id: number | string }) => {
-    const images = form.getValues("photos") as {
-      file: File;
-      id: number | string;
-    }[];
-    const filteredImages = images.filter(
-      (formImages) => file.id != formImages.id
-    );
 
-    form.setValue("photos", filteredImages);
-    const filteredImagesToDisplay = filesToDisplay.filter(
-      (fileToDisplay) => fileToDisplay.id != file.id
-    );
-
-    setFilesToDisPlay(filteredImagesToDisplay);
   };
-
-  const createDiscussion = useMutateProcessor<
-    CreatePostSchemaType,
-    PostSchemaType
-  >("/posts", null, "POST", ["discussions"]);
-
   const { toast } = useToast();
 
-  const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
+  const onSubmit: SubmitHandler<updateFormSchemaType> = async (values) => {
     // we append all the file into files array to make it iterateable
-    const files = [];
-    if (values.photos.length > 0) {
-      for (const file of values.photos) {
-        files.push(file);
-      }
-      const photos = await Promise.all(
-        files.map((data: { file: File; id: number | string }) =>
-          uploadPhoto(data)
-        )
-      );
-
-      createDiscussion.mutate(
-        {
-          description: values.description,
-          department: values.departments,
-          type: PostType.FEED,
-          photos,
-        },
-        {
-          onError(error, variables, context) {
-            console.log(error);
-            toast({
-              variant: "destructive",
-              description: "Something went wrong...",
-            });
-          },
-          onSuccess(data, variables, context) {
-            console.log(data);
-            toast({
-              variant: "default",
-              description: "Posted",
-            });
-            onHandleClose();
-          },
-        }
-      );
-    } else {
-      createDiscussion.mutate(
-        {
-          description: values.description,
-          department: values.departments,
-          type: PostType.FEED,
-        },
-        {
-          onError(error, variables, context) {
-            console.log(error);
-            toast({
-              variant: "destructive",
-              description: "Something went wrong...",
-            });
-          },
-          onSuccess(data, variables, context) {
-            console.log(data);
-            toast({
-              variant: "default",
-              description: "Posted",
-            });
-            onHandleClose();
-          },
-        }
-      );
-    }
+    
+    console.log(values)
+    console.log(filesToDisplay)
   };
 
-  const upperRole = ['ADMIN', 'COORDINATOR', 'BULSU_PARTNER', 'PESO', 'ADVISER']
+  const allowedRoles = ['ADMIN', 'COORDINATOR', 'BULSU_PARTNER', 'PESO', 'ADVISER']
+
+  console.log(data?.post)
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
         <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
           <DialogHeader className=" ">
             <DialogTitle className="text-2xl text-center font-bold dark:text-white">
-              Create Discussion
+              Edit Discussion
             </DialogTitle>
           </DialogHeader>
 
@@ -274,7 +195,7 @@ const CreateDiscussionModal = () => {
                     render={() => (
                       <FormItem>
                         {
-                           upperRole.includes(session?.user?.role as string) ? 
+                           allowedRoles.includes(session?.user?.role as string) ? 
                            (<Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                               <Button
@@ -370,24 +291,24 @@ const CreateDiscussionModal = () => {
                   )}
                 />
                 <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5">
-                  {filesToDisplay.map((file) => {
-                    return (
-                      <div
-                        key={file.id}
-                        className="relative rounded-md w-full max-h-[20em]"
-                      >
-                        <X
-                          className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600"
-                          onClick={() => removeFiles(file)}
-                        />
-                        <img
-                          src={file.url}
-                          alt="post image"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    );
-                  })}
+                    {filesToDisplay.map((file) => {
+                        return (
+                          <div
+                            key={file.id}
+                            className="relative rounded-md w-full max-h-[20em]"
+                          >
+                            <X
+                              className="w-5 h-5 absolute top-2 rounded-md right-2 z-10 cursor-pointer bg-white text-zinc-600"
+                              onClick={() => removeFiles(file)}
+                            />
+                            <img
+                              src={file.url}
+                              alt="post image"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        );
+                      })}
                 </div>
               </div>
 
@@ -397,7 +318,7 @@ const CreateDiscussionModal = () => {
                   <ActionTooltip label="Photo/video">
                     <FormField
                       control={form.control}
-                      name="photos"
+                      name="photosToCreate"
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <label htmlFor="photos">
@@ -407,34 +328,31 @@ const CreateDiscussionModal = () => {
                           </label>
                           <FormControl>
                             <Input
-                              {...form.register("photos")}
+                              {...form.register("photosToCreate")}
                               className="hidden"
                               id="photos"
                               type="file"
                               accept="image/*"
                               multiple
                               onChange={async (e) => {
-                                setFilesToDisPlay([]);
+                                setInitialPhotos() // initiate a photo to display array
                                 const files = e.target.files;
+
                                 if (files && files?.length > 0) {
                                   const filesToDisplay = [];
-                                  for (
-                                    let index = 0;
-                                    index < files.length;
-                                    index++
-                                  ) {
+                                  for (let index = 0;index < files.length;index++ ) {
                                     filesToDisplay.push({
                                       file: files[index],
                                       id: createId(),
                                     });
                                   }
+
                                   field.onChange(
                                     filesToDisplay.map((file) => file)
                                   );
-                                  const convertToBase64 = (data: {
-                                    file: File;
-                                    id: number | string;
-                                  }) => {
+
+                                  // convertToBase64 Function
+                                  const convertToBase64 = (data: {file: File; id: number | string;}) => {
                                     const reader = new FileReader();
                                     reader.readAsDataURL(data.file);
                                     reader.onloadend = () => {
@@ -447,6 +365,8 @@ const CreateDiscussionModal = () => {
                                       ]);
                                     };
                                   };
+
+                                  // converting all the files to 64
                                   await Promise.all(
                                     filesToDisplay.map(
                                       (data: {
@@ -456,6 +376,7 @@ const CreateDiscussionModal = () => {
                                     )
                                   );
                                 }
+
                               }}
                             />
                           </FormControl>
@@ -502,4 +423,4 @@ const CreateDiscussionModal = () => {
   );
 };
 
-export default CreateDiscussionModal;
+export default EditDiscussionModal;

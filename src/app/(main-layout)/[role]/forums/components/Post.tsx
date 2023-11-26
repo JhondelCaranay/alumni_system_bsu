@@ -40,7 +40,7 @@ type PostTypeProps = {
 
 const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
   const [isCommenting, setIsCommenting] = useState(false);
-  const {onOpen} = useModal()
+  const {onOpen,} = useModal()
   const comments = useQueryProcessor<
     (CommentSchema & { replies: CommentSchema[] })[]
   >(
@@ -107,7 +107,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="">
-            <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
+            <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => onOpen('editDiscussion', {post: postData})}>
               <Pencil className="h-4 w-4 mr-2" />
               Update
             </DropdownMenuItem>

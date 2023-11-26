@@ -10,12 +10,11 @@ import {
   UserProfileWithDepartmentSection,
   UserWithProfile,
 } from "@/types/types";
-import { User } from "@prisma/client";
 import { Archive, MoreHorizontal, Pencil } from "lucide-react";
 import React from "react";
 
 type ActionButtonProps = {
-  user: User | UserWithProfile | UserProfileWithDepartmentSection;
+  user: UserWithProfile | UserProfileWithDepartmentSection;
 };
 
 const ActionButton: React.FC<ActionButtonProps> = ({ user }) => {

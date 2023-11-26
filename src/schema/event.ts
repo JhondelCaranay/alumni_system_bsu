@@ -70,7 +70,9 @@ export const UpdateTimeAndDateEventSchema = ClientEventSchema.pick({
   timeEnd: true,
   allDay: true,
 }).partial();
-export type UpdateTimeAndDateEventSchemaType = z.infer<typeof UpdateTimeAndDateEventSchema>;
+export type UpdateTimeAndDateEventSchemaType = z.infer<
+  typeof UpdateTimeAndDateEventSchema
+>;
 
 export const UpdateTitleAndDescriptionEventSchema = EventSchema.pick({
   title: true,

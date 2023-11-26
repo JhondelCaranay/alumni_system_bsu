@@ -23,19 +23,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Comment from "./Comment";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
-import { CommentSchemaType } from "@/schema/comment";
 import { Loader } from "@/components/ui/loader";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import { Badge } from "@/components/ui/badge";
+import { Role } from "@prisma/client";
+import { useModal } from "@/hooks/useModalStore";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type PostTypeProps = {
   postData: PostSchemaType & { user: UserWithProfile };
-};
-const Post: React.FC<PostTypeProps> = ({ postData }) => {
-  const [isCommenting, setIsCommenting] = useState(false);
+  currentUser: GetCurrentUserType
 
+};
+
+const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
+  const [isCommenting, setIsCommenting] = useState(false);
+  const {onOpen} = useModal()
   const comments = useQueryProcessor<
     (CommentSchema & { replies: CommentSchema[] })[]
   >(
@@ -50,6 +55,10 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
       // isCommenting,
     }
   );
+
+  const isOwner = currentUser?.id === postData.userId;
+  const isAdmin = currentUser?.id === Role.ADMIN;
+  const canEditOrDelete = (isOwner || isAdmin);
 
   useCommentSocket({
     commentsKey: `posts:${postData.id}:comments`,
@@ -84,8 +93,9 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
             </time>
           </p>
         </div>
-
-        <DropdownMenu>
+        
+        {
+          (canEditOrDelete) && <DropdownMenu>
           <DropdownMenuTrigger className="absolute top-5 right-5">
             <Button
               className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -101,12 +111,14 @@ const Post: React.FC<PostTypeProps> = ({ postData }) => {
               <Pencil className="h-4 w-4 mr-2" />
               Update
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
+            <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" onClick={() => onOpen('deletePost', {post: postData})}>
               <Archive className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        }
+        
       </div>
 
       <div className="">

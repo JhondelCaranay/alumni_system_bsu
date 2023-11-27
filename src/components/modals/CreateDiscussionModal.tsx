@@ -46,15 +46,14 @@ import {
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, X, Image as ImageUpload} from "lucide-react";
+import { ChevronsUpDown, X, Image as ImageUpload } from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
-import axios from "axios";
 import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
-import { PostType, Role } from "@prisma/client";
+import { PostType } from "@prisma/client";
 import { useToast } from "../ui/use-toast";
-import Image from "next/image";
+import { uploadPhotoForum } from "@/lib/utils";
 
 const CreateDiscussionModal = () => {
   const { data: session } = useSession();
@@ -92,10 +91,18 @@ const CreateDiscussionModal = () => {
     mode: "all",
   });
 
-  const isLoading = form.formState.isSubmitting;
-  
+  const allowedRoles = [
+    "ADMIN",
+    "COORDINATOR",
+    "BULSU_PARTNER",
+    "PESO",
+    "ADVISER",
+  ];
   useEffect(() => {
-    form.setValue('departments', [session?.user?.departmentId as string])
+    // if the role of current user is not in the allowedRoles then they are students/alumni
+    if (!allowedRoles.includes(session?.user.role as string)) {
+      form.setValue("departments", [session?.user?.departmentId as string]);
+    }
     return () => {
       form.reset();
     };
@@ -134,26 +141,11 @@ const CreateDiscussionModal = () => {
     value: department.id,
   }));
 
-  const currentDepartment = departments.data?.find((department) => department.id == session?.user.departmentId)
+  const currentDepartment = departments.data?.find(
+    (department) => department.id == session?.user.departmentId
+  );
 
   // upload photo
-  const uploadPhoto = async (data: { file: File; id: number | string }) => {
-    const formData = new FormData();
-    formData.append("upload_preset", "next-alumni-system");
-    formData.append("file", data.file);
-    const res = await axios.post(
-      `${"https://api.cloudinary.com/v1_1/iamprogrammer/auto/upload"}`,
-      formData,
-      {
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }
-    );
-
-    return {
-      public_url: res.data.url,
-      public_id: res.data.public_id,
-    };
-  };
 
   // remove photo from state
   const removeFiles = (file: { url: string; id: number | string }) => {
@@ -189,7 +181,7 @@ const CreateDiscussionModal = () => {
       }
       const photos = await Promise.all(
         files.map((data: { file: File; id: number | string }) =>
-          uploadPhoto(data)
+          uploadPhotoForum(data)
         )
       );
 
@@ -209,7 +201,6 @@ const CreateDiscussionModal = () => {
             });
           },
           onSuccess(data, variables, context) {
-            console.log(data);
             toast({
               variant: "default",
               description: "Posted",
@@ -234,7 +225,6 @@ const CreateDiscussionModal = () => {
             });
           },
           onSuccess(data, variables, context) {
-            console.log(data);
             toast({
               variant: "default",
               description: "Posted",
@@ -246,7 +236,9 @@ const CreateDiscussionModal = () => {
     }
   };
 
-  const upperRole = ['ADMIN', 'COORDINATOR', 'BULSU_PARTNER', 'PESO', 'ADVISER']
+  const isLoading =
+    form.formState.isSubmitting || createDiscussion.status === "pending";
+
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -273,9 +265,10 @@ const CreateDiscussionModal = () => {
                     name="departments"
                     render={() => (
                       <FormItem>
-                        {
-                           upperRole.includes(session?.user?.role as string) ? 
-                           (<Popover open={open} onOpenChange={setOpen}>
+                        {allowedRoles.includes(
+                          session?.user?.role as string
+                        ) ? (
+                          <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="link"
@@ -290,7 +283,9 @@ const CreateDiscussionModal = () => {
                             <PopoverContent className="max-w-[200px] p-0">
                               <Command>
                                 <CommandInput placeholder="Search departments." />
-                                <CommandEmpty>No department found.</CommandEmpty>
+                                <CommandEmpty>
+                                  No department found.
+                                </CommandEmpty>
                                 <CommandGroup className="">
                                   {selectableDepartments?.map((item) => (
                                     <CommandItem key={item.value}>
@@ -309,7 +304,9 @@ const CreateDiscussionModal = () => {
                                                   checked={field.value?.includes(
                                                     item.value
                                                   )}
-                                                  onCheckedChange={(checked) => {
+                                                  onCheckedChange={(
+                                                    checked
+                                                  ) => {
                                                     return checked
                                                       ? field.onChange([
                                                           ...field.value,
@@ -318,7 +315,8 @@ const CreateDiscussionModal = () => {
                                                       : field.onChange(
                                                           field.value?.filter(
                                                             (value) =>
-                                                              value !== item.value
+                                                              value !==
+                                                              item.value
                                                           )
                                                         );
                                                   }}
@@ -336,10 +334,13 @@ const CreateDiscussionModal = () => {
                                 </CommandGroup>
                               </Command>
                             </PopoverContent>
-                          </Popover> )
-                          : <span className="justify-between text-zinc-500 p-0 capitalize">{currentDepartment?.name.toLowerCase()}</span>
-                        }
-                         
+                          </Popover>
+                        ) : (
+                          <span className="justify-between text-zinc-500 p-0 capitalize">
+                            {currentDepartment?.name.toLowerCase()}
+                          </span>
+                        )}
+
                         <FormMessage />
                       </FormItem>
                     )}
@@ -401,9 +402,7 @@ const CreateDiscussionModal = () => {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <label htmlFor="photos">
-                            <ImageUpload
-                              className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300"
-                            />
+                            <ImageUpload className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
                           </label>
                           <FormControl>
                             <Input

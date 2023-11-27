@@ -28,7 +28,7 @@ const ForumsPage = async (props: ForumsPageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-     <div className="grid grid-cols-4 bg-[#F9FAFB] w-full p-10 pb-0 dark:bg-[#020817]">
+     <div className="grid grid-cols-4 bg-[#F9FAFB] min-h-[90vh] w-full p-10 pb-0 dark:bg-[#020817]">
       <div>
         <ProfileSidebar />
       </div>

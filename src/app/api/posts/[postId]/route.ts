@@ -183,28 +183,28 @@ export async function PATCH(
       //   },
       // });
 
-      // delete photos where public_id in delete_photos
-      if (delete_photos) {
-        await Promise.all(
-          delete_photos.map((public_id) => cloudinaryDestroy(public_id))
-        );
-
-        await prisma.photos.deleteMany({
-          where: {
-            postId: postId,
-            public_id: {
-              in: delete_photos,
-            },
-          },
-        });
-      }
-
       await prisma.photos.createMany({
         data: new_photos.map((photo) => ({
           postId: postId,
           public_url: photo.public_url,
           public_id: photo.public_id,
         })),
+      });
+    }
+
+    // delete photos where public_id in delete_photos
+    if (delete_photos) {
+      await Promise.all(
+        delete_photos.map((public_id) => cloudinaryDestroy(public_id))
+      );
+
+      await prisma.photos.deleteMany({
+        where: {
+          postId: postId,
+          public_id: {
+            in: delete_photos,
+          },
+        },
       });
     }
 

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isUserAllowed } from "@/lib/utils";
 import { PostSchemaType, UpdatePostSchema } from "@/schema/post";
 import { PostType } from "@prisma/client";
+import { cloudinaryDestroy } from "@/lib/cloudinary";
 
 export async function GET(
   req: NextRequest,
@@ -44,7 +45,7 @@ export async function GET(
                 role: true,
                 createdAt: true,
                 id: true,
-                image:true,
+                image: true,
               },
             },
           },
@@ -57,7 +58,7 @@ export async function GET(
             role: true,
             createdAt: true,
             id: true,
-            image:true,
+            image: true,
           },
         },
         photos: true,
@@ -100,33 +101,33 @@ export async function PATCH(
       isArchived: false,
     },
     include: {
-      comments: {
-        include: {
-          user: {
-            select: {
-              profile: true,
-              name: true,
-              email: true,
-              role: true,
-              createdAt: true,
-              id: true,
-              image:true,
-            },
-          },
-        },
-      },
-      user: {
-        select: {
-          profile: true,
-          name: true,
-          email: true,
-          role: true,
-          createdAt: true,
-          id: true,
-          image:true,
-        },
-      },
-      photos: true,
+      // comments: {
+      //   include: {
+      //     user: {
+      //       select: {
+      //         profile: true,
+      //         name: true,
+      //         email: true,
+      //         role: true,
+      //         createdAt: true,
+      //         id: true,
+      //         image:true,
+      //       },
+      //     },
+      //   },
+      // },
+      // user: {
+      //   select: {
+      //     profile: true,
+      //     name: true,
+      //     email: true,
+      //     role: true,
+      //     createdAt: true,
+      //     id: true,
+      //     image:true,
+      //   },
+      // },
+      // photos: true,
       department: true,
     },
   });
@@ -148,7 +149,16 @@ export async function PATCH(
     );
   }
 
-  const { department, photos, type, description, title, company, location } = result.data;
+  const {
+    department,
+    new_photos,
+    delete_photos,
+    type,
+    description,
+    title,
+    company,
+    location,
+  } = result.data;
 
   try {
     const updatedPost = await prisma.post.update({
@@ -166,17 +176,31 @@ export async function PATCH(
     });
 
     // if photos update
-    if (photos) {
-      await prisma.photos.deleteMany({
-        where: {
-          postId: postId,
-        },
-      });
+    if (new_photos) {
+      // await prisma.photos.deleteMany({
+      //   where: {
+      //     postId: postId,
+      //   },
+      // });
 
-      //TODO: DELETE ASSETS FROM CLOUDINARY
+      // delete photos where public_id in delete_photos
+      if (delete_photos) {
+        await Promise.all(
+          delete_photos.map((public_id) => cloudinaryDestroy(public_id))
+        );
+
+        await prisma.photos.deleteMany({
+          where: {
+            postId: postId,
+            public_id: {
+              in: delete_photos,
+            },
+          },
+        });
+      }
 
       await prisma.photos.createMany({
-        data: photos.map((photo) => ({
+        data: new_photos.map((photo) => ({
           postId: postId,
           public_url: photo.public_url,
           public_id: photo.public_id,
@@ -192,7 +216,9 @@ export async function PATCH(
         },
         data: {
           department: {
-            disconnect: posts.department.map((department) => ({ id: department.id })),
+            disconnect: posts.department.map((department) => ({
+              id: department.id,
+            })),
             connect: department.map((id) => ({ id })),
           },
         },

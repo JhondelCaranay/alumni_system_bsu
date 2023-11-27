@@ -61,7 +61,7 @@ export type CreatePostSchemaType = z.infer<typeof CreatePostSchema>;
 
 export const UpdatePostSchema = PostSchema.pick({
   department: true,
-  photos: true,
+  // photos: true,
   type: true,
   description: true,
   title: true,
@@ -69,9 +69,10 @@ export const UpdatePostSchema = PostSchema.pick({
   location: true,
 })
   .extend({
-    photos: z.array(
+    new_photos: z.array(
       z.object({ public_url: z.string(), public_id: z.string() })
     ),
+    delete_photos: z.array(z.string()),
     department: z.string().array(),
   })
   .partial();

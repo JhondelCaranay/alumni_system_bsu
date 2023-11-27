@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -6,13 +6,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
- export const cloudinaryDestroy = async (public_id: string)  =>{
-    try {
-        const result = await cloudinary.uploader.destroy(`next-alumni-system/${public_id}`);
+export const cloudinaryDestroy = async (public_id: string) => {
+  try {
+    const result = await cloudinary.uploader.destroy(
+      `next-alumni-system/${public_id}`
+    );
 
-        console.log(result)
-        return result
-      } catch (error) {
-        console.error('error cloudinary upload', error)
-      }
-}
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error("error cloudinary upload", error);
+  }
+};

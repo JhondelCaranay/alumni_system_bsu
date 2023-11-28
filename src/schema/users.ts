@@ -1,6 +1,16 @@
 import { Gender, Role, User } from "@prisma/client";
 import { z } from "zod";
 
+export const allowedUserFields = {
+  profile: true,
+  name: true,
+  email: true,
+  image: true,
+  role: true,
+  createdAt: true,
+  id: true,
+};
+
 export const UserSchema = z.object({
   id: z.string(),
   isArchived: z.boolean(),

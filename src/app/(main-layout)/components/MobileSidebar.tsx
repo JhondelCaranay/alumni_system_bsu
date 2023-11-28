@@ -9,7 +9,6 @@ type MobileSidebarProps = {
 };
 
 export const MobileSidebar = ({ currentUser }: MobileSidebarProps) => {
-  console.log("🚀 ~ file: MobileSidebar.tsx:12 ~ MobileSidebar ~ currentUser:", currentUser)
   return (
     <Sheet>
       <SheetTrigger className="md:hidden pr-4 hover:opacity-75 transition">

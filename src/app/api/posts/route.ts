@@ -2,62 +2,109 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreatePostSchema, PostSchemaType } from "@/schema/post";
+import { allowedUserFields } from "@/schema/users";
 import { Post, PostType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
-
-  const { searchParams } = new URL(req.url);
-
-  const type = searchParams.get("type");
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  const GetPostsQueriesSchema = z.object({
+    // type: z
+    //   .enum([PostType.FEED, PostType.JOBS])
+    //   .transform((val) => val.toUpperCase()),
+    type: z.string().transform((val) => val.toUpperCase()),
+  });
+
+  const queries = Object.fromEntries(req.nextUrl.searchParams.entries());
+  const result = await GetPostsQueriesSchema.safeParseAsync(queries);
+
+  if (!result.success) {
+    console.log("[POSTS_GET]", result.error.flatten().fieldErrors);
+    return new NextResponse("Invalid query parameters", { status: 400 });
+  }
+
+  const { type } = result.data;
+
+  // const { searchParams } = new URL(req.url);
+  // const type = searchParams.get("type")?.toUpperCase();
+
   try {
-    const posts = await prisma.post.findMany({
-      where: {
-        isArchived: false,
-        type: type ? (type.toUpperCase() as PostType) : undefined,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        comments: {
-          include: {  
-            user: {
-              select: {
-                profile: true,
-                name: true,
-                email: true,
-                image: true,
-                role: true,
-                createdAt: true,
-                id: true,
+    if (type === "FEED") {
+      let queryData = {};
+
+      if (currentUser.role === "STUDENT" || currentUser.role === "ALUMNI") {
+        queryData = {
+          department: {
+            some: {
+              name: currentUser?.department?.name,
+            },
+          },
+        };
+      }
+
+      const posts = await prisma.post.findMany({
+        take: 50,
+        where: {
+          isArchived: false,
+          type: type,
+          ...queryData,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          comments: {
+            include: {
+              user: {
+                select: allowedUserFields,
               },
             },
           },
-        },
-        user: {
-          select: {
-            profile: true,
-            name: true,
-            email: true,
-            image: true,
-            role: true,
-            createdAt: true,
-            id: true,
+          user: {
+            select: allowedUserFields,
           },
+          photos: true,
+          department: true,
         },
-        photos: true,
-        department: true,
-      },
-    });
+      });
 
-    return NextResponse.json(posts);
+      return NextResponse.json(posts);
+    } else if (type === "JOBS") {
+      const jobs = await prisma.post.findMany({
+        take: 50,
+        where: {
+          isArchived: false,
+          type: type,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          comments: {
+            include: {
+              user: {
+                select: allowedUserFields,
+              },
+            },
+          },
+          user: {
+            select: allowedUserFields,
+          },
+          photos: true,
+          department: true,
+        },
+      });
+
+      return NextResponse.json(jobs);
+    } else {
+      return new NextResponse("Invalid post type", { status: 400 });
+    }
   } catch (error) {
     console.log("[POSTS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
@@ -83,7 +130,8 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
-  const { department, photos, type, description, title, company, location } = result.data;
+  const { department, photos, type, description, title, company, location } =
+    result.data;
 
   try {
     let post: Post;

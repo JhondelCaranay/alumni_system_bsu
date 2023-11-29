@@ -3,7 +3,7 @@ import prismaDB from "@/lib/prisma";
 import { getCsrfToken } from "next-auth/react";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "../../auth";
 
 export type TGetCurrentUser = Awaited<ReturnType<typeof getCurrentUserPages>>;
 

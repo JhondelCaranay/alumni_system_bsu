@@ -29,14 +29,14 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
     <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent">
       <footer className="flex justify-between items-center mb-1">
         <div className="flex items-center">
-          <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+          <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
             <Avatar
               className="mr-2 w-6 h-6 rounded-full"
               src={data?.user?.image}
             />
             {data?.user?.name ||
               `${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
-          </p>
+          </div>
           <span className="text-xs">
             <Badge className="capitalize text-[10px]">
               {data?.user?.role?.toLowerCase()}
@@ -45,7 +45,7 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="">
+          <DropdownMenuTrigger className="" asChild>
             <Button
               className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               type="button"
@@ -92,9 +92,9 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
             />
           </svg>

@@ -30,7 +30,7 @@ const ProfileSidebar = async () => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <label className="text-md text-zinc-700 dark:text-zinc-400">
           Email address
         </label>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
@@ -39,7 +39,7 @@ const ProfileSidebar = async () => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <label className="text-md text-zinc-700 dark:text-zinc-400">
           Home address
         </label>
         <span className="flex text-sm gap-x-1 text-black font-semibold dark:text-white">
@@ -49,7 +49,7 @@ const ProfileSidebar = async () => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <label className="text-md text-zinc-700 dark:text-zinc-400">
           Phone number
         </label>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">

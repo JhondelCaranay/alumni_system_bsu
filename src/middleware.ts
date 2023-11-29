@@ -61,6 +61,11 @@ export default withAuth(
     ) {
       return NextResponse.next();
     } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/messages`) &&
+      isUserAllowed(role, ["ALL"])
+    ) {
+      return NextResponse.next();
+    } else if (
       isPathMatch(pathname, `/${roleLowerCase}/profile`) &&
       isUserAllowed(role, ["ALL"])
     ) {

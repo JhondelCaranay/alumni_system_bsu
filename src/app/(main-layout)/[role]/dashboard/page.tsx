@@ -1,4 +1,5 @@
 import Widget from "./components/Widget";
+import { Chart } from "./components/Chart";
 import { CircleDollarSign, File, LayoutDashboard, ListChecks } from "lucide-react";
 
 type DashBoardHomePageProps = {};
@@ -10,6 +11,10 @@ const DashBoardHomePage = (props: DashBoardHomePageProps) => {
         <Widget title="STUDENTS" total={99} icon={File} />
         <Widget title="JOBS" total={99} icon={LayoutDashboard} />
         <Widget title="EVENTS" total={99} icon={ListChecks} />
+      </div>
+      <div className="flex flex-col gap-y-10 mt-10">
+      <h1 className="text-center text-zinc-500">Alumni</h1>
+      <Chart />
       </div>
     </div>
   );

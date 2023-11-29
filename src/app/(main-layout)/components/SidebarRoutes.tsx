@@ -1,12 +1,15 @@
 "use client";
 
 import {
+  Bell,
   Briefcase,
   CalendarDays,
+  UserCircle,
   Home,
-  MessagesSquare,
+  MessageCircle,
   TableProperties,
   Users,
+  Megaphone,
 } from "lucide-react";
 import { MdHive } from "react-icons/md";
 import { SidebarItem } from "./SidebarItem";
@@ -27,6 +30,7 @@ const routesList: routeListType[] = [
     href: "/dashboard",
     roles: ["ADMIN"],
   },
+
   {
     icon: TableProperties,
     label: "Course",
@@ -37,6 +41,12 @@ const routesList: routeListType[] = [
     icon: Users,
     label: "Alumni / Students",
     href: "/students",
+    roles: ["ADMIN"],
+  },
+  {
+    icon: Users,
+    label: "Users",
+    href: "/users",
     roles: ["ADMIN"],
   },
   {
@@ -58,11 +68,23 @@ const routesList: routeListType[] = [
     roles: ["ALL"],
   },
   {
-    icon: Users,
-    label: "Users",
-    href: "/users",
-    roles: ["ADMIN"],
+    icon: MessageCircle,
+    label: "Message",
+    href: "/message",
+    roles: ["ALL"],
   },
+  // {
+  //   icon: Bell,
+  //   label: "Notifications",
+  //   href: "/notifications",
+  //   roles: ["ALL"],
+  // },
+  // {
+  //   icon: Megaphone,
+  //   label: "Anoucement",
+  //   href: "/anoucement",
+  //   roles: ["ALL"],
+  // },
 ];
 
 type SidebarRoutesProps = {
@@ -70,11 +92,11 @@ type SidebarRoutesProps = {
 };
 
 export const SidebarRoutes = ({ role }: SidebarRoutesProps) => {
-  const routes = routesList;
+  // const routes = routesList;
 
   return (
     <div className="flex flex-col w-full ">
-      {routes.map((route) => {
+      {routesList.map((route) => {
         if (!isUserAllowed(role, route.roles)) {
           return null;
         }

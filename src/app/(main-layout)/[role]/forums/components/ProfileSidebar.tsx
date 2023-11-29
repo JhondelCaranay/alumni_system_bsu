@@ -30,18 +30,16 @@ const ProfileSidebar = async () => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label className="text-md text-zinc-700 dark:text-zinc-400">
+        <p className="text-md text-zinc-700 dark:text-zinc-400">
           Email address
-        </label>
+        </p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
           {user.email || user.profile?.alternative_email}
         </span>
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label className="text-md text-zinc-700 dark:text-zinc-400">
-          Home address
-        </label>
+        <p className="text-md text-zinc-700 dark:text-zinc-400">Home address</p>
         <span className="flex text-sm gap-x-1 text-black font-semibold dark:text-white">
           {user.profile?.province} {user.profile?.city} {user.profile?.street}{" "}
           {user.profile?.homeNo} {user.profile?.barangay}{" "}
@@ -49,9 +47,7 @@ const ProfileSidebar = async () => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label className="text-md text-zinc-700 dark:text-zinc-400">
-          Phone number
-        </label>
+        <p className="text-md text-zinc-700 dark:text-zinc-400">Phone number</p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
           {user.profile?.contactNo}{" "}
         </span>

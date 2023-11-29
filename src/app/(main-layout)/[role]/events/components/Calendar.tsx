@@ -138,7 +138,7 @@ const Calendar = () => {
         height={"100vh"}
         initialView="dayGridMonth"
         // longPressDelay={0}
-        editable={true}
+        editable={false}
         selectable={true}
         selectMirror={true}
         droppable={true}

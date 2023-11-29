@@ -12,12 +12,13 @@ export type ModalType =
   | "archiveUser"
   | "createEvent"
   | "viewEvent"
+  | "viewOnlyEvent"
   | "createDiscussion"
   | "createGuardian"
   | "updateGuardian"
   | "deleteGuardian"
   | "deletePost"
-  | "editDiscussion"
+  | "editDiscussion";
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

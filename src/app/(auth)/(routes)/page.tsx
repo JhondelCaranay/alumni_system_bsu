@@ -4,7 +4,7 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import { redirect } from "next/navigation";
 const LoginPage = async () => {
   const currentUser = await getCurrentUser();
-  console.log(currentUser)
+  // console.log(currentUser)
   if (currentUser) {
     redirect(`/${currentUser.role.toLowerCase()}/profile`);
   }

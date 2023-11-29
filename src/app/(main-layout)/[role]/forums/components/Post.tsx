@@ -34,13 +34,12 @@ const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type PostTypeProps = {
   postData: PostSchemaType & { user: UserWithProfile };
-  currentUser: GetCurrentUserType
-
+  currentUser: GetCurrentUserType;
 };
 
 const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
   const [isCommenting, setIsCommenting] = useState(false);
-  const {onOpen,} = useModal()
+  const { onOpen } = useModal();
   const comments = useQueryProcessor<
     (CommentSchema & { replies: CommentSchema[] })[]
   >(
@@ -58,7 +57,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
 
   const isOwner = currentUser?.id === postData.userId;
   const isAdmin = currentUser?.id === Role.ADMIN;
-  const canEditOrDelete = (isOwner || isAdmin);
+  const canEditOrDelete = isOwner || isAdmin;
 
   useCommentSocket({
     commentsKey: `posts:${postData.id}:comments`,
@@ -93,32 +92,37 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
             </time>
           </p>
         </div>
-        
-        {
-          (canEditOrDelete) && <DropdownMenu>
-          <DropdownMenuTrigger className="absolute top-5 right-5">
-            <Button
-              className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              type="button"
-              variant={"ghost"}
-              size={"icon"}
-            >
-              <MoreHorizontal className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="">
-            <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" onClick={() => onOpen('editDiscussion', {post: postData})}>
-              <Pencil className="h-4 w-4 mr-2" />
-              Update
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" onClick={() => onOpen('deletePost', {post: postData})}>
-              <Archive className="h-4 w-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        }
-        
+
+        {canEditOrDelete && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="absolute top-5 right-5" asChild>
+              <Button
+                className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                type="button"
+                variant={"ghost"}
+                size={"icon"}
+              >
+                <MoreHorizontal className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="">
+              <DropdownMenuItem
+                className="text-xs cursor-pointer hover:bg-zinc-400"
+                onClick={() => onOpen("editDiscussion", { post: postData })}
+              >
+                <Pencil className="h-4 w-4 mr-2" />
+                Update
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+                onClick={() => onOpen("deletePost", { post: postData })}
+              >
+                <Archive className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       <div className="">

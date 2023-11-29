@@ -16,22 +16,22 @@ const GeneralUserInfo: React.FC<GeneralUserInfoProps> = ({ data }) => {
       
       <div className="flex justify-evenly">
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">First Name</label>
+            <p className="text-md dark:text-zinc-400">First Name</p>
             <span className="capitalize text-sm">{data?.profile?.firstname || '-'}</span>
         </div>
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Last Name</label>
+            <p className="text-md dark:text-zinc-400">Last Name</p>
             <span className="capitalize text-sm">{data?.profile?.lastname || '-'}</span>
         </div>
       </div>
 
       <div className="flex justify-evenly">
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Middle Name</label>
+            <p className="text-md dark:text-zinc-400">Middle Name</p>
             <span className="capitalize text-sm">{data?.profile?.middlename || '-'}</span>
         </div>
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Phone Number</label>
+            <p className="text-md dark:text-zinc-400">Phone Number</p>
             <span className="capitalize text-sm">{data?.profile?.contactNo || '-'}</span>
         </div>
       </div>
@@ -39,22 +39,22 @@ const GeneralUserInfo: React.FC<GeneralUserInfoProps> = ({ data }) => {
 
       <div className="flex justify-evenly">
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">BSU Email</label>
+            <p className="text-md dark:text-zinc-400">BSU Email</p>
             <span className=" text-sm">{data?.email ||  '-'}</span>
         </div>
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Personal Email</label>
+            <p className="text-md dark:text-zinc-400">Personal Email</p>
             <span className="text-sm"> { data?.profile?.alternative_email || '-'}</span>
         </div>
       </div>
 
       <div className="flex justify-evenly">
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Home Number</label>
+            <p className="text-md dark:text-zinc-400">Home Number</p>
             <span className=" text-sm">{ data?.profile?.homeNo ||  '-'}</span>
         </div>
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Street</label>
+            <p className="text-md dark:text-zinc-400">Street</p>
             <span className="text-sm"> {data?.profile?.street|| '-'}</span>
         </div>
       </div>
@@ -63,12 +63,12 @@ const GeneralUserInfo: React.FC<GeneralUserInfoProps> = ({ data }) => {
       <div className="flex justify-evenly">
 
       <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Barangay</label>
+            <p className="text-md dark:text-zinc-400" >Barangay</p>
             <span className="text-sm"> {data?.profile?.barangay|| '-'}</span>
         </div>
 
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Province</label>
+            <p className="text-md dark:text-zinc-400" >Province</p>
             <span className="capitalize text-sm">{ data?.profile?.province || '-'}</span>
         </div>
         
@@ -76,11 +76,11 @@ const GeneralUserInfo: React.FC<GeneralUserInfoProps> = ({ data }) => {
 
       <div className="flex justify-evenly">
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">City</label>
+            <p className="text-md dark:text-zinc-400" >City</p>
             <span className="text-sm"> {data?.profile?.city|| '-'}</span>
         </div>
         <div className="flex flex-col items-start flex-1">
-            <label className="text-md dark:text-zinc-400" htmlFor="">Date created</label>
+            <p className="text-md dark:text-zinc-400" >Date created</p>
             <span className="text-sm"> {format(new Date(data?.createdAt || new Date()), DATE_FORMAT)}</span>
         </div>
       </div>

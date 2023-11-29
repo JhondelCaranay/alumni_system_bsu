@@ -2,6 +2,7 @@ import getCurrentUserPages from "@/actions/getCurrentUser-pages";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { UpdateCommentSchema, CreateReplySchema } from "@/schema/comment";
+import { allowedUserFields } from "@/schema/users";
 import { NextApiResponseServerIo } from "@/types/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -29,28 +30,12 @@ export default async function handler(
     },
     include: {
       user: {
-        select: {
-          profile: true,
-          name: true,
-          email: true,
-          role: true,
-          createdAt: true,
-          id: true,
-          image:true,
-        },
+        select: allowedUserFields,
       },
       replies: {
         include: {
           user: {
-            select: {
-              profile: true,
-              name: true,
-              email: true,
-              role: true,
-              createdAt: true,
-              id: true,
-              image:true,
-            },
+            select: allowedUserFields,
           },
         },
       },
@@ -91,28 +76,12 @@ export default async function handler(
         },
         include: {
           user: {
-            select: {
-              profile: true,
-              name: true,
-              email: true,
-              role: true,
-              createdAt: true,
-              id: true,
-              image: true,
-            },
+            select: allowedUserFields,
           },
           replies: {
             include: {
               user: {
-                select: {
-                  profile: true,
-                  name: true,
-                  email: true,
-                  role: true,
-                  createdAt: true,
-                  id: true,
-                  image: true,
-                },
+                select: allowedUserFields,
               },
             },
           },

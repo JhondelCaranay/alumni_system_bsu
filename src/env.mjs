@@ -11,8 +11,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SITE_URL: z.string().min(1),
     CLOUDINARY_UPLOAD_URL:z.string().min(1),
     CLOUDINARY_API_KEY:z.string().min(1),
-CLOUDINARY_API_SECRET:z.string().min(1),
-CLOUDINARY_CLOUD_NAME:z.string().min(1),
+  CLOUDINARY_API_SECRET:z.string().min(1),
+  CLOUDINARY_CLOUD_NAME:z.string().min(1),
   },
   client: {
     // NEXT_PUBLIC_PUBLISHABLE_KEY: z.string().min(1),

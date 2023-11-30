@@ -25,18 +25,18 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <p  className="text-md text-zinc-700 dark:text-zinc-400">
           Email address
-        </label>
+        </p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
           {data?.email || data?.profile?.alternative_email}
         </span>
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <p  className="text-md text-zinc-700 dark:text-zinc-400">
           Home address
-        </label>
+        </p>
         <span className="flex text-sm gap-x-1 text-black font-semibold dark:text-white">
           {data?.profile?.province} {data?.profile?.city}{" "}
           {data?.profile?.street} {data?.profile?.homeNo}{" "}
@@ -45,9 +45,9 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <label htmlFor="" className="text-md text-zinc-700 dark:text-zinc-400">
+        <p  className="text-md text-zinc-700 dark:text-zinc-400">
           Phone number
-        </label>
+        </p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
           {data?.profile?.contactNo}{" "}
         </span>

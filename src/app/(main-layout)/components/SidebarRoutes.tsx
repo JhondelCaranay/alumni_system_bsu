@@ -70,7 +70,7 @@ const routesList: routeListType[] = [
   {
     icon: MessageCircle,
     label: "Message",
-    href: "/message",
+    href: "/messages",
     roles: ["ALL"],
   },
   // {

@@ -1,5 +1,6 @@
 "use client";
 import React, {
+  forwardRef,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -110,15 +111,20 @@ const CreateDiscussionModal = () => {
 
   const [_, textareaHeightUpdater] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();
+
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
-    updateTextAreaHeight(textArea);
-    textAreaRef.current = textArea;
+    if (textArea) {
+      updateTextAreaHeight(textArea);
+      textAreaRef.current = textArea;
+    }
   }, []);
 
   const description = form.getValues("description");
 
   useLayoutEffect(() => {
-    updateTextAreaHeight(textAreaRef.current);
+    if (description) {
+      updateTextAreaHeight(textAreaRef.current);
+    }
   }, [description]);
 
   const updateTextAreaHeight = (textArea?: HTMLTextAreaElement) => {
@@ -396,6 +402,16 @@ const CreateDiscussionModal = () => {
                 <span className="text-sm font-semibold">Add to your post</span>
                 <div className="flex gap-x-2">
                   <ActionTooltip label="Photo/video">
+                    {/* 
+                      This component gives error when createDiscussionModal is open
+
+                      Warning: Function components cannot be given refs.
+                      Attempts to access this ref will fail.
+                      Did you mean to use React.forwardRef()?
+                      Check the render method of `SlotClone`.
+                      at FormField
+                      
+                    */}
                     <FormField
                       control={form.control}
                       name="photos"
@@ -407,8 +423,8 @@ const CreateDiscussionModal = () => {
                           <FormControl>
                             <Input
                               {...form.register("photos")}
-                              className="hidden"
-                              id="photos"
+                              placeholder="Add photo/video"
+                              className="sr-only"
                               type="file"
                               accept="image/*"
                               multiple
@@ -462,6 +478,9 @@ const CreateDiscussionModal = () => {
                         </FormItem>
                       )}
                     />
+                    {/* 
+                      end
+                    */}
                   </ActionTooltip>
 
                   <ActionTooltip label="Add emoji">

@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 
   const GetStudentsQueriesSchema = z.object({
     role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
-    schoolYear: z.coerce.number().optional(),
+    schoolYear: z.date().optional(),
     department: z.string().optional(),
   });
 
@@ -31,7 +31,8 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 
   const { role, schoolYear, department } = result.data;
 
-  const allowedRoles = role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
+  const allowedRoles =
+    role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
 
   try {
     const students = await prisma.user.findMany({
@@ -91,8 +92,16 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
-  const { studentNumber, firstname, lastname, middlename, email, role, departmentId, sectionId } =
-    result.data;
+  const {
+    studentNumber,
+    firstname,
+    lastname,
+    middlename,
+    email,
+    role,
+    departmentId,
+    sectionId,
+  } = result.data;
 
   try {
     const user = await prisma.user.create({
@@ -120,6 +129,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         createdAt: true,
         updatedAt: true,
         department: true,
+        section: true,
         profile: true,
       },
     });

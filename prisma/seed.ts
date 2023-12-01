@@ -7,168 +7,218 @@ Database seeding happens in two ways with Prisma: manually with prisma db seed a
 To seed the database, run the db seed CLI command:
 $ npx prisma db seed
 
+To reset the database and seed it using db push
+$ npx prisma migrate reset --skip-seed
+$ npx prisma db push    // push the schema to the database first
+$ npx prisma generate  // (optional)
+$ npx prisma db seed  // then you can seed the database
+
+OR
+$ npx prisma db push --force-reset
+$ npx prisma db seed
+
 */
+
 // enum Role {
 //   ADMIN // can control everything - can create group chat
-//   FACULTY_MEMBER // normal faculty member
-//   FACULTY_ADVISER // include in group chat per section
-//   FACULTY_COORDINATOR // 7 programs
-//   FACULTY_AlUMNI // former student
-//   FACULTY_STUDENT // current student
+//   ADVISER // include in group chat per section
+//   COORDINATOR // 7 programs
+//   ALUMNI // former student
+//   STUDENT // current student
 //   PESO // can post job openings , Public Employment Service Office
 //   BULSU_PARTNER // can post job openings
 // }
 
 const prisma = new PrismaClient();
-async function main() {
-  /* 
-    SEED USERS
-  */
 
-  // course / department / program
-  const departments = [
-    "AUTOMOTIVE",
-    "COMPUTER",
-    "DRAFTING",
-    "EIR",
-    "EEC",
-    "FOODS",
-    "MECHANICAL",
-  ];
+const departments = [
+  "AUTOMOTIVE",
+  "COMPUTER",
+  "DRAFTING",
+  "EIR",
+  "EEC",
+  "FOODS",
+  "MECHANICAL",
+];
 
-  const departmentsIds = await Promise.all(
-    departments.map(async (department) => {
-      return await prisma.department.create({
-        data: {
-          name: department,
+const sections = ["A", "B", "C", "D", "E", "F", "G"];
+
+const password = bcrypt.hashSync("dev123", 12);
+
+const createDepartment = async (name: string) => {
+  return await prisma.department.create({
+    data: {
+      name,
+    },
+  });
+};
+
+const createSection = async (name: string) => {
+  return await prisma.section.create({
+    data: {
+      name,
+    },
+  });
+};
+
+// create user n times
+const createUser = async (role: string) => {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const full_email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${faker.number.int(
+    {
+      min: 0,
+      max: 10,
+    }
+  )}@bulsu.edu.ph`;
+
+  const user = await prisma.user.create({
+    data: {
+      isArchived: false,
+      name: faker.person.firstName(),
+      email: role === "ADMIN" ? "admin@bulsu.edu.ph" : full_email,
+      image: faker.image.avatar(),
+      hashedPassword: password,
+      role: Role[role as keyof typeof Role], // convert string to enum
+      section: {
+        connect: {
+          name: faker.helpers.arrayElement(sections),
         },
-      });
-    })
-  );
-
-  const password = await bcrypt.hash("dev123", 12);
-
-  const users_roles = [
-    "ADMIN",
-    "ADVISER",
-    "COORDINATOR",
-    "ALUMNI",
-    "STUDENT",
-    "PESO",
-    "BULSU_PARTNER",
-  ];
-
-  users_roles.forEach(async (role) => {
-    // random number 0 - 6
-    const randomNumber = Math.floor(Math.random() * 7);
-
-    const user = await prisma.user.create({
-      data: {
-        email: `${role.toLowerCase()}@bulsu.edu.ph`,
-        hashedPassword: password,
-        role: Role[role as keyof typeof Role],
-        name: faker.person.firstName(),
-        image: faker.image.avatar(),
-        department: {
-          connect: {
-            id: departmentsIds[randomNumber].id,
+      },
+      department: {
+        connect: {
+          name: faker.helpers.arrayElement(departments),
+        },
+      },
+      profile: {
+        create: {
+          isEmployed: faker.datatype.boolean(),
+          studentNumber: faker.number.int(),
+          schoolYear: faker.date.between({
+            from: "2020-01-01T00:00:00.000Z",
+            to: "2025-01-01T00:00:00.000Z",
+          }),
+          yearEnrolled: faker.date.between({
+            from: "2020-01-01T00:00:00.000Z",
+            to: "2021-01-01T00:00:00.000Z",
+          }),
+          yearGraduated: faker.date.between({
+            from: "2024-01-01T00:00:00.000Z",
+            to: "2025-01-01T00:00:00.000Z",
+          }),
+          alternative_email: faker.internet.email(),
+          firstname: firstName,
+          lastname: lastName,
+          middlename: faker.person.lastName(),
+          age: faker.number.int({ min: 15, max: 30 }),
+          religion: faker.helpers.arrayElement(["Christian", "Muslim"]),
+          gender: faker.helpers.enumValue(Gender),
+          placeOfBirth: faker.location.city(),
+          dateOfBirth: faker.date.between({
+            from: "2000-01-01T00:00:00.000Z",
+            to: "2005-01-01T00:00:00.000Z",
+          }),
+          homeNo: faker.location.buildingNumber(),
+          street: faker.location.street(),
+          barangay: faker.location.state(),
+          city: faker.location.city(),
+          corUrl: faker.internet.url(),
+          province: faker.location.state(),
+          contactNo: faker.phone.number(),
+          parents: {
+            // create: {
+            //   firstname: faker.person.firstName(),
+            //   lastname: faker.person.lastName(),
+            //   occupation: faker.person.jobTitle(),
+            //   contactNo: faker.phone.number(),
+            //   relationship: faker.helpers.arrayElement([
+            //     "Father",
+            //     "Mother",
+            //     "Guardian",
+            //   ]),
+            // },
+            createMany: {
+              data: [
+                {
+                  firstname: faker.person.firstName(),
+                  lastname: faker.person.lastName(),
+                  occupation: faker.person.jobTitle(),
+                  contactNo: faker.phone.number(),
+                  relationship: "Father",
+                },
+                {
+                  firstname: faker.person.firstName(),
+                  lastname: faker.person.lastName(),
+                  occupation: faker.person.jobTitle(),
+                  contactNo: faker.phone.number(),
+                  relationship: "Mother",
+                },
+              ],
+            },
           },
         },
       },
-    });
-
-    const isAlumniOrStudent =
-      user.role === Role.ALUMNI || user.role === Role.STUDENT;
-
-    // profile
-    await prisma.profile.create({
-      data: {
-        isEmployed: faker.datatype.boolean(),
-        schoolYear: faker.number.int({ min: 1, max: 4 }),
-        studentNumber: isAlumniOrStudent
-          ? faker.number.int().toString()
-          : undefined,
-        yearEnrolled: isAlumniOrStudent
-          ? faker.date.between({
-              from: "2020-01-01T00:00:00.000Z",
-              to: "2030-01-01T00:00:00.000Z",
-            })
-          : undefined,
-        alternative_email: faker.internet.email(),
-        firstname: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        middlename: faker.person.lastName(),
-        age: faker.number.int({ min: 18, max: 60 }),
-        city: faker.location.city(),
-        homeNo: faker.location.buildingNumber(),
-        street: faker.location.street(),
-        barangay: faker.location.state(),
-        gender: faker.person.sexType().toUpperCase() as Gender,
-        contactNo: faker.phone.number(),
-        province: faker.location.state(),
-        user: {
-          connect: {
-            id: user.id,
-          },
-        },
-      },
-    });
+    },
   });
 
-  // create 10 alumni and 10 students
-  for (let i = 0; i < 20; i++) {
-    const isAlumniOrStudent = i % 2 === 0;
-    // alumni is even, student is odd
+  return user;
+};
 
-    // random number 0 - 6
-    const randomNumber = Math.floor(Math.random() * 7);
+async function main() {
+  await Promise.all(
+    departments.map((department) => createDepartment(department))
+  );
 
-    const user = await prisma.user.create({
-      data: {
-        email: `
-        ${faker.person.firstName()}@bulsu.edu.ph
-        `,
-        hashedPassword: password,
-        role: isAlumniOrStudent ? Role.ALUMNI : Role.STUDENT,
-        name: faker.person.firstName(),
-        image: faker.image.avatar(),
-        department: {
-          connect: {
-            id: departmentsIds[randomNumber].id,
-          },
-        },
-      },
-    });
+  console.log("departments created.");
 
-    // profile
-    await prisma.profile.create({
-      data: {
-        schoolYear: faker.number.int({ min: 1, max: 4 }),
-        studentNumber: faker.number.int().toString(),
-        yearEnrolled: faker.date.between({
-          from: "2020-01-01T00:00:00.000Z",
-          to: "2030-01-01T00:00:00.000Z",
-        }),
-        alternative_email: faker.internet.email(),
-        firstname: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        middlename: faker.person.lastName(),
-        age: faker.number.int({ min: 18, max: 60 }),
-        city: faker.location.city(),
-        homeNo: faker.location.buildingNumber(),
-        street: faker.location.street(),
-        barangay: faker.location.state(),
-        gender: faker.person.sexType().toUpperCase() as Gender,
-        contactNo: faker.phone.number(),
-        province: faker.location.state(),
-        user: {
-          connect: {
-            id: user.id,
-          },
-        },
-      },
-    });
-  }
+  await Promise.all(sections.map((section) => createSection(section)));
+
+  console.log("sections created.");
+
+  // create STUDENT
+  await Promise.all(
+    Array.from({
+      length: 100,
+    }).map(() => createUser("STUDENT"))
+  );
+  // create ALUMNI
+  await Promise.all(
+    Array.from({
+      length: 100,
+    }).map(() => createUser("ALUMNI"))
+  );
+
+  // create ADVISER
+  await Promise.all(
+    Array.from({
+      length: 10,
+    }).map(() => createUser("ADVISER"))
+  );
+
+  // create COORDINATOR
+  await Promise.all(
+    Array.from({
+      length: 10,
+    }).map(() => createUser("COORDINATOR"))
+  );
+
+  // create PESO
+  await Promise.all(
+    Array.from({
+      length: 10,
+    }).map(() => createUser("PESO"))
+  );
+
+  await Promise.all(
+    Array.from({
+      length: 10,
+    }).map(() => createUser("BULSU_PARTNER"))
+  );
+
+  // create ADMIN
+  await createUser("ADMIN");
+
+  console.log("users created.");
 
   console.log("Seeding completed.");
 }

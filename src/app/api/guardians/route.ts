@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreateGuardianSchema } from "@/schema/guardian";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
 
@@ -10,10 +11,29 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  const GetGuardiansQueriesSchema = z.object({
+    studentProfileId: z.string().optional(),
+  });
+
+  const queries = Object.fromEntries(req.nextUrl.searchParams.entries());
+  const result = await GetGuardiansQueriesSchema.safeParseAsync(queries);
+
+  if (!result.success) {
+    console.log("[GUARDIANS_GET]", result.error.flatten().fieldErrors);
+    return new NextResponse("Invalid query parameters", { status: 400 });
+  }
+
+  const { studentProfileId } = result.data;
+  console.log(
+    "🚀 ~ file: route.ts:27 ~ GET ~ studentProfileId:",
+    studentProfileId
+  );
+
   try {
     const guardians = await prisma.guardian.findMany({
       where: {
         isArchived: false,
+        childrenId: studentProfileId,
       },
       orderBy: {
         createdAt: "desc",

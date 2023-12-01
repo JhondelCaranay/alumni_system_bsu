@@ -20,7 +20,7 @@ export const StudentSchema = z.object({
 type PostSchemaType = z.infer<typeof StudentSchema>;
 
 export const CreateStudentsSchema = z.object({
-  studentNumber: z.string().min(1),
+  studentNumber: z.number(),
   firstname: z.string().min(1),
   lastname: z.string().min(1),
   middlename: z.string().min(1),

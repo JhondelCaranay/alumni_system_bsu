@@ -23,6 +23,8 @@ export async function GET(
       },
       include: {
         profile: true,
+        department: true,
+        section: true,
       },
     });
 

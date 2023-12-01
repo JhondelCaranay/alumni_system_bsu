@@ -2,33 +2,33 @@ import prisma from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request:Request) {
-  const { searchParams } = new URL(request.url)
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
 
-  const role = searchParams.get('role')
-  const department = searchParams.get('department')
-  
+  const role = searchParams.get("role");
+  const department = searchParams.get("department");
+
   try {
     const users = await prisma.user.findMany({
       where: {
-        AND:[
+        AND: [
           {
-            isArchived:false,
+            isArchived: false,
           },
           {
             role: {
-              not: Role.ADMIN
-            }
+              not: Role.ADMIN,
+            },
           },
           {
-            role: !role  ? undefined : role as Role,
+            role: !role ? undefined : (role as Role),
           },
           {
             department: {
-              name: !department ? undefined : department as string
-            }
-          }
-        ]
+              name: !department ? undefined : (department as string),
+            },
+          },
+        ],
       },
       orderBy: {
         name: "asc",
@@ -36,6 +36,7 @@ export async function GET(request:Request) {
       include: {
         profile: true,
         department: true,
+        section: true,
       },
     });
 

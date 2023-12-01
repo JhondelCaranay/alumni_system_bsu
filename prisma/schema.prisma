@@ -170,9 +170,7 @@ model Comment {
 model Section {
   id String @id @default(cuid())
 
-  name  String
-  year  String
-  batch String // 2019-2020
+  name String @unique
 
   isArchived Boolean @default(false)
 
@@ -194,7 +192,7 @@ model Section {
 model Department {
   id String @id @default(cuid())
 
-  name       String
+  name       String  @unique
   isArchived Boolean @default(false)
 
   users User[]
@@ -216,6 +214,7 @@ model Guardian {
   firstname  String
   lastname   String
   occupation String
+  contactNo  String?
 
   relationship String
   isArchived   Boolean @default(false)
@@ -234,8 +233,8 @@ model Profile {
   id String @id @unique @default(cuid())
 
   isEmployed    Boolean   @default(false)
-  studentNumber String?
-  schoolYear    Int?
+  studentNumber Int?
+  schoolYear    DateTime?
   yearEnrolled  DateTime?
   yearGraduated DateTime?
 

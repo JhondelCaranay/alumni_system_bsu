@@ -15,6 +15,15 @@ async function getCurrentUserPages(req: NextApiRequest, res: NextApiResponse) {
       where: {
         email: currentUser?.user?.email as string,
       },
+      include: {
+        profile: {
+          include: {
+            parents: true,
+          },
+        },
+        section: true,
+        department: true,
+      },
     });
 
     if (!user) {

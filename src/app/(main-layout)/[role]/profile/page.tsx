@@ -10,9 +10,12 @@ const Page = async () => {
 
   return (
     <div className="flex flex-col p-5 dark:bg-transparent bg-[#F9FAFB]">
+      {/* <pre className="hidden dark:block dark:text-white text-black dark:bg-gray-800 bg-gray-100 p-5 rounded-md overflow-auto">
+        <code>{JSON.stringify(user, null, 2)}</code>
+      </pre> */}
       <div className="flex justify-between items-center">
         <h1 className="my-5 text-3xl">Profile</h1>
-        <Link href={`${user?.role.toLowerCase()}/profile/settings`}>
+        <Link href={`/${user?.role.toLowerCase()}/profile/settings`}>
           <UserCog />
         </Link>
       </div>
@@ -21,7 +24,7 @@ const Page = async () => {
           <InitialUserInfo data={user} />
           <GeneralUserInfo data={user} />
         </div>
-        <GuardiansInfo data={user} />
+        <GuardiansInfo data={user} studentProfileId={user?.profile?.id} />
       </div>
     </div>
   );

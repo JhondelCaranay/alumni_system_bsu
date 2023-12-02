@@ -63,8 +63,6 @@ const data = [
   },
 ];
 
-
-
 export default function EventChart() {
   return (
     <ResponsiveContainer width="100%" height={600}>

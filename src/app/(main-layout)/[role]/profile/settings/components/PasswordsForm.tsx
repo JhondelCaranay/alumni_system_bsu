@@ -26,16 +26,16 @@ type PasswordsProps = {
 const Passwords: React.FC<PasswordsProps> = ({ data }) => {
   const formSchema = z
     .object({
-      password: z.string()
-      .min(1, { message: "New Password is required" })
-      .refine(
-        (value) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
-            value
-          ),
-        "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
-      )
-      ,
+      password: z
+        .string()
+        .min(1, { message: "New Password is required" })
+        .refine(
+          (value) =>
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+              value
+            ),
+          "Must contain 8 Characters, one uppercase, lowercase, one number and one special case character"
+        ),
       confirmPassword: z
         .string()
         .min(1, { message: "Confirmation Password is required" }),
@@ -73,13 +73,14 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
     updatePassword.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Password updated')
-        form.reset()
+        toast.success("Password updated");
+        form.reset();
       },
     });
   };
 
-  const isLoading = updatePassword.status === 'pending' || form.formState.isSubmitting
+  const isLoading =
+    updatePassword.status === "pending" || form.formState.isSubmitting;
   return (
     <Form {...form}>
       <form
@@ -159,23 +160,35 @@ const Passwords: React.FC<PasswordsProps> = ({ data }) => {
         </div>
 
         <div className="my-auto">
-            <h3 className="text-sm font-semibold">Password requirements:</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Ensure that these requirements are met:</p>
+          <h3 className="text-sm font-semibold">Password requirements:</h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Ensure that these requirements are met:
+          </p>
 
-              <ul className="text-xs text-zinc-500 py-1 px-2 dark:text-zinc-400">
-                <li>At least 8 characters</li>
-                <li>At least one uppercase & lowercase character</li>
-                <li>At least one special & number character, e.g., ! @ # ?</li>
-              </ul>
+          <ul className="text-xs text-zinc-500 py-1 px-2 dark:text-zinc-400">
+            <li>At least 8 characters</li>
+            <li>At least one uppercase & lowercase character</li>
+            <li>At least one special & number character, e.g., ! @ # ?</li>
+          </ul>
         </div>
 
-        <Button className="w-fit mt-auto text-white" type="submit" disabled={isLoading} >{
-          (() => {
-            if(isLoading) return <div className="flex items-center gap-x-2"> <Loader  size={20} /> Saving</div>
+        <Button
+          className="w-fit mt-auto text-white"
+          type="submit"
+          disabled={isLoading}
+        >
+          {(() => {
+            if (isLoading)
+              return (
+                <div className="flex items-center gap-x-2">
+                  {" "}
+                  <Loader size={20} /> Saving
+                </div>
+              );
 
-            return 'Save all'
-          })()
-        }</Button>
+            return "Save all";
+          })()}
+        </Button>
       </form>
     </Form>
   );

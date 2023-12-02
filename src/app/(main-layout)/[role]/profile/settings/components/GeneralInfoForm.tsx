@@ -24,18 +24,22 @@ type GeneralInfoProps = {
 };
 
 const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
+  console.log("🚀 ~ file: GeneralInfoForm.tsx:27 ~ data:", data);
   const formSchema = z.object({
-    firstname: z.string().min(1, {message: "Firstname is required"}),
-    lastname: z.string().min(1, {message: "Lastname is required"}),
-    middlename: z.string().min(1, {message: "Middlename is required"}),
-    personal_email: z.string().email().min(1, {message: "Personal is required"}),
-    bsu_email: z.string().email().min(1, {message: "BSU email is required"}),
-    city: z.string().min(1, {message: "City is required"}),
-    homeNo: z.string().min(1, {message: "Home number is required"}),
-    street: z.string().min(1, {message: "Street is required"}),
-    barangay: z.string().min(1, {message: "Barangay is required"}),
-    province: z.string().min(1, {message: "Province is required"}),
-    contactNo: z.string().min(1, {message: "Phone number is required"}),
+    firstname: z.string().min(1, { message: "Firstname is required" }),
+    lastname: z.string().min(1, { message: "Lastname is required" }),
+    middlename: z.string().min(1, { message: "Middlename is required" }),
+    personal_email: z
+      .string()
+      .email()
+      .min(1, { message: "Personal is required" }),
+    bsu_email: z.string().email().min(1, { message: "BSU email is required" }),
+    city: z.string().min(1, { message: "City is required" }),
+    homeNo: z.string().min(1, { message: "Home number is required" }),
+    street: z.string().min(1, { message: "Street is required" }),
+    barangay: z.string().min(1, { message: "Barangay is required" }),
+    province: z.string().min(1, { message: "Province is required" }),
+    contactNo: z.string().min(1, { message: "Phone number is required" }),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -54,8 +58,8 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
       province: data?.profile?.province as string,
       contactNo: data?.profile?.contactNo as string,
     },
-    resolver:zodResolver(formSchema),
-    mode: 'all'
+    resolver: zodResolver(formSchema),
+    mode: "all",
   });
 
   const updateGeneralInfo = useMutateProcessor<formSchemaType, UserWithProfile>(
@@ -68,18 +72,22 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
     }
   );
 
-  const onSubmit:SubmitHandler<formSchemaType> = (values) => {
+  const onSubmit: SubmitHandler<formSchemaType> = (values) => {
     updateGeneralInfo.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Profile updated')
+        toast.success("Profile updated");
       },
-    })
-  }
+    });
+  };
 
-  const isLoading = updateGeneralInfo.status === 'pending' || form.formState.isSubmitting
+  const isLoading =
+    updateGeneralInfo.status === "pending" || form.formState.isSubmitting;
   return (
     <Form {...form}>
-      <form className="flex flex-1 flex-col bg-white dark:bg-[#1F2937] p-5 rounded-lg gap-y-10 " onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-1 flex-col bg-white dark:bg-[#1F2937] p-5 rounded-lg gap-y-10 "
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <h1 className="text-2xl">General Information</h1>
 
         <div className="flex justify-evenly gap-x-5">
@@ -93,7 +101,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter firstname`}
                     {...field}
@@ -114,7 +122,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter lastname`}
                     {...field}
@@ -137,7 +145,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter middlename`}
                     {...field}
@@ -147,7 +155,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
               </FormItem>
             )}
           />
-           <FormField
+          <FormField
             control={form.control}
             name="contactNo"
             render={({ field }) => (
@@ -157,10 +165,10 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter phone number`}
-                    type="number"
+                    // type="number"
                     {...field}
                   />
                 </FormControl>
@@ -171,7 +179,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
         </div>
 
         <div className="flex justify-evenly gap-x-5">
-        <FormField
+          <FormField
             control={form.control}
             name="bsu_email"
             render={({ field }) => (
@@ -181,7 +189,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={true}
+                    disabled={true}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     type="email"
                     placeholder={`Enter bsu email`}
@@ -192,7 +200,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
               </FormItem>
             )}
           />
-         <FormField
+          <FormField
             control={form.control}
             name="personal_email"
             render={({ field }) => (
@@ -202,7 +210,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     type="email"
                     placeholder={`Enter personal email`}
@@ -216,7 +224,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
         </div>
 
         <div className="flex justify-evenly gap-x-5">
-        <FormField
+          <FormField
             control={form.control}
             name="street"
             render={({ field }) => (
@@ -226,7 +234,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter street`}
                     {...field}
@@ -246,7 +254,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter home number`}
                     {...field}
@@ -259,7 +267,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
         </div>
 
         <div className="flex justify-evenly gap-x-5">
-        <FormField
+          <FormField
             control={form.control}
             name="barangay"
             render={({ field }) => (
@@ -269,7 +277,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter barangay`}
                     {...field}
@@ -285,11 +293,11 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
             render={({ field }) => (
               <FormItem className="flex flex-col items-start flex-1">
                 <FormLabel className="text-sm dark:text-zinc-400 text-black">
-                City
+                  City
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter city`}
                     {...field}
@@ -302,7 +310,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
         </div>
 
         <div className="flex justify-evenly gap-x-5">
-        <FormField
+          <FormField
             control={form.control}
             name="province"
             render={({ field }) => (
@@ -312,7 +320,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="bg-white focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none dark:bg-[#374151] dark:text-zinc-300"
                     placeholder={`Enter province`}
                     {...field}
@@ -322,16 +330,21 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
               </FormItem>
             )}
           />
-          </div>
+        </div>
 
+        <Button className="w-fit text-white" type="submit" disabled={isLoading}>
+          {(() => {
+            if (isLoading)
+              return (
+                <div className="flex items-center gap-x-2">
+                  {" "}
+                  <Loader size={20} /> Saving
+                </div>
+              );
 
-        <Button className="w-fit text-white" type="submit" disabled={isLoading} >{
-          (() => {
-            if(isLoading) return <div className="flex items-center gap-x-2"> <Loader  size={20} /> Saving</div>
-
-            return 'Save all'
-          })()
-        }</Button>
+            return "Save all";
+          })()}
+        </Button>
       </form>
     </Form>
   );

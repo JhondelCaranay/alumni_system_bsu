@@ -180,29 +180,36 @@ NOTE: for old browsers, will need to restart watcher after changing a variable
 }
 
 @layer utilities {
+  /* Scroll thumb styles */
   .scrollbar::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 0.5rem;
   }
-
-  .scrollbar::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: #f7f4ed;
-  }
-
   .scrollbar::-webkit-scrollbar-thumb {
-    background: #e0cbcb;
-    border-radius: 100vh;
-    border: 3px solid #f6f7ed;
+    background: #27272e;
+    border-radius: 1rem;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:active {
+    background-color: #131314;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b3b46;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
   }
 
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #c0a0b9;
+  /* Scroll track styles (Background) */
+  .scrollbar::-webkit-scrollbar-track {
+    background: #131314;
+    border-radius: 4px;
+  }
+  .scrollbar::-webkit-scrollbar-track:hover,
+  .scrollbar::-webkit-scrollbar-track:active {
+    background: #131314;
   }
 }
 
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {

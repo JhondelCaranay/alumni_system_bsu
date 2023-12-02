@@ -20,7 +20,7 @@ const Page = async () => {
         </Link>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <InitialUserInfo data={user} />
           <GeneralUserInfo data={user} />
         </div>

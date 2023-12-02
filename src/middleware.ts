@@ -36,6 +36,11 @@ export default withAuth(
     ) {
       return NextResponse.next();
     } else if (
+      isPathMatch(pathname, `/${roleLowerCase}/sections`) &&
+      isUserAllowed(role, ["ADMIN"])
+    ) {
+      return NextResponse.next();
+    } else if (
       isPathMatch(pathname, `/${roleLowerCase}/users`) &&
       isUserAllowed(role, ["ADMIN"])
     ) {

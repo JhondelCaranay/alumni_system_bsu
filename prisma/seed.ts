@@ -94,10 +94,7 @@ const createUser = async (role: string) => {
         create: {
           isEmployed: faker.datatype.boolean(),
           studentNumber: faker.number.int(),
-          schoolYear: faker.date.between({
-            from: "2020-01-01T00:00:00.000Z",
-            to: "2025-01-01T00:00:00.000Z",
-          }),
+          schoolYear: faker.helpers.arrayElement([1, 2, 3]),
           yearEnrolled: faker.date.between({
             from: "2020-01-01T00:00:00.000Z",
             to: "2021-01-01T00:00:00.000Z",

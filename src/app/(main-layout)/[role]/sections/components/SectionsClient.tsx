@@ -1,46 +1,47 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
-import { getDeparments } from "@/queries/department";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
 import { useState } from "react";
 import { Loader } from "@/components/ui/loader";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import CreateDepartmentModal from "@/components/modals/department/CreateDepartmentModal";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { getSections } from "@/queries/sections";
+import CreateSectionModal from "@/components/modals/section/CreateSectionModal";
 
-type CoursesClientProps = {};
-const CoursesClient = (props: CoursesClientProps) => {
+type SectionsClientProps = {};
+
+const SectionsClient = (props: SectionsClientProps) => {
   const [isOpen, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const departmentsQuery = useQuery({
-    queryKey: ["departments"],
-    queryFn: getDeparments,
+  const sectionsQuery = useQuery({
+    queryKey: ["sections"],
+    queryFn: getSections,
   });
 
-  if (departmentsQuery.isError) {
+  if (sectionsQuery.isError) {
     return <div>Error...</div>;
   }
 
-  if (departmentsQuery.isPending) {
+  if (sectionsQuery.isPending) {
     return <Loader />;
   }
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center space-x-2 pb-4">
-        <h1 className="text-xl font-bold">DEPARTMENT</h1>
+        <h1 className="text-xl font-bold">SECTION</h1>
         <div className="flex gap-4">
           <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
             <PlusCircle className="h-4 w-4 mr-2" />
-            Add Department
+            Add Section
           </Button>
           {isOpen ? (
-            <CreateDepartmentModal
+            <CreateSectionModal
               isOpen={isOpen}
               onClose={() => setOpen(false)}
             />
@@ -62,11 +63,11 @@ const CoursesClient = (props: CoursesClientProps) => {
       </div>
       <DataTable
         columns={columns}
-        data={departmentsQuery.data}
+        data={sectionsQuery.data}
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
     </div>
   );
 };
-export default CoursesClient;
+export default SectionsClient;

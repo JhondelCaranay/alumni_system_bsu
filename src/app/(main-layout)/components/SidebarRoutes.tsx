@@ -38,6 +38,12 @@ const routesList: routeListType[] = [
     roles: ["ADMIN"],
   },
   {
+    icon: TableProperties,
+    label: "Section",
+    href: "/sections",
+    roles: ["ADMIN"],
+  },
+  {
     icon: Users,
     label: "Alumni / Students",
     href: "/students",

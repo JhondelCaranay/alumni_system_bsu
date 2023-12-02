@@ -15,17 +15,28 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
           {data?.name}
         </span>
       </div>
-      <div className="flex flex-col gap-y-1">
+
+      {/* <div className="flex flex-col gap-y-1">
         <span className="flex text-sm gap-x-1 text-zinc-700 dark:text-zinc-400">
           <Waypoints className="h-4 w-4" /> {data?.department?.name}
         </span>
         <span className="flex text-sm gap-x-1 text-zinc-700 dark:text-zinc-400">
           <MapPin className="h-4 w-4 " /> Philippines, {data?.profile?.city}
         </span>
+      </div> */}
+
+      <div className="flex flex-col gap-y-1">
+        <p className="text-md text-zinc-700 dark:text-zinc-400">
+          Course / Year / Section
+        </p>
+        <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
+          {data?.department?.name} - {data?.profile?.schoolYear} -{" "}
+          {data?.section?.name}
+        </span>
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <p  className="text-md text-zinc-700 dark:text-zinc-400">
+        <p className="text-md text-zinc-700 dark:text-zinc-400">
           Email address
         </p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
@@ -34,9 +45,7 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <p  className="text-md text-zinc-700 dark:text-zinc-400">
-          Home address
-        </p>
+        <p className="text-md text-zinc-700 dark:text-zinc-400">Home address</p>
         <span className="flex text-sm gap-x-1 text-black font-semibold dark:text-white">
           {data?.profile?.province} {data?.profile?.city}{" "}
           {data?.profile?.street} {data?.profile?.homeNo}{" "}
@@ -45,9 +54,7 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <p  className="text-md text-zinc-700 dark:text-zinc-400">
-          Phone number
-        </p>
+        <p className="text-md text-zinc-700 dark:text-zinc-400">Phone number</p>
         <span className="flex text-sm gap-x-1 text-black font-semibold  dark:text-white">
           {data?.profile?.contactNo}{" "}
         </span>

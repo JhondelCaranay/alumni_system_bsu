@@ -234,7 +234,7 @@ model Profile {
 
   isEmployed    Boolean   @default(false)
   studentNumber Int?
-  schoolYear    DateTime?
+  schoolYear    Int? // STUDENT CURRENT COURSE YEAR 
   yearEnrolled  DateTime?
   yearGraduated DateTime?
 

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { archiveDeparment } from "@/queries/department";
 import toast from "react-hot-toast";
 import {
   AlertDialog,
@@ -13,34 +12,36 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { isAxiosError } from "axios";
-import { DepartmentSchemaType } from "@/schema/department";
+import { SectionSchemaType } from "@/schema/section";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { archiveSection } from "@/queries/sections";
+
 type Props = {
-  department: DepartmentSchemaType;
+  section: SectionSchemaType;
   isOpen: boolean;
   onClose: () => void;
 };
-const ArchiveDepartmentModal = ({ department, isOpen, onClose }: Props) => {
+const ArchiveSectionModal = ({ section, isOpen, onClose }: Props) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: () => archiveDeparment(department.id),
+    mutationFn: () => archiveSection(section.id),
   });
 
   const onSubmit = async () => {
     mutation.mutate(undefined, {
       onSuccess() {
-        toast.success(`Department has been updated`);
+        toast.success(`Section has been updated`);
         queryClient.invalidateQueries({
-          queryKey: ["departments"],
+          queryKey: ["sections"],
         });
       },
       onError(error) {
         if (isAxiosError(error)) {
           console.log(
-            "🚀 ~ file: ArchiveDepartmentModal.tsx:62 ~ onError ~ error:",
+            "🚀 ~ file: ArchiveSectionModal.tsx:62 ~ onError ~ error:",
             error
           );
         }
@@ -54,7 +55,7 @@ const ArchiveDepartmentModal = ({ department, isOpen, onClose }: Props) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will archive the department
+            This will archive the section
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -69,4 +70,4 @@ const ArchiveDepartmentModal = ({ department, isOpen, onClose }: Props) => {
     </AlertDialog>
   );
 };
-export default ArchiveDepartmentModal;
+export default ArchiveSectionModal;

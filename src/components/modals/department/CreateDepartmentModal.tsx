@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CreateDepartmentSchema, CreateDepartmentSchemaType } from "@/schema/department";
+import {
+  CreateDepartmentSchema,
+  CreateDepartmentSchemaType,
+} from "@/schema/department";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createDeparment } from "@/queries/department";
 import toast from "react-hot-toast";
@@ -22,7 +25,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
 import { isAxiosError } from "axios";
 type Props = {
   isOpen: boolean;
@@ -79,7 +81,9 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add Department</DialogTitle>
-          <DialogDescription>add new department to manage sections.</DialogDescription>
+          <DialogDescription>
+            add new department to manage sections.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2 pb-4">
           <div className="space-y-2">
@@ -92,7 +96,11 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input disabled={isDisabled} placeholder="Department" {...field} />
+                        <Input
+                          disabled={isDisabled}
+                          placeholder="Department"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

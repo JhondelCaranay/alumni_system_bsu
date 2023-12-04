@@ -28,6 +28,7 @@ type Props = {
 };
 const ActionCell = ({ data }: Props) => {
   const [isOpen, setOpen] = useState(false);
+  const [isArchiveModalOpen, setArchiveModalOpen] = useState(false);
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
@@ -35,42 +36,49 @@ const ActionCell = ({ data }: Props) => {
   };
 
   return (
-    <>
-      {isOpen ? (
-        <UpdateDepartmentModal
-          department={data}
-          isOpen={isOpen}
-          onClose={() => setOpen(false)}
-        />
-      ) : null}
-
-      <div className="flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-4 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onCopy(data.id)}>
-              <Copy className="mr-2 h-4 w-4" /> Copy Id
-            </DropdownMenuItem>
-            {/* <Link href={`/departments/${data.id}/view`}>
+    <div className="flex justify-end">
+      <UpdateDepartmentModal
+        department={data}
+        isOpen={isOpen}
+        onClose={() => setOpen(false)}
+      />
+      <ArchiveDepartmentModal
+        department={data}
+        isOpen={isArchiveModalOpen}
+        onClose={() => setArchiveModalOpen(false)}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-4 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => onCopy(data.id)}>
+            <Copy className="mr-2 h-4 w-4" /> Copy Id
+          </DropdownMenuItem>
+          {/* <Link href={`/departments/${data.id}/view`}>
               <DropdownMenuItem>
                 <Eye className="h-4 w-4 mr-2" />
                 View
               </DropdownMenuItem>
             </Link> */}
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </DropdownMenuItem>
-            <ArchiveDepartmentModal department={data} />
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Pencil className="h-4 w-4 mr-2" />
+            Edit
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => setArchiveModalOpen(true)}
+            className="text-red-600 hover:!text-red-600 hover:!bg-red-100 "
+          >
+            <Archive className="h-4 w-4 mr-2" />
+            Archive
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
 export default ActionCell;

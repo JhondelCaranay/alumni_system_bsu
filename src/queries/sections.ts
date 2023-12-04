@@ -20,3 +20,6 @@ export const updateSection = (
   axios
     .patch(`/api/sections/${sectionId}`, data)
     .then((response) => response.data);
+
+export const archiveSection = (sectionId: string): Promise<SectionSchemaType> =>
+  axios.delete(`/api/sections/${sectionId}`).then((response) => response.data);

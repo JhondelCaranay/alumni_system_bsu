@@ -1,3 +1,4 @@
+import ArchiveDepartmentModal from "@/components/modals/department/ArchiveDepartmentModal";
 import UpdateDepartmentModal from "@/components/modals/department/UpdateDepartmentModal";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,6 +7,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DepartmentSchemaType } from "@/schema/department";
 import { Archive, Copy, Eye, MoreHorizontal, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -54,10 +66,7 @@ const ActionCell = ({ data }: Props) => {
               <Pencil className="h-4 w-4 mr-2" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600 hover:!text-red-600 hover:!bg-red-100">
-              <Archive className="h-4 w-4 mr-2" />
-              Archive
-            </DropdownMenuItem>
+            <ArchiveDepartmentModal department={data} />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

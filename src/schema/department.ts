@@ -16,10 +16,16 @@ export const CreateDepartmentSchema = DepartmentSchema.pick({
   name: true,
 });
 
-export type CreateDepartmentSchemaType = z.infer<typeof CreateDepartmentSchema>;
-
 export const UpdateDepartmentSchema = DepartmentSchema.pick({
   name: true,
 }).partial();
 
+export const ArchiveDepartmentSchema = DepartmentSchema.pick({
+  isArchived: true,
+}).partial();
+
+export type CreateDepartmentSchemaType = z.infer<typeof CreateDepartmentSchema>;
 export type UpdateDepartmentSchemaType = z.infer<typeof UpdateDepartmentSchema>;
+export type ArchiveDepartmentSchemaType = z.infer<
+  typeof ArchiveDepartmentSchema
+>;

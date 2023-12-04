@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
           role: Role.STUDENT,
           profile: {
             create: {
-              studentNumber: data["Student No."].toString(),
+              studentNumber: data["Student No."],
               contactNo: data["Contact"].toString(),
               gender: data["Gender"] === "F" ? "FEMALE" : "MALE",
             },

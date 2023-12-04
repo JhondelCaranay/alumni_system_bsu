@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 
   const GetStudentsQueriesSchema = z.object({
     role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
-    schoolYear: z.date().optional(),
+    schoolYear: z.number().optional(),
     department: z.string().optional(),
   });
 

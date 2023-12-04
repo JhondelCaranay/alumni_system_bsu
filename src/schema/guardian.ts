@@ -6,6 +6,7 @@ export const GuardianSchema = z.object({
   firstname: z.string().min(1, "Required"),
   lastname: z.string().min(1, "Required"),
   occupation: z.string().min(1, "Required"),
+  contactNo: z.string().min(1, "Required"),
   relationship: z.string().min(1, "Required"),
   isArchived: z.boolean(),
   createdAt: z.date(),

@@ -1,2 +1,5 @@
 Database name
     lms_system_bsu_db
+
+
+ngrok http 3000 --domain pipefish-discrete-hare.ngrok-free.app

@@ -19,7 +19,11 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        department: true,
+      },
     });
+    console.log("🚀 ~ file: route.ts:26 ~ GET ~ sections:", sections);
 
     return NextResponse.json(sections);
   } catch (error) {
@@ -43,6 +47,29 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     return NextResponse.json(
       {
         errors: result.error.flatten().fieldErrors,
+        message: "Invalid body parameters",
+      },
+      { status: 400 }
+    );
+  }
+
+  // check if section already exists
+  const section = await prisma.section.findUnique({
+    where: {
+      name_school_year_departmentId: {
+        name: result.data.name,
+        school_year: result.data.school_year,
+        departmentId: result.data.departmentId,
+      },
+    },
+  });
+
+  if (section) {
+    return NextResponse.json(
+      {
+        errors: {
+          name: "Section with same department and school year is already exists",
+        },
         message: "Invalid body parameters",
       },
       { status: 400 }

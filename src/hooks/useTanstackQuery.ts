@@ -210,7 +210,7 @@ export const useQueryProcessor = <T>(
   });
 };
 
-type HttpMutationMethod = "DELETE" | "POST" | "PUT" | "PATCH";
+export type HttpMutationMethod = "DELETE" | "POST" | "PUT" | "PATCH";
 
 export const mutationFn = async <T>(
   url: string,

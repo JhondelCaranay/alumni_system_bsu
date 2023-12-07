@@ -10,15 +10,41 @@ import {
 import { CommentSchemaType } from "@/schema/comment";
 import { CommentSchema, UserWithProfile } from "@/types/types";
 import { format } from "date-fns";
-import { Archive, MoreHorizontal, Pencil } from "lucide-react";
-import React from "react";
+import { Archive, MoreHorizontal, Pencil, X } from "lucide-react";
+import React, { useState } from "react";
+import EditCommentInput from "./EditCommentInput";
+import { useModal } from "@/hooks/useModalStore";
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type ReplyProps = {
   data: CommentSchema;
+  currentUserId: string;
   onReplyInput: () => void;
+  postId: string;
 };
-const Reply: React.FC<ReplyProps> = ({ data, onReplyInput }) => {
+const Reply: React.FC<ReplyProps> = ({
+  data,
+  onReplyInput,
+  currentUserId,
+  postId,
+}) => {
+  const canEditOrDeleteComment = currentUserId === data.userId;
+  const {onOpen} = useModal()
+
+  const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] = useState(false);
+  if (isUpdatingReplyOrComment) {
+    return (
+      <div className="flex items-center w-full gap-x-2">
+        <EditCommentInput
+          apiUrl={`/comments/${data.id}`}
+          content={data.description}
+          callback={() => setIsUpdatingReplyOrComment(false)}
+        />
+        <Button variant={'outline'} onClick={() => setIsUpdatingReplyOrComment(false)}>Cancel</Button>
+      </div>
+    );
+  }
+
   return (
     <article className="mt-3 text-base bg-white rounded-lg dark:bg-transparent">
       <footer className="flex justify-between items-center mb-1">
@@ -38,28 +64,33 @@ const Reply: React.FC<ReplyProps> = ({ data, onReplyInput }) => {
           </span>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="">
-            <Button
-              className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              type="button"
-              variant={"ghost"}
-              size={"icon"}
-            >
-              <MoreHorizontal className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="">
-            <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
-              <Pencil className="h-4 w-4 mr-2" />
-              Update
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
-              <Archive className="h-4 w-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {canEditOrDeleteComment && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="" asChild>
+              <Button
+                className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                type="button"
+                variant={"ghost"}
+                size={"icon"}
+              >
+                <MoreHorizontal className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="">
+              <DropdownMenuItem
+                className="text-xs cursor-pointer hover:bg-zinc-400"
+                onClick={() => setIsUpdatingReplyOrComment(true)}
+              >
+                <Pencil className="h-4 w-4 mr-2" />
+                Update
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" onClick={() => onOpen('deleteComment', {comment:data})}>
+                <Archive className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </footer>
       <p className="text-gray-500 dark:text-gray-400 text-sm">
         {" "}

@@ -63,6 +63,9 @@ export default async function handler(
             select: allowedUserFields,
           },
           replies: {
+            where: {
+              isArchived:false
+            },
             include: {
               user: {
                 select: allowedUserFields,

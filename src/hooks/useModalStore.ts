@@ -1,4 +1,5 @@
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
+import { CommentSchemaType } from "@/schema/comment";
 import { GuardianSchemaType } from "@/schema/guardian";
 import { PostSchemaType } from "@/schema/post";
 import {
@@ -18,7 +19,8 @@ export type ModalType =
   | "updateGuardian"
   | "deleteGuardian"
   | "deletePost"
-  | "editDiscussion";
+  | "editDiscussion"
+  | "deleteComment"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."
@@ -31,6 +33,7 @@ type ModalData = {
   calendarApi?: any;
   guardian?: GuardianSchemaType;
   post?: PostSchemaType;
+  comment?: CommentSchemaType;
 };
 
 type ModalStore = {

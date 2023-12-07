@@ -170,7 +170,9 @@ model Comment {
 model Section {
   id String @id @default(cuid())
 
-  name String @unique
+  name        String
+  school_year String? // 2023 - 2026
+  course_year Int? // 1st - 4th year
 
   isArchived Boolean @default(false)
 
@@ -185,6 +187,7 @@ model Section {
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
 
+  @@unique([name, school_year, departmentId])
   @@index([departmentId])
 }
 

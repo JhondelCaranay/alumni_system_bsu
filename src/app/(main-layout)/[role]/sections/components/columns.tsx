@@ -15,6 +15,7 @@ import {
 
 import { SectionSchemaType } from "@/schema/section";
 import ActionCell from "./ActionCell";
+import { getOrdinal } from "@/lib/utils";
 
 export const columns: ColumnDef<SectionSchemaType>[] = [
   // {
@@ -49,10 +50,80 @@ export const columns: ColumnDef<SectionSchemaType>[] = [
           className=" dark:text-white"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          Section Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+  },
+
+  {
+    accessorKey: "school_year",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          School Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+
+  {
+    accessorKey: "department",
+    accessorFn: (row) => {
+      return row.department?.name;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Department
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+
+    // cell: ({ row }) => {
+    //   const isEmployed = row.original.department?.name;
+
+    //   return (
+    //     <Badge
+    //       className={cn(
+    //         "bg-slate-500 dark:text-white",
+    //         isEmployed && "bg-sky-700"
+    //       )}
+    //     >
+    //       {isEmployed ? "Employed" : "Unemployed"}
+    //     </Badge>
+    //   );
+    // },
+  },
+  {
+    accessorKey: "course_year",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Course Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const course_year = parseInt(row.getValue("course_year") as string);
+
+      return <div>{getOrdinal(course_year)} Year</div>;
     },
   },
   {

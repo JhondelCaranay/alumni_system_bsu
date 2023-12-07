@@ -41,7 +41,7 @@ const departments = [
   "MECHANICAL",
 ];
 
-const sections = ["A", "B", "C", "D", "E", "F", "G"];
+const sections = ["A", "B"];
 
 const password = bcrypt.hashSync("dev123", 12);
 
@@ -53,10 +53,21 @@ const createDepartment = async (name: string) => {
   });
 };
 
-const createSection = async (name: string) => {
+const createSection = async () => {
   return await prisma.section.create({
     data: {
-      name,
+      name: faker.helpers.arrayElement(sections),
+      course_year: faker.helpers.arrayElement([1, 2, 3, 4]),
+      school_year: faker.helpers.arrayElement([
+        "2023-2026",
+        "2024-2027",
+        "2025-2028",
+      ]),
+      department: {
+        connect: {
+          name: faker.helpers.arrayElement(departments),
+        },
+      },
     },
   });
 };
@@ -72,6 +83,12 @@ const createUser = async (role: string) => {
     }
   )}@bulsu.edu.ph`;
 
+  const departmentIds = await prisma.department.findMany({
+    select: {
+      id: true,
+    },
+  });
+
   const user = await prisma.user.create({
     data: {
       isArchived: false,
@@ -82,7 +99,15 @@ const createUser = async (role: string) => {
       role: Role[role as keyof typeof Role], // convert string to enum
       section: {
         connect: {
-          name: faker.helpers.arrayElement(sections),
+          name_school_year_departmentId: {
+            name: faker.helpers.arrayElement(sections),
+            school_year: faker.helpers.arrayElement([
+              "2023-2026",
+              "2024-2027",
+              "2025-2028",
+            ]),
+            departmentId: faker.helpers.arrayElement(departmentIds).id,
+          },
         },
       },
       department: {
@@ -168,7 +193,12 @@ async function main() {
 
   console.log("departments created.");
 
-  await Promise.all(sections.map((section) => createSection(section)));
+  // await Promise.all(sections.map((section) => createSection(section)));
+  await Promise.all(
+    Array.from({
+      length: 10,
+    }).map(() => createSection())
+  );
 
   console.log("sections created.");
 

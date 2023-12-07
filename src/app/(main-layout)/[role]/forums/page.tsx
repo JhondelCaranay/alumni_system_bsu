@@ -20,25 +20,25 @@ const ForumsPage = async (props: ForumsPageProps) => {
     queryFn: () => queryFn("/posts", { type: "feed" }),
   });
 
-  const currentUser = await getCurrentUser()
+  const currentUser = await getCurrentUser();
 
-  if(!currentUser) {
-    return redirect('/')
+  if (!currentUser) {
+    return redirect("/");
   }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-     <div className="grid grid-cols-4 bg-[#F9FAFB] min-h-[90vh] w-full p-10 pb-0 dark:bg-[#020817]">
-      <div>
-        <ProfileSidebar />
+      <div className="grid grid-cols-4 bg-[#F9FAFB] min-h-[90vh] w-full p-3 md:p-10 pb-0 dark:bg-[#020817]">
+        <div className="hidden md:inline-block">
+          <ProfileSidebar />
+        </div>
+        <div className="col-span-4 md:col-span-2 md:px-10">
+          <Feed currentUser={currentUser} />
+        </div>
+        <div className="hidden md:inline-block">
+          <OtherSidebar />
+        </div>
       </div>
-      <div className="col-span-2 px-10">
-        <Feed currentUser={currentUser}/>
-      </div>
-      <div>
-        <OtherSidebar />
-      </div>
-    </div>
     </HydrationBoundary>
   );
 };

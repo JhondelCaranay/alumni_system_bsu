@@ -187,7 +187,7 @@ model Section {
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
 
-  @@unique([name, school_year, departmentId])
+  // @@unique([name, school_year, departmentId])
   @@index([departmentId])
 }
 

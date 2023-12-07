@@ -89,6 +89,12 @@ const createUser = async (role: string) => {
     },
   });
 
+  const sectionsIds = await prisma.section.findMany({
+    select: {
+      id: true,
+    },
+  });
+
   const user = await prisma.user.create({
     data: {
       isArchived: false,
@@ -99,15 +105,16 @@ const createUser = async (role: string) => {
       role: Role[role as keyof typeof Role], // convert string to enum
       section: {
         connect: {
-          name_school_year_departmentId: {
-            name: faker.helpers.arrayElement(sections),
-            school_year: faker.helpers.arrayElement([
-              "2023-2026",
-              "2024-2027",
-              "2025-2028",
-            ]),
-            departmentId: faker.helpers.arrayElement(departmentIds).id,
-          },
+          // name_school_year_departmentId: {
+          //   name: faker.helpers.arrayElement(sections),
+          //   school_year: faker.helpers.arrayElement([
+          //     "2023-2026",
+          //     "2024-2027",
+          //     "2025-2028",
+          //   ]),
+          //   departmentId: faker.helpers.arrayElement(departmentIds).id,
+          // },
+          id: faker.helpers.arrayElement(sectionsIds).id,
         },
       },
       department: {

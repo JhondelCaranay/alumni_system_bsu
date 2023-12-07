@@ -12,18 +12,56 @@ import { format } from "date-fns";
 import { Archive, MoreHorizontal, Pencil } from "lucide-react";
 import React, { useState } from "react";
 import Reply from "./Reply";
-import CommentInput from "./CommentInput";
+import CreateCommentInput from "./CreateCommentInput";
+import EditCommentInput from "./EditCommentInput";
+import { useModal } from "@/hooks/useModalStore";
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type CommentProps = {
   data: CommentSchema & { replies: CommentSchema[] };
+  currentUserId: string
+  postId: string;
 };
-const Comment: React.FC<CommentProps> = ({ data }) => {
+const Comment: React.FC<CommentProps> = ({ data, currentUserId, postId }) => {
   const [isReplying, setIsReplying] = useState(false);
-
+  const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] = useState(false);
+  const {onOpen} = useModal()
   const onReplyInput = () => {
     setIsReplying((prev) => !prev);
   };
+
+  const canEditOrDeleteComment = currentUserId === data.userId
+
+  if (isUpdatingReplyOrComment) {
+    return (
+      <div className="flex flex-col">
+
+      <div className="flex items-center w-full gap-x-2">
+        <EditCommentInput
+          apiUrl={`/comments/${data.id}`}
+          content={data.description}
+          callback={() => setIsUpdatingReplyOrComment(false)}
+          />
+        <Button variant={'outline'} onClick={() => setIsUpdatingReplyOrComment(false)}>Cancel</Button>
+      </div>
+
+      <section className="flex flex-col px-6 py-0">
+        {data.replies.map((reply) => (
+          <Reply key={reply.id} data={reply} onReplyInput={onReplyInput} currentUserId={currentUserId} postId={postId} />
+        ))}
+
+        {isReplying && (
+          <CreateCommentInput
+            postId={data?.postId}
+            placeholder="Write a reply."
+            apiUrl={`/comments/${data?.id}`}
+          />
+        )}
+      </section>
+
+          </div>
+    );
+  }
 
   return (
     <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent">
@@ -44,28 +82,33 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
           </span>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="" asChild>
-            <Button
-              className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              type="button"
-              variant={"ghost"}
-              size={"icon"}
-            >
-              <MoreHorizontal className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="">
-            <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
-              <Pencil className="h-4 w-4 mr-2" />
-              Update
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
-              <Archive className="h-4 w-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {
+                canEditOrDeleteComment && <DropdownMenu>
+                <DropdownMenuTrigger className="" asChild>
+                  <Button
+                    className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    type="button"
+                    variant={"ghost"}
+                    size={"icon"}
+                  >
+                    <MoreHorizontal className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="">
+                  <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400" 
+                onClick={() => setIsUpdatingReplyOrComment(true)}
+                >
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Update
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" onClick={() => onOpen('deleteComment', {comment:data})}>
+                    <Archive className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              }
+        
       </footer>
       <p className="text-gray-500 dark:text-gray-400 text-sm">
         {" "}
@@ -104,11 +147,11 @@ const Comment: React.FC<CommentProps> = ({ data }) => {
 
       <section className="flex flex-col px-6 py-0">
         {data.replies.map((reply) => (
-          <Reply key={reply.id} data={reply} onReplyInput={onReplyInput} />
+          <Reply key={reply.id} data={reply} onReplyInput={onReplyInput} currentUserId={currentUserId} postId={postId} />
         ))}
 
         {isReplying && (
-          <CommentInput
+          <CreateCommentInput
             postId={data?.postId}
             placeholder="Write a reply."
             apiUrl={`/comments/${data?.id}`}

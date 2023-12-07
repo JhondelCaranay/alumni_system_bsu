@@ -7,10 +7,12 @@ import { useEffect } from "react";
 type ChatSocketProps = {
   commentsKey?:string;
   repliesKey: string;
+  editCommentsKey: string;
+  deleteCommentsKey: string;
   queryKey: (string | any)[];
 };
 
-export const useCommentSocket = ({ queryKey, repliesKey, commentsKey }: ChatSocketProps) => {
+export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommentsKey, deleteCommentsKey }: ChatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 
@@ -61,9 +63,66 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey }: ChatSock
       }
     );
 
+    // edit comment/reply listener
+    socket.on(
+      editCommentsKey,
+      (data:CommentSchema & {comment: CommentSchema}) => {
+        queryClient.setQueryData(
+          queryKey,
+          (oldData:(CommentSchema & {replies: CommentSchema[]})[]) => {
+
+            // this is a reply that updated
+             if(data.commentId && !data.postId) {
+              return oldData?.map((comments) => {
+                if(data.commentId !== comments.id) return comments;
+                
+                return data.comment;
+              })
+             }
+             // this is a comment that updated
+             else {
+              return oldData?.map((comments) => {
+                if(data.id !== comments.id) return comments;
+                return data;
+              })
+             }
+
+          }
+        );
+      }
+    );
+
+    // delete comment/reply listener
+    socket.on(
+      deleteCommentsKey,
+      (data:CommentSchema & {comment: CommentSchema}) => {
+        queryClient.setQueryData(
+          queryKey,
+          (oldData:(CommentSchema & {replies: CommentSchema[]})[]) => {
+
+            // this is a reply that updated
+             if(data.commentId && !data.postId) {
+              return oldData?.map((comments) => {
+                if(data.commentId !== comments.id) return comments;
+                
+                return data.comment;
+              })
+             }
+             // this is a comment that updated
+             else {
+              return oldData?.filter((comments) => data.id !== comments.id)
+             }
+
+          }
+        );
+      }
+    );
+
     return () => {
       socket.off(commentsKey);
       socket.off(repliesKey);
+      socket.off(editCommentsKey);
+      socket.off(deleteCommentsKey);
     };
-  }, [commentsKey, queryKey, repliesKey]);
+  }, [commentsKey, queryKey, repliesKey, editCommentsKey, deleteCommentsKey]);
 };

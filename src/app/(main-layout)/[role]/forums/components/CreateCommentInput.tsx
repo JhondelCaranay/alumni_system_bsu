@@ -11,12 +11,12 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-type CommentInputProps = {
+type createCommentInputProps = {
   postId: string;
   apiUrl: string;
-  placeholder: string;
+  placeholder?: string;
 };
-const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl, placeholder }) => {
+const CreateCommentInput: React.FC<createCommentInputProps> = ({ postId, apiUrl, placeholder }) => {
   const formSchema = z.object({
     content: z.string().min(1),
   });
@@ -30,23 +30,23 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl, placeholder
     mode: "all",
   });
 
-  type AddCommentSchema = {
+  type createCommentSchema = {
     description: string;
     postId: string;
   };
 
-  const addComment = useMutation({
-    mutationFn: (value: AddCommentSchema) =>
+  const createComment = useMutation({
+    mutationFn: (value: createCommentSchema) =>
       mutationFn(apiUrl, null, "POST", value),
   });
 
-  const isLoading = form.formState.isSubmitting || addComment.isPending;
+  const isLoading = form.formState.isSubmitting || createComment.isPending;
 
   const { handleSubmit } = form;
   const { toast } = useToast();
   const onSubmit: SubmitHandler<formType> = async (values) => {
     try {
-      addComment.mutate(
+      createComment.mutate(
         {
           description: values.content,
           postId: postId as string,
@@ -55,7 +55,7 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl, placeholder
           onSuccess(data, variables, context) {
             toast({
               variant: "default",
-              description: "Your comment has been sent.",
+              description: "Your createComment has been sent.",
             });
             form.reset();
           },
@@ -100,4 +100,4 @@ const CommentInput: React.FC<CommentInputProps> = ({ postId, apiUrl, placeholder
   );
 };
 
-export default CommentInput;
+export default CreateCommentInput;

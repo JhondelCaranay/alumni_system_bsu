@@ -10,6 +10,7 @@ import DeleteGurdianModal from "../modals/DeleteGuardianModal";
 import DeletePostModal from "../modals/DeletePostModal";
 import EditDiscussionModal from "../modals/EditDiscussionModal";
 import ViewOnylyEventModal from "../modals/ViewOnylyEventModal";
+import DeleteCommentModal from "../modals/DeleteCommentModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -34,6 +35,7 @@ const ModalProvider = () => {
       <DeleteGurdianModal />
       <DeletePostModal />
       <EditDiscussionModal />
+      <DeleteCommentModal />
     </>
   );
 };

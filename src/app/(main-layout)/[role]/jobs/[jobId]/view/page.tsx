@@ -111,6 +111,8 @@ const JobDetailPage = (props: Props) => {
   useCommentSocket({
     commentsKey: `posts:${jobId}:comments`,
     repliesKey: `posts/${jobId}:reply`,
+    deleteCommentsKey: `posts:comment-delete`,
+    editCommentsKey: `posts:comment-update`,
     queryKey: ["jobs", jobId, "comments"],
   });
 

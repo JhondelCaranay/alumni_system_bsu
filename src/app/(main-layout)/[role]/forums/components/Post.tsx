@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
-import CommentInput from "./CommentInput";
+import CreateCommentInput from "./CreateCommentInput";
 import { PostSchemaType } from "@/schema/post";
 import { CommentSchema, UserWithProfile } from "@/types/types";
 import {
@@ -62,6 +62,8 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
   useCommentSocket({
     commentsKey: `posts:${postData.id}:comments`,
     repliesKey: `posts:${postData.id}:reply`,
+    editCommentsKey:`posts:comment-update`,
+    deleteCommentsKey: `posts:comment-delete`,
     queryKey: ["discussions", postData.id, "comments"],
   });
 
@@ -166,7 +168,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
       {isCommenting && (
         <>
           <div>
-            <CommentInput
+            <CreateCommentInput
               postId={postData.id}
               apiUrl="/comments"
               placeholder="Write a comment."
@@ -191,7 +193,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
               }
 
               return comments.data?.map((comment) => (
-                <Comment key={comment.id} data={comment} />
+                <Comment key={comment.id} data={comment} currentUserId={currentUser!.id!} postId={postData.id} />
               ));
             })()}
           </section>

@@ -78,8 +78,10 @@ const JobInfo = () => {
 
   useCommentSocket({
     commentsKey: `posts:${f}:comments`,
-    repliesKey: `posts/${f}:reply`,
-    queryKey: ["jobs", f, "comments"],
+    repliesKey: `posts:${f}:reply`,
+    editCommentsKey:`posts:comment-update`,
+    deleteCommentsKey: `posts:comment-delete`,
+    queryKey: ["discussions", f, "comments"],
   });
 
   const onClose = () => {

@@ -121,16 +121,93 @@ export default async function handler(
           id: comment.id,
           isArchived: false,
         },
+        include: {
+          user: {
+            select: allowedUserFields,
+          },
+          comment:{
+            include: {
+              user: {
+                select: allowedUserFields,
+              },
+              replies: {
+                include: {
+                  user: {
+                    select: allowedUserFields,
+                  },
+                },
+              },
+            },
+          },
+          replies: {
+            include: {
+              user: {
+                select: allowedUserFields,
+              },
+            },
+          },
+        },
         data: result.data,
       });
-
+      const Key = `posts:comment-update`;
+      
+      res.socket?.server?.io.emit(Key, updatedComment);
       return res.status(200).json(updatedComment);
     } catch (error) {
       console.log("[COMMENT_PATCH]", error);
       return res.status(500).json({ message: "Internal error" });
     }
-  } else {
-    // Handle any other HTTP method
+  } else if(req.method === "DELETE")  {
+    try {
+      const deletedComment = await prisma.comment.update({
+        where: {
+          id: comment.id,
+          isArchived: false,
+        },
+        
+        include: {
+          user: {
+            select: allowedUserFields,
+          },
+          comment:{
+            include: {
+              user: {
+                select: allowedUserFields,
+              },
+              replies: {
+                where: {
+                  isArchived:false,
+                },
+                include: {
+                  user: {
+                    select: allowedUserFields,
+                  },
+                },
+              },
+            },
+          },
+          replies: {
+            include: {
+              user: {
+                select: allowedUserFields,
+              },
+            },
+          },
+        },
+        data: {
+          isArchived:true
+        }
+      });
+
+      const Key = `posts:comment-delete`;
+      res.socket?.server?.io.emit(Key, deletedComment);
+      return res.status(200).json(deletedComment);
+    } catch (error) {
+      console.log("[COMMENT_DELETE]", error);
+      return res.status(500).json({ message: "Internal error" });
+    }
+  }
+  else { // Handle any other HTTP method
     return res.status(405).json({ message: "Invalid HTTP method!" });
   }
 }

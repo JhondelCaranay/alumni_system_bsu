@@ -61,4 +61,4 @@ export type NextApiResponseServerIo = NextApiResponse & {
   }
 }
 
-export type CommentSchema = (CommentSchemaType & { user: UserWithProfile })
+export type CommentSchema = (CommentSchemaType & { user: UserWithProfile, })

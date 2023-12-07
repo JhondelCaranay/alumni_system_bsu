@@ -427,6 +427,7 @@ const CreateDiscussionModal = () => {
                               className="sr-only"
                               type="file"
                               accept="image/*"
+                              id="photos"
                               multiple
                               onChange={async (e) => {
                                 setFilesToDisPlay([]);

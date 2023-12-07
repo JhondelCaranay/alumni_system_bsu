@@ -13,9 +13,12 @@ import {
 import toast from "react-hot-toast";
 import { Events } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { Role } from "@prisma/client";
 
 const Calendar = () => {
   const { onOpen, onClose } = useModal();
+  const { data: session } = useSession()
 
   const handleDateSelect = (selectInfo: any) => {
     const calendarApi = selectInfo;
@@ -138,7 +141,7 @@ const Calendar = () => {
         height={"100vh"}
         initialView="dayGridMonth"
         // longPressDelay={0}
-        editable={true}
+        editable={session?.user.role === Role.ADMIN}
         selectable={true}
         selectMirror={true}
         droppable={true}

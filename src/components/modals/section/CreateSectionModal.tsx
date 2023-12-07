@@ -108,11 +108,6 @@ const CreateSectionModal = ({ isOpen, onClose }: Props) => {
       },
       onError(error) {
         if (isAxiosError(error)) {
-          console.log(
-            "🚀 ~ file: CreateSectionModal.tsx:110 ~ onError ~ error:",
-            error
-          );
-
           const errorKeys = Object.keys(error.response?.data.errors);
           errorKeys.forEach((key: any) => {
             form.setError(key, {

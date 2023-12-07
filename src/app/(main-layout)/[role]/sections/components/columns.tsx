@@ -56,26 +56,7 @@ export const columns: ColumnDef<SectionSchemaType>[] = [
       );
     },
   },
-  {
-    accessorKey: "course_year",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className=" dark:text-white"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Course Year
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const course_year = parseInt(row.getValue("course_year") as string);
 
-      return <div>{getOrdinal(course_year)} Year</div>;
-    },
-  },
   {
     accessorKey: "school_year",
     header: ({ column }) => {
@@ -124,6 +105,26 @@ export const columns: ColumnDef<SectionSchemaType>[] = [
     //     </Badge>
     //   );
     // },
+  },
+  {
+    accessorKey: "course_year",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Course Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const course_year = parseInt(row.getValue("course_year") as string);
+
+      return <div>{getOrdinal(course_year)} Year</div>;
+    },
   },
   {
     accessorKey: "createdAt",

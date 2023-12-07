@@ -29,12 +29,16 @@ export const CreateSectionSchema = z.object({
   departmentId: z.string(),
 });
 
-export const UpdateSectionSchema = SectionSchema.pick({
-  name: true,
-  school_year: true,
-  course_year: true,
-  departmentId: true,
-}).partial();
+export const UpdateSectionSchema = z.object({
+  name: z.string().min(1).max(50).optional(),
+  // must be in format 2021-2022, 2022-2023, etc.
+  school_year: z
+    .string()
+    .regex(/^\d{4}-\d{4}$/, "Must be in format xxxx-xxxx")
+    .optional(),
+  course_year: z.coerce.number().min(1).max(10).optional(),
+  departmentId: z.string().optional(),
+});
 
 export type SectionSchemaType = z.infer<typeof SectionSchema>;
 export type CreateSectionSchemaType = z.infer<typeof CreateSectionSchema>;

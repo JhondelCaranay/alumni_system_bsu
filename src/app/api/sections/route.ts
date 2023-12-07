@@ -56,6 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   // check if section already exists
   const section = await prisma.section.findUnique({
     where: {
+      isArchived: false,
       name_school_year_departmentId: {
         name: result.data.name,
         school_year: result.data.school_year,
@@ -69,6 +70,8 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       {
         errors: {
           name: "Section with same department and school year is already exists",
+          school_year: "Already exists",
+          departmentId: "Already exists",
         },
         message: "Invalid body parameters",
       },

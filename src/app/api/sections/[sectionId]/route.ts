@@ -83,6 +83,35 @@ export async function PATCH(
     );
   }
 
+  console.log("====================================");
+  console.log(sections.name, sections.school_year, sections.departmentId);
+  console.log("====================================");
+
+  // check if section already exists
+  const section = await prisma.section.findUnique({
+    where: {
+      isArchived: false,
+      name_school_year_departmentId: {
+        name: result.data.name as string,
+        school_year: result.data.school_year as string,
+        departmentId: result.data.departmentId as string,
+      },
+    },
+  });
+  console.log("🚀 ~ file: route.ts:100 ~ section:", section);
+
+  if (section && section.id !== sectionId) {
+    return NextResponse.json(
+      {
+        errors: {
+          name: "Section with same department and school year is already exists",
+        },
+        message: "Invalid body parameters",
+      },
+      { status: 400 }
+    );
+  }
+
   try {
     const updatedSection = await prisma.section.update({
       where: {

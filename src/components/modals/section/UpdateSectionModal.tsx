@@ -16,7 +16,7 @@ import {
   UpdateSectionSchema,
   UpdateSectionSchemaType,
 } from "@/schema/section";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
   Dialog,
@@ -25,14 +25,59 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { isAxiosError } from "axios";
 import { updateSection } from "@/queries/sections";
+import { getDeparments } from "@/queries/department";
+import { getOrdinal } from "@/lib/utils";
 type Props = {
   section: SectionSchemaType;
   isOpen: boolean;
   onClose: () => void;
 };
 const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
+  const departmentsQuery = useQuery({
+    queryKey: ["departments"],
+    queryFn: getDeparments,
+  });
+
+  const section_names = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
+  const course_years = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -44,6 +89,9 @@ const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
     resolver: zodResolver(UpdateSectionSchema),
     defaultValues: {
       name: section.name,
+      departmentId: section.departmentId as string,
+      course_year: section.course_year,
+      school_year: section.school_year,
     },
   });
 
@@ -60,12 +108,16 @@ const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
       onError(error) {
         if (isAxiosError(error)) {
           console.log(
-            "🚀 ~ file: UpdateSectionModal.tsx:62 ~ onError ~ error:",
+            "🚀 ~ file: UpdateSectionModal.tsx:110 ~ onError ~ error:",
             error
           );
-          form.setError("name", {
-            type: "manual",
-            message: error.response?.data.message || "Something went wrong",
+          const errorKeys = Object.keys(error.response?.data.errors);
+          errorKeys.forEach((key: any) => {
+            form.setError(key, {
+              type: "manual",
+              message:
+                error.response?.data.errors[key] || "Something went wrong",
+            });
           });
         }
       },
@@ -96,11 +148,95 @@ const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>Section Name</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a section name" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent id="name">
+                          {section_names.map((name) => (
+                            <SelectItem key={name} value={name}>
+                              {name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="departmentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Section Name</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a section name" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {departmentsQuery?.data?.map((department) => (
+                            <SelectItem
+                              key={department.id}
+                              value={department.id}
+                            >
+                              {department.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="course_year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Section Name</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a course year" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {course_years.map((name) => (
+                            <SelectItem key={name} value={name?.toString()}>
+                              {getOrdinal(name)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="school_year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>School Year</FormLabel>
                       <FormControl>
                         <Input
                           disabled={isDisabled}
-                          placeholder="Section"
+                          placeholder="e.g. 2021-2022"
                           {...field}
                         />
                       </FormControl>

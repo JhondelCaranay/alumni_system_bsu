@@ -88,23 +88,22 @@ export async function PATCH(
   console.log("====================================");
 
   // check if section already exists
-  const section = await prisma.section.findUnique({
+  const section = await prisma.section.findFirst({
     where: {
       isArchived: false,
-      name_school_year_departmentId: {
-        name: result.data.name as string,
-        school_year: result.data.school_year as string,
-        departmentId: result.data.departmentId as string,
-      },
+      name: result.data.name,
+      school_year: result.data.school_year,
+      departmentId: result.data.departmentId,
     },
   });
-  console.log("🚀 ~ file: route.ts:100 ~ section:", section);
 
   if (section && section.id !== sectionId) {
     return NextResponse.json(
       {
         errors: {
           name: "Section with same department and school year is already exists",
+          school_year: "Already exists",
+          departmentId: "Already exists",
         },
         message: "Invalid body parameters",
       },

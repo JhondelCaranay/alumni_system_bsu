@@ -162,9 +162,8 @@
 //   });
 // };
 
-
 "use client";
-import axios, {  } from "axios";
+import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import qs from "query-string";
 import { env } from "@/env.mjs";
@@ -178,7 +177,7 @@ export const apiClient = axios.create({
 
 export const queryFn = async <T>(
   url: string,
-  queryParams: Record<string, any> | null = {} ,
+  queryParams: Record<string, any> | null = {},
   headers = {}
 ) => {
   const newUrl = qs.stringifyUrl({
@@ -198,7 +197,7 @@ export const queryFn = async <T>(
 };
 export const useQueryProcessor = <T>(
   url: string,
-  queryParams: Record<string, any> | null = {} ,
+  queryParams: Record<string, any> | null = {},
   key: any[] = [],
   options = {},
   headers = {}
@@ -221,7 +220,7 @@ export const mutationFn = async <T>(
 ) => {
   const newUrl = qs.stringifyUrl({
     url,
-    query:{...queryParams},
+    query: { ...queryParams },
   });
 
   switch (method) {
@@ -269,7 +268,7 @@ export const mutationFn = async <T>(
 
 export const useMutateProcessor = <T, K>(
   url: string,
-  queryParams: Record<string, any> | null = {} ,
+  queryParams: Record<string, any> | null = {},
   method: HttpMutationMethod,
   key: any[],
   options = {},
@@ -286,20 +285,20 @@ export const useMutateProcessor = <T, K>(
       //checking if the previous data is an array type if yes then update the array data
       if (isArray) {
         queryClient.setQueryData(key, (old: (T | any)[]) => {
-          if(method === 'DELETE') {
+          if (method === "DELETE") {
             // if delete method we assume it's an id to delete
-            return old.filter((value) => value?.id != data)
+            return old.filter((value) => value?.id != data);
           }
-          if(method === 'POST') {
+          if (method === "POST") {
             // else its an object of new data
-            if(Array.isArray(data)) {
-              return [...old, ...data]
+            if (Array.isArray(data)) {
+              return [...old, ...data];
             } else {
-              return [...old, data]
+              return [...old, data];
             }
           }
         });
-      } 
+      }
       // else {
       //   // if not then update the single object data with the new data
       //   queryClient.setQueryData(key, data);
@@ -323,7 +322,7 @@ export const useMutateProcessor = <T, K>(
     },
     onSettled: async (data) => {
       console.log(" 🚀 settled mutate processor 🚀");
-     return await queryClient.invalidateQueries({
+      return await queryClient.invalidateQueries({
         queryKey: key,
       });
     },

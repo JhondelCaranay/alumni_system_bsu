@@ -23,7 +23,6 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         department: true,
       },
     });
-    console.log("🚀 ~ file: route.ts:26 ~ GET ~ sections:", sections);
 
     return NextResponse.json(sections);
   } catch (error) {
@@ -54,14 +53,12 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   }
 
   // check if section already exists
-  const section = await prisma.section.findUnique({
+  const section = await prisma.section.findFirst({
     where: {
       isArchived: false,
-      name_school_year_departmentId: {
-        name: result.data.name,
-        school_year: result.data.school_year,
-        departmentId: result.data.departmentId,
-      },
+      name: result.data.name,
+      school_year: result.data.school_year,
+      departmentId: result.data.departmentId,
     },
   });
 

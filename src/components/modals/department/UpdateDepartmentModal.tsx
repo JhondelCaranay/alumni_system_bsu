@@ -36,7 +36,8 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: UpdateDepartmentSchemaType) => updateDeparment(department.id, data),
+    mutationFn: (data: UpdateDepartmentSchemaType) =>
+      updateDeparment(department.id, data),
   });
 
   const form = useForm<UpdateDepartmentSchemaType>({
@@ -58,7 +59,10 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
       },
       onError(error) {
         if (isAxiosError(error)) {
-          console.log("🚀 ~ file: UpdateDepartmentModal.tsx:62 ~ onError ~ error:", error);
+          console.log(
+            "🚀 ~ file: UpdateDepartmentModal.tsx:62 ~ onError ~ error:",
+            error
+          );
           form.setError("name", {
             type: "manual",
             message: error.response?.data.message || "Something went wrong",
@@ -81,7 +85,9 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Update Department</DialogTitle>
-          <DialogDescription>update new department to manage sections.</DialogDescription>
+          <DialogDescription>
+            update new department to manage sections.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2 pb-4">
           <div className="space-y-2">
@@ -94,7 +100,11 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input disabled={isDisabled} placeholder="Department" {...field} />
+                        <Input
+                          disabled={isDisabled}
+                          placeholder="Department"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

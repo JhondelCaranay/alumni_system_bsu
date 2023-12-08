@@ -37,16 +37,20 @@ const ActionCell = ({ data }: Props) => {
 
   return (
     <div className="flex justify-end">
-      <UpdateSectionModal
-        section={data}
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-      />
-      <ArchiveSectionModal
-        section={data}
-        isOpen={isArchiveModalOpen}
-        onClose={() => setArchiveModalOpen(false)}
-      />
+      {isOpen ? (
+        <UpdateSectionModal
+          section={data}
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+        />
+      ) : null}
+      {isArchiveModalOpen ? (
+        <ArchiveSectionModal
+          section={data}
+          isOpen={isArchiveModalOpen}
+          onClose={() => setArchiveModalOpen(false)}
+        />
+      ) : null}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-4 w-8 p-0">

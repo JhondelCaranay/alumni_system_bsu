@@ -41,7 +41,7 @@ const departments = [
   "MECHANICAL",
 ];
 
-const sections = ["A", "B"];
+const sections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 const password = bcrypt.hashSync("dev123", 12);
 

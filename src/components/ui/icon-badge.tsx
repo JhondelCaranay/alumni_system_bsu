@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const backgroundVariants = cva(
-  "rounded-full flex items-center justify-center dark:bg-transparent dark:border-2 dark:border-primary",
+  "rounded-full flex items-center justify-center dark:bg-transparent dark:border-2",
   {
     variants: {
       variant: {
-        default: "bg-sky-100",
-        success: "bg-emerald-100",
+        default: "bg-sky-100 dark:border-sky-700",
+        success: "bg-emerald-100 dark:border-emerald-700",
       },
       size: {
         default: "p-2",
@@ -18,7 +18,7 @@ const backgroundVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "success",
       size: "default",
     },
   }

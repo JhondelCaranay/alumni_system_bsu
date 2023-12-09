@@ -66,8 +66,8 @@ export default function AlumniChart() {
           type="monotone"
           dataKey="graduates"
           stackId="1"
-          stroke="#8884d8"
-          fill="#8884d8"
+          stroke="#007bff"
+          fill="#007bff"
         />
         {/* <Area
           type="monotone"

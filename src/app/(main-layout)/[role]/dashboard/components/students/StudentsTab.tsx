@@ -48,7 +48,7 @@ const StudentTab = () => {
         </div>
       </div>
       <div className="col-span-3 h-[550px] shadow-md rounded-md p-8 pb-10 dark:shadow-none dark:bg-slate-900 dark:text-white">
-        <h2 className="text-center font-bold text-xl">STUDENTS</h2>
+        <h2 className="text-center font-bold text-xl">GRAPH</h2>
         <StudentChart />
       </div>
       <div className="col-span-2 h-[550px] shadow-md rounded-md p-8 dark:shadow-none dark:bg-slate-900 dark:text-white">

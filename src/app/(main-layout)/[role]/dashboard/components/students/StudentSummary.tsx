@@ -63,7 +63,7 @@ const StudentSummary = ({ name, year }: { name: string; year: string }) => {
         ))}
       </TableBody>
       <TableFooter>
-        <TableRow>
+        <TableRow className="dark:text-white">
           <TableCell colSpan={3}>Total</TableCell>
           <TableCell className="text-right">2,500.00</TableCell>
         </TableRow>

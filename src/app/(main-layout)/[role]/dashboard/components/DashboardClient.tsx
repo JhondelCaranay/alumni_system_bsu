@@ -10,6 +10,17 @@ import {
 import AlumniTab from "./alumni/AlumniTab";
 import StudentTab from "./students/StudentsTab";
 import JobTab from "./jobs/JobTab";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import useRouterPush from "@/hooks/useRouterPush";
 
 const DashboardClient = () => {
@@ -19,7 +30,7 @@ const DashboardClient = () => {
   >("STUDENTS");
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <div onClick={() => setSelected("STUDENTS")}>
           <Widget title="STUDENTS" total={99} icon={LucideUserSquare2} />
         </div>
@@ -29,8 +40,29 @@ const DashboardClient = () => {
         <div onClick={() => setSelected("JOBS")}>
           <Widget title="JOBS" total={99} icon={LayoutDashboard} />
         </div>
-        <div onClick={() => setSelected("EVENTS")}>
-          <Widget title="EVENTS" total={99} icon={ListChecks} />
+        {/* <div onClick={() => setSelected("EVENTS")}>
+          <Widget title="UPCOMING EVENTS" total={99} icon={ListChecks} />
+        </div> */}
+        <div>
+          <AlertDialog>
+            <AlertDialogTrigger className="w-full text-left">
+              <Widget title="UPCOMING EVENTS" total={99} icon={ListChecks} />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will navigate you to events page.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => redirectTo("/events")}>
+                  Continue anyway
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       <div className="flex flex-col mt-5">

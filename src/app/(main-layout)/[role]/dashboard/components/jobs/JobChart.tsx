@@ -1,3 +1,4 @@
+import useWindowSize from "@/hooks/useWindowSize";
 import React, { PureComponent } from "react";
 import {
   AreaChart,
@@ -69,6 +70,7 @@ const data = [
   },
 ];
 export default function JobChart() {
+  const windowSize = useWindowSize();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -84,7 +86,7 @@ export default function JobChart() {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="year" />
-        <YAxis />
+        {windowSize.width > 768 ? <YAxis /> : null}
         <Tooltip />
         <Legend />
         <Bar

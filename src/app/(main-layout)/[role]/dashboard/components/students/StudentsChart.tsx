@@ -1,3 +1,4 @@
+import useWindowSize from "@/hooks/useWindowSize";
 import React, { PureComponent } from "react";
 import {
   AreaChart,
@@ -37,6 +38,7 @@ const data = [
 ];
 
 export default function StudentChart() {
+  const windowSize = useWindowSize();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
@@ -66,7 +68,7 @@ export default function StudentChart() {
         </defs>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
+        {windowSize.width > 768 ? <YAxis /> : null}
         <Tooltip />
         <Area
           type="monotone"

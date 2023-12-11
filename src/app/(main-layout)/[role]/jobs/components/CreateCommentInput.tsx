@@ -1,27 +1,25 @@
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import EmojiPicker from "@/components/EmojiPicker";
-import { z } from "zod";
-import { useToast } from "@/components/ui/use-toast";
-import { useParams, useSearchParams } from "next/navigation";
-import { mutationFn, useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { mutationFn } from "@/hooks/useTanstackQuery";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { Send } from "lucide-react";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
-const CommentInput = () => {
-  // start~ add comments ~
+type createCommentInputProps = {
+  postId: string;
+  apiUrl: string;
+  placeholder?: string;
+};
+const CreateCommentInput: React.FC<createCommentInputProps> = ({ postId, apiUrl, placeholder }) => {
   const formSchema = z.object({
     content: z.string().min(1),
   });
-
-  const searchParams = useSearchParams();
-  const params = useParams();
-  const jobId = params?.jobId as string;
-  const f = searchParams?.get("f") || jobId;
 
   type formType = z.infer<typeof formSchema>;
   const form = useForm<formType>({
@@ -32,31 +30,26 @@ const CommentInput = () => {
     mode: "all",
   });
 
-  type AddCommentSchema = {
+  type createCommentSchema = {
     description: string;
     postId: string;
   };
 
-  const addComment = useMutation({
-    mutationFn: (value: AddCommentSchema) => mutationFn("/comments", null, "POST", value),
+  const createComment = useMutation({
+    mutationFn: (value: createCommentSchema) =>
+      mutationFn(apiUrl, null, "POST", value),
   });
 
-  const isLoading = form.formState.isSubmitting;
+  const isLoading = form.formState.isSubmitting || createComment.isPending;
 
   const { handleSubmit } = form;
   const { toast } = useToast();
-
   const onSubmit: SubmitHandler<formType> = async (values) => {
-    console.log(
-      "🚀 ~ file: CommentInput.tsx:48 ~ constonSubmit:SubmitHandler<formType>= ~ values:",
-      values
-    );
-    if(isLoading) return;
     try {
-      addComment.mutate(
+      createComment.mutate(
         {
           description: values.content,
-          postId: f as string, // this is the id of job post
+          postId: postId as string,
         },
         {
           onSuccess(data, variables, context) {
@@ -65,6 +58,9 @@ const CommentInput = () => {
               description: "Your comment has been sent.",
             });
             form.reset();
+          },
+          onError(error, variables, context) {
+            console.log(error);
           },
         }
       );
@@ -82,21 +78,18 @@ const CommentInput = () => {
           render={({ field }) => (
             <FormItem className="my-5">
               <FormControl>
-                <div className="flex items-center border rounded-md border-zinc-500 px-2">
+                <div className="flex items-center border rounded-md border-zinc-400 px-2">
                   <EmojiPicker
                     onChange={(emoji: any) => {
                       field.onChange(`${field.value}${emoji.native}`);
                     }}
                   />
                   <Input
-                  disabled={isLoading}
+                    disabled={isLoading}
                     className="border-none border-0 active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm bg-inherit"
                     {...field}
-                    placeholder="Write your thoughts"
+                    placeholder={placeholder}
                   />
-                  <Button variant={"ghost"} className="hover:bg-transparent" size={"icon"}>
-                    <Send className="w-5 h-5" />{" "}
-                  </Button>
                 </div>
               </FormControl>
             </FormItem>
@@ -107,4 +100,4 @@ const CommentInput = () => {
   );
 };
 
-export default CommentInput;
+export default CreateCommentInput;

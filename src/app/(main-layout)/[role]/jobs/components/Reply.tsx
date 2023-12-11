@@ -1,5 +1,3 @@
-import Avatar from "@/components/Avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,14 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CommentSchemaType } from "@/schema/comment";
-import { CommentSchema, UserWithProfile } from "@/types/types";
+import { useModal } from "@/hooks/useModalStore";
+import { CommentSchema } from "@/types/types";
 import { format } from "date-fns";
-import { Archive, MoreHorizontal, Pencil, X } from "lucide-react";
+import { Archive, MoreHorizontal, Pencil } from "lucide-react";
 import React, { useState } from "react";
 import EditCommentInput from "./EditCommentInput";
-import { useModal } from "@/hooks/useModalStore";
-const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type ReplyProps = {
   data: CommentSchema;
@@ -22,17 +18,22 @@ type ReplyProps = {
   onReplyInput: () => void;
   postId?: string;
 };
+const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 const Reply: React.FC<ReplyProps> = ({
   data,
-  onReplyInput,
   currentUserId,
+  onReplyInput,
   postId,
 }) => {
   const canEditOrDeleteComment = currentUserId === data.userId;
-  const {onOpen} = useModal()
 
-  const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] = useState(false);
+  console.log(currentUserId,
+    data.userId)
+  const { onOpen } = useModal();
+
+  const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] =
+    useState(false);
   if (isUpdatingReplyOrComment) {
     return (
       <div className="flex items-center w-full gap-x-2">
@@ -41,30 +42,34 @@ const Reply: React.FC<ReplyProps> = ({
           content={data.description}
           callback={() => setIsUpdatingReplyOrComment(false)}
         />
-        <Button variant={'outline'} onClick={() => setIsUpdatingReplyOrComment(false)}>Cancel</Button>
+        <Button
+          variant={"outline"}
+          onClick={() => setIsUpdatingReplyOrComment(false)}
+        >
+          Cancel
+        </Button>
       </div>
     );
   }
 
   return (
-    <article className="mt-3 text-base bg-white rounded-lg dark:bg-transparent">
-      <footer className="flex justify-between items-center mb-1">
+    <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+      <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-            <Avatar
+            <img
               className="mr-2 w-6 h-6 rounded-full"
-              src={data?.user?.image}
+              src={data?.user?.image as string}
+              alt="Jese Leos"
             />
-            {data?.user?.name ||
-              `${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
+            {data.user.name}
           </p>
-          <span className="text-xs">
-            <Badge className="capitalize text-[10px]">
-              {data?.user?.role?.toLowerCase()}
-            </Badge>
-          </span>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            <time title="February 12th, 2022">
+              {format(new Date(data?.createdAt || new Date()), DATE_FORMAT)}
+            </time>
+          </p>
         </div>
-
         {canEditOrDeleteComment && (
           <DropdownMenu>
             <DropdownMenuTrigger className="" asChild>
@@ -85,7 +90,10 @@ const Reply: React.FC<ReplyProps> = ({
                 <Pencil className="h-4 w-4 mr-2" />
                 Update
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" onClick={() => onOpen('deleteComment', {comment:data})}>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
+                onClick={() => onOpen("deleteComment", { comment: data })}
+              >
                 <Archive className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
@@ -93,20 +101,11 @@ const Reply: React.FC<ReplyProps> = ({
           </DropdownMenu>
         )}
       </footer>
-      <p className="text-gray-500 dark:text-gray-400 text-sm">
-        {" "}
-        {data?.description}
-      </p>
+      <p className="text-gray-500 dark:text-gray-400">{data.description}</p>
       <div className="flex items-center mt-4 space-x-4">
-        <p className=" text-gray-600 dark:text-gray-400 text-xs cursor-pointer hover:underline">
-          <time title={new Date().toString()}>
-            {format(new Date(data?.createdAt || new Date()), DATE_FORMAT)}
-          </time>
-        </p>
-
         <button
           type="button"
-          className="flex items-center text-gray-500 hover:underline dark:text-gray-400 font-medium text-xs"
+          className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
           onClick={onReplyInput}
         >
           <svg

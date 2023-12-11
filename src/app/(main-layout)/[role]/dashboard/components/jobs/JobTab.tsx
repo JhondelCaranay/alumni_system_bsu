@@ -32,7 +32,7 @@ const JobTab = () => {
               </SelectTrigger>
               <SelectContent>
                 {departments.map((department) => (
-                  <SelectItem value={department}>{department}</SelectItem>
+                  <SelectItem value={department} key={department}>{department}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

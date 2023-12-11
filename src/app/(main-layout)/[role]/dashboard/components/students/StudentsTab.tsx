@@ -31,7 +31,7 @@ const StudentTab = () => {
             </SelectTrigger>
             <SelectContent>
               {departments.map((department) => (
-                <SelectItem value={department}>{department}</SelectItem>
+                <SelectItem value={department} key={department}>{department}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -41,7 +41,7 @@ const StudentTab = () => {
             </SelectTrigger>
             <SelectContent>
               {years.map((year) => (
-                <SelectItem value={year}>{year}</SelectItem>
+                <SelectItem value={year} key={year}>{year}</SelectItem>
               ))}
             </SelectContent>
           </Select>

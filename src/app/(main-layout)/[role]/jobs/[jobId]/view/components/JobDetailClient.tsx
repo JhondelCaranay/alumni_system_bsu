@@ -1,12 +1,19 @@
 "use client";
-import { Button } from "@/components/ui/button";
+
 import {
   useMutateProcessor,
   useQueryProcessor,
 } from "@/hooks/useTanstackQuery";
-import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { CommentSchema, UserWithProfile } from "@/types/types";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Archive,
   Heart,
@@ -16,28 +23,20 @@ import {
   Share2,
   XSquare,
 } from "lucide-react";
-import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
-import Avatar from "@/components/Avatar";
-import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import Comment from "./Comment";
-import CommentInput from "./CreateCommentInput";
+import Avatar from "@/components/Avatar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import dynamic from "next/dynamic";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
-import JobCommentSkeleton from "./JobCommentSkeleton";
-import JobSkeletonInfo from "./JobSkeletonInfo";
 import useRouterPush from "@/hooks/useRouterPush";
-import { useModal } from "@/hooks/useModalStore";
+import JobSkeletonInfo from "../../../components/JobSkeletonInfo";
+import CreateCommentInput from "../../../components/CreateCommentInput";
+import JobCommentSkeleton from "../../../components/JobCommentSkeleton";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
+import Comment from "../../../components/Comment";
 
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
@@ -48,76 +47,96 @@ const FroalaEditorView = dynamic(
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
-type JobInfoProps = {
-  currentUser: GetCurrentUserType
-}
+type Props = {
+    currentUser: GetCurrentUserType
+};
 
-
-const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
-  const { onOpen } = useModal();
+const JobDetailPage = ({currentUser}: Props) => {
   const { redirectTo } = useRouterPush();
   const [isCommenting, setIsCommenting] = useState(true);
-  const searchParams = useSearchParams();
-  const f = searchParams?.get("f");
+  const params = useParams();
+  const jobId = params?.jobId as string;
 
   const job = useQueryProcessor<
   (PostSchemaType & { user: UserWithProfile })
-  >(`/posts/${f}`, { type: "jobs" }, ["jobs", f], {
+  >(`/posts/${jobId}`, { type: "jobs" }, ["jobs", jobId], {
     enabled:
-      typeof f === "string" &&
-      typeof f !== "object" &&
-      typeof f !== "undefined",
+      typeof jobId === "string" &&
+      typeof jobId !== "object" &&
+      typeof jobId !== "undefined",
   });
-  
+
   const comments = useQueryProcessor<
   (CommentSchema & { replies: CommentSchema[] })[]
-  >(`/comments`, { postId: job.data?.id }, ["jobs", job.data?.id, "comments"], {
+  >(`/comments`, { postId: jobId }, ["jobs", jobId, "comments"], {
     enabled:
-      typeof job.data?.id === "string" &&
-      typeof job.data?.id !== "object" &&
-      typeof job.data?.id !== "undefined" &&
+      typeof jobId === "string" &&
+      typeof jobId !== "object" &&
+      typeof jobId !== "undefined" &&
       isCommenting,
   });
 
+  const deleteJob = useMutateProcessor<string, unknown>(
+    `/posts/${jobId}`,
+    null,
+    "DELETE",
+    ["jobs"],
+    {
+      enabled:
+        typeof jobId === "string" &&
+        typeof jobId !== "object" &&
+        typeof jobId !== "undefined",
+    }
+  );
+
+  /*  
+  
   useCommentSocket({
-    commentsKey: `posts:${job.data?.id}:comments`,
-    repliesKey: `posts:${job.data?.id}:reply`,
-    editCommentsKey:`posts:comment-update`,
-    deleteCommentsKey: `posts:comment-delete`,
-    queryKey: ["jobs", job.data?.id, "comments"],
+    postKey: `posts:${jobId}:comments`,
+    queryKey: ["jobs", jobId, "comments"],
   });
+
+  ./src/app/(main-layout)/[role]/jobs/[jobId]/view/page.tsx:92:22
+  Type error: Argument of type '{ postKey: string; queryKey: string[]; }' is not assignable to parameter of type 'ChatSocketProps'.
+  Object literal may only specify known properties, and 'postKey' does not exist in type 'ChatSocketProps'.
+
+> 92 |   useCommentSocket({ postKey: `posts:${jobId}:comments`, queryKey: ["jobs", jobId, "comments"] });
+ */
+  useCommentSocket({
+    commentsKey: `posts:${jobId}:comments`,
+    repliesKey: `posts/${jobId}:reply`,
+    deleteCommentsKey: `posts:comment-delete`,
+    editCommentsKey: `posts:comment-update`,
+    queryKey: ["jobs", jobId, "comments"],
+  });
+
+  const onDelete = () => {
+    deleteJob.mutate(jobId as string);
+    redirectTo("jobs");
+  };
 
   const onClose = () => {
     redirectTo("jobs");
   };
 
-  /* 
-106:6  Warning: React Hook useEffect has missing dependencies: 'comments' and 'job'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
-  */
-
-  useEffect(() => {
-    if (f) {
-      job.refetch();
-      comments.refetch();
-    }
-  }, [f]);
-
- 
+  const session = useSession();
+  const router = useRouter();
 
   if (job.status === "pending" || job.fetchStatus === "fetching")
-    return <JobSkeletonInfo />;
+    return (
+      <div className="px-3">
+        <JobSkeletonInfo />
+      </div>
+    );
   if (job.status === "error" || !job.data) return null;
 
   const isOwner = currentUser?.id === job.data.userId;
   const isAdmin = currentUser?.role === Role.ADMIN;
 
   const canEditOrDelete = isOwner || isAdmin;
-  const commentsCount = comments.data?.reduce(
-    (count, comment) => count + (1 + comment.replies.length || 0),
-    0
-  );
+
   return (
-    <article className="w-full flex-1 space-y-2 rounded-lg h-fit border">
+    <article className="w-full flex-1 space-y-2 rounded-lg h-fit px-3">
       {/* JOB POST */}
       <div className="shadow-lg p-3 bg-white dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (
@@ -131,7 +150,7 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
                 onClick={onClose}
               >
                 <XSquare className="h-4 w-4 mr-2" />
-                Close
+                Go back
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer hover:bg-zinc-400"
@@ -142,7 +161,7 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
-                onClick={() => onOpen("deletePost", { post: job.data })}
+                onClick={onDelete}
               >
                 <Archive className="h-4 w-4 mr-2" />
                 Delete
@@ -163,7 +182,7 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
             {format(new Date(job.data.createdAt), DATE_FORMAT)}
           </span>
         </div>
-        <div className="my-5 p-2 bg-white dark:text-white dark:bg-[#1F2937]">
+        <div className="my-5 p-2 bg-white">
           <FroalaEditorView model={job.data.description} />
         </div>
 
@@ -189,13 +208,14 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
       </div>
 
       {/* COMMENTS FORM */}
+
       <section className="bg-white dark:bg-gray-800 py-3 antialiased shadow-lg rounded-md">
         <div className="max-w-2xl mx-auto px-4 space-y-3">
-          {isCommenting && <CommentInput placeholder="Write a comment" apiUrl="/comments" postId={job.data.id}  />}
+          {isCommenting && <CreateCommentInput apiUrl="/comments" postId={job.data.id} placeholder="Write a comment" /> }
 
           <div className="flex justify-between items-center">
             <h2 className="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white">
-              Comments ({commentsCount || 0})
+              Discussion ({comments?.data?.length || 0})
             </h2>
           </div>
 
@@ -208,7 +228,7 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
               return <h1>Loading comments error</h1>;
 
             return comments.data.map((comment) => (
-              <Comment data={comment} key={comment.id} currentUserId={currentUser?.id!} postId={job.data.id} />
+              <Comment  data={comment} currentUserId={currentUser?.id!} key={comment.id} postId={job.data.id}  />
             ));
           })()}
         </div>
@@ -216,5 +236,4 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
     </article>
   );
 };
-
-export default JobInfo;
+export default JobDetailPage;

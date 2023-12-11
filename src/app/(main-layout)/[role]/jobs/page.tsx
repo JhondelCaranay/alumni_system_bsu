@@ -8,6 +8,8 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import { queryFn } from "@/hooks/useTanstackQuery";
+import getCurrentUser from "@/actions/getCurrentUser";
+import { redirect } from "next/navigation";
 
 type JobsPageProps = {
   params: { role: string };
@@ -20,8 +22,12 @@ const JobsPage = async ({ params }: JobsPageProps) => {
     queryFn: () => queryFn("/posts", { type: "jobs" }),
   });
 
-  // this roles can post a job
   const allowedRoles = ["admin", "bulsu_partner", "peso"];
+
+  const currentUser = await getCurrentUser()
+  if (!currentUser) {
+    return redirect("/");
+  }
 
   return (
     <div className="flex flex-col p-5 md:p-10 pb-0">
@@ -33,7 +39,7 @@ const JobsPage = async ({ params }: JobsPageProps) => {
         </Link>
       )}
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <JobsClient />
+        <JobsClient currentUser={currentUser}/>
       </HydrationBoundary>
     </div>
   );

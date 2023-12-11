@@ -10,9 +10,12 @@ import { SafeUser } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
 import { Briefcase } from "lucide-react";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
 
-const JobsClient = () => {
-  // const windowSize = useWindowSize();
+type JobsClientProps = {
+  currentUser: GetCurrentUserType
+}
+const JobsClient:React.FC<JobsClientProps> = ({currentUser}) => {
 
   const jobs = useQueryProcessor<
     (PostSchemaType & {
@@ -90,7 +93,7 @@ const JobsClient = () => {
 
       {/* <Separator orientation="vertical" className="flex h-full text-sm w-2" /> */}
       <div className="hidden md:inline-flex order-first md:order-none max-h-[calc(100vh-120px)] overflow-auto">
-        {f && <JobInfo />}
+        {f && <JobInfo currentUser={currentUser} />}
       </div>
     </main>
   );

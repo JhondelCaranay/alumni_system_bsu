@@ -38,6 +38,7 @@ export const handleImageDeleteOrReplace = async (publicId: string) => {
 };
 
 export const uploadPhoto = async (file: File) => {
+  console.log(file)
   const formData = new FormData();
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", file);
@@ -49,6 +50,7 @@ export const uploadPhoto = async (file: File) => {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     }
   );
+  console.log('uploadPhoto',res.data, file)
 
   return res.data;
 };
@@ -57,6 +59,7 @@ export const uploadPhotoForum = async (data: {
   file: File;
   id: number | string;
 }) => {
+  console.log(data.file)
   const formData = new FormData();
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", data.file);
@@ -67,6 +70,7 @@ export const uploadPhotoForum = async (data: {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     }
   );
+  console.log('uploadPhotoForum',res.data, data.file)
 
   return {
     public_url: res.data.url,

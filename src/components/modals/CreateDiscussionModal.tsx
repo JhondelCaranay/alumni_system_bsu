@@ -77,7 +77,7 @@ const CreateDiscussionModal = () => {
       .refine((value) => value.some((item) => item), {
         message: "You have to select at least one department",
       }),
-    photos: z.any().optional(),
+    photos: z.array(z.any()).optional(),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -181,7 +181,8 @@ const CreateDiscussionModal = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
     // we append all the file into files array to make it iterateable
     const files = [];
-    if (values.photos.length > 0) {
+    console.log(values)
+    if (values.photos && values.photos.length > 0) {
       for (const file of values.photos) {
         files.push(file);
       }
@@ -421,17 +422,17 @@ const CreateDiscussionModal = () => {
                             <ImageUpload className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
                           </label>
                           <FormControl>
-                            <Input
+                          <Input
                               {...form.register("photos")}
-                              placeholder="Add photo/video"
-                              className="sr-only"
+                              className="hidden"
+                              id="photos"
                               type="file"
                               accept="image/*"
-                              id="photos"
                               multiple
                               onChange={async (e) => {
-                                setFilesToDisPlay([]);
+                                setFilesToDisPlay([]); // initiate a photo to display array
                                 const files = e.target.files;
+
                                 if (files && files?.length > 0) {
                                   const filesToDisplay = [];
                                   for (
@@ -444,12 +445,15 @@ const CreateDiscussionModal = () => {
                                       id: createId(),
                                     });
                                   }
+
                                   field.onChange(
                                     filesToDisplay.map((file) => file)
                                   );
+
+                                  // convertToBase64 Function
                                   const convertToBase64 = (data: {
                                     file: File;
-                                    id: number | string;
+                                    id: string;
                                   }) => {
                                     const reader = new FileReader();
                                     reader.readAsDataURL(data.file);
@@ -463,12 +467,12 @@ const CreateDiscussionModal = () => {
                                       ]);
                                     };
                                   };
+
+                                  // converting all the files to 64
                                   await Promise.all(
                                     filesToDisplay.map(
-                                      (data: {
-                                        file: File;
-                                        id: number | string;
-                                      }) => convertToBase64(data)
+                                      (data: { file: File; id: string }) =>
+                                        convertToBase64(data)
                                     )
                                   );
                                 }

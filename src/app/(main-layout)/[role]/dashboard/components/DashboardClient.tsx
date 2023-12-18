@@ -22,49 +22,74 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import useRouterPush from "@/hooks/useRouterPush";
+import { useQuery } from "@tanstack/react-query";
+import { getDashboardWidget } from "@/queries/dashboard";
 
 const DashboardClient = () => {
+  const totalsQuery = useQuery({
+    queryKey: ["todos"],
+    queryFn: getDashboardWidget,
+  });
+
   const { redirectTo } = useRouterPush();
+
   const [selected, setSelected] = useState<
     "" | "STUDENTS" | "ALUMNI" | "JOBS" | "EVENTS"
   >("STUDENTS");
+
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div onClick={() => setSelected("STUDENTS")}>
-          <Widget title="STUDENTS" total={99} icon={LucideUserSquare2} />
+      {totalsQuery.data ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div onClick={() => setSelected("STUDENTS")}>
+            <Widget
+              title="STUDENTS"
+              total={totalsQuery.data?.students || 0}
+              icon={LucideUserSquare2}
+            />
+          </div>
+          <div onClick={() => setSelected("ALUMNI")}>
+            <Widget
+              title="ALUMNI"
+              total={totalsQuery.data?.alumni || 0}
+              icon={GraduationCap}
+            />
+          </div>
+          <div onClick={() => setSelected("JOBS")}>
+            <Widget
+              title="JOBS"
+              total={totalsQuery.data?.student_alumni_with_jobs || 0}
+              icon={LayoutDashboard}
+            />
+          </div>
+          <div>
+            <AlertDialog>
+              <AlertDialogTrigger className="w-full text-left">
+                <Widget
+                  title="UPCOMING EVENTS"
+                  total={totalsQuery.data?.upcomming_events || 0}
+                  icon={ListChecks}
+                />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will navigate you to events page.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => redirectTo("/events")}>
+                    Continue anyway
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-        <div onClick={() => setSelected("ALUMNI")}>
-          <Widget title="ALUMNI" total={99} icon={GraduationCap} />
-        </div>
-        <div onClick={() => setSelected("JOBS")}>
-          <Widget title="JOBS" total={99} icon={LayoutDashboard} />
-        </div>
-        {/* <div onClick={() => setSelected("EVENTS")}>
-          <Widget title="UPCOMING EVENTS" total={99} icon={ListChecks} />
-        </div> */}
-        <div>
-          <AlertDialog>
-            <AlertDialogTrigger className="w-full text-left">
-              <Widget title="UPCOMING EVENTS" total={99} icon={ListChecks} />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will navigate you to events page.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => redirectTo("/events")}>
-                  Continue anyway
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </div>
+      ) : null}
+
       <div className="flex flex-col mt-5">
         {(() => {
           if (selected === "ALUMNI") return <AlumniTab />;

@@ -238,8 +238,8 @@ model Job {
   jobTitle     String
   company      String
   location     String
-  yearStart    Int?
-  yearEnd      Int?
+  yearStart    DateTime
+  yearEnd      DateTime
   isCurrentJob Boolean @default(false)
 
   isArchived Boolean @default(false)

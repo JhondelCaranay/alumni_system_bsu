@@ -4,7 +4,6 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import DashboardClient from "./components/DashboardClient";
-import { queryFn } from "@/hooks/useTanstackQuery";
 import { getDashboardWidget } from "@/queries/dashboard";
 
 type DashBoardHomePageProps = {};

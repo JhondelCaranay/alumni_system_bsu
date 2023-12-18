@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import StudentSummary from "./StudentSummary";
 import StudentChart from "./StudentsChart";
 import {
@@ -7,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getDeparments } from "@/queries/department";
 
 const departments = [
   "AUTOMOTIVE",
@@ -18,9 +20,20 @@ const departments = [
   "MECHANICAL",
 ];
 
-const years = ["2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"]; // current year is the highest year
+// Get the current year
+const currentYear = new Date().getFullYear();
+
+// Generate an array with a 16-year span starting from the current year
+const years = Array.from({ length: 11 }, (_, index) =>
+  (currentYear - index).toString()
+);
 
 const StudentTab = () => {
+  const departmentsQuery = useQuery({
+    queryKey: ["departments"],
+    queryFn: getDeparments,
+  });
+
   return (
     <div className="grid grid-cols-5 gap-5">
       <div className="col-span-5 shadow-md rounded-md p-5 dark:shadow-none dark:bg-slate-900 dark:text-white">
@@ -30,8 +43,10 @@ const StudentTab = () => {
               <SelectValue placeholder="Select Department" />
             </SelectTrigger>
             <SelectContent>
-              {departments.map((department) => (
-                <SelectItem value={department} key={department}>{department}</SelectItem>
+              {departmentsQuery?.data?.map((department) => (
+                <SelectItem value={department.name} key={department.id}>
+                  {department.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -41,7 +56,9 @@ const StudentTab = () => {
             </SelectTrigger>
             <SelectContent>
               {years.map((year) => (
-                <SelectItem value={year} key={year}>{year}</SelectItem>
+                <SelectItem value={year} key={year}>
+                  {year}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

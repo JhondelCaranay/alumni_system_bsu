@@ -11,6 +11,7 @@ import DeletePostModal from "../modals/DeletePostModal";
 import EditDiscussionModal from "../modals/EditDiscussionModal";
 import ViewOnylyEventModal from "../modals/ViewOnylyEventModal";
 import DeleteCommentModal from "../modals/DeleteCommentModal";
+import CreateWorkExperienceModal from "../modals/CreateWorkExperienceModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -36,6 +37,7 @@ const ModalProvider = () => {
       <DeletePostModal />
       <EditDiscussionModal />
       <DeleteCommentModal />
+      <CreateWorkExperienceModal />
     </>
   );
 };

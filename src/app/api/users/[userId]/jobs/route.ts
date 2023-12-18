@@ -99,6 +99,7 @@ export async function POST(
     const { jobTitle, company, location, yearStart, yearEnd, isCurrentJob } =
       result.data;
 
+      console.log(result.data)
     /* 
         if user add new current job, set all previous job to isCurrentJob false
     */
@@ -122,16 +123,17 @@ export async function POST(
         jobTitle,
         company,
         location,
-        yearStart,
-        yearEnd,
+        yearStart: new Date(yearStart),
+        yearEnd: yearEnd ? new Date(yearEnd) : undefined,
         isCurrentJob,
         userId: userId,
       },
     });
 
+
     /* 
         find all job where isCurrentJob is true
-    */
+    // */
     const jobs = await prisma.job.findFirst({
       where: {
         userId: userId as string,

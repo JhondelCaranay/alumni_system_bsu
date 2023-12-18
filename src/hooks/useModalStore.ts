@@ -21,6 +21,7 @@ export type ModalType =
   | "deletePost"
   | "editDiscussion"
   | "deleteComment"
+  | "createJobExperience"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

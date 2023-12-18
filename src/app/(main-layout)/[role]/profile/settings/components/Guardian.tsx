@@ -18,7 +18,7 @@ const Guardian:React.FC<GuardianProps> = ({data}) => {
               </div>
 
               <DropdownMenu>
-            <DropdownMenuTrigger className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+            <DropdownMenuTrigger className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-fit">
               <MoreHorizontal className="h-6 w-6 text-zinc-400 " />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="">

@@ -257,6 +257,7 @@ model Job {
 model Profile {
   id String @id @unique @default(cuid())
 
+  isDropOut     Boolean   @default(false)
   isEmployed    Boolean   @default(false)
   studentNumber Int?
   schoolYear    Int? // STUDENT CURRENT COURSE YEAR 

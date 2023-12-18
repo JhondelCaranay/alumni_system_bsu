@@ -41,7 +41,7 @@ const departments = [
   "MECHANICAL",
 ];
 
-const sections = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+const sections = ["A", "B"];
 
 const password = bcrypt.hashSync("dev123", 12);
 
@@ -50,50 +50,102 @@ const createDepartment = async (name: string) => {
     data: {
       name,
     },
+    select: {
+      id: true,
+    },
   });
 };
 
-const createSection = async () => {
+const createEvent = async () => {
+  const admin = await prisma.user.findMany({
+    where: {
+      role: "ADMIN",
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const evantStart = faker.date.soon({ days: 30 });
+
+  const event = await prisma.event.create({
+    data: {
+      title: faker.lorem.words(),
+      description: faker.lorem.paragraph(),
+      dateStart: evantStart,
+      dateEnd: evantStart,
+      allDay: faker.datatype.boolean(),
+      userId: faker.helpers.arrayElement(admin).id,
+    },
+    select: {
+      id: true,
+    },
+  });
+};
+
+const createSection = async ({
+  name,
+  departmentId,
+  course_year,
+  school_year,
+}: {
+  name: string;
+  departmentId: string;
+  course_year: number;
+  school_year: string;
+}) => {
   return await prisma.section.create({
     data: {
-      name: faker.helpers.arrayElement(sections),
-      course_year: faker.helpers.arrayElement([1, 2, 3, 4]),
-      school_year: faker.helpers.arrayElement([
-        "2023-2026",
-        "2024-2027",
-        "2025-2028",
-      ]),
+      name: name,
+      course_year: course_year,
+      school_year: school_year,
       department: {
         connect: {
-          name: faker.helpers.arrayElement(departments),
+          id: departmentId,
         },
       },
     },
   });
 };
 
-// create user n times
-const createUser = async (role: string) => {
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
-  const full_email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${faker.number.int(
+const getFullEmail = (firstName: string, lastName: string) => {
+  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${faker.number.int(
     {
       min: 0,
       max: 10,
     }
   )}@bulsu.edu.ph`;
+};
 
-  const departmentIds = await prisma.department.findMany({
-    select: {
-      id: true,
-    },
-  });
+// create user n times
+const createUser = async ({
+  role,
+  schoolYear,
+  yearEnrolled,
+  yearGraduated,
+}: {
+  role: string;
+  schoolYear?: number;
+  yearEnrolled?: string;
+  yearGraduated?: string;
+}) => {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const full_email = getFullEmail(firstName, lastName);
 
   const sectionsIds = await prisma.section.findMany({
     select: {
       id: true,
     },
   });
+
+  const guardians = ["Father", "Mother"].map((relationship) => ({
+    firstname: faker.person.firstName(),
+    lastname: faker.person.lastName(),
+    occupation: faker.person.jobTitle(),
+    contactNo: faker.phone.number(),
+    relationship,
+  }));
 
   const user = await prisma.user.create({
     data: {
@@ -105,15 +157,6 @@ const createUser = async (role: string) => {
       role: Role[role as keyof typeof Role], // convert string to enum
       section: {
         connect: {
-          // name_school_year_departmentId: {
-          //   name: faker.helpers.arrayElement(sections),
-          //   school_year: faker.helpers.arrayElement([
-          //     "2023-2026",
-          //     "2024-2027",
-          //     "2025-2028",
-          //   ]),
-          //   departmentId: faker.helpers.arrayElement(departmentIds).id,
-          // },
           id: faker.helpers.arrayElement(sectionsIds).id,
         },
       },
@@ -126,15 +169,9 @@ const createUser = async (role: string) => {
         create: {
           isEmployed: faker.datatype.boolean(),
           studentNumber: faker.number.int(),
-          schoolYear: faker.helpers.arrayElement([1, 2, 3]),
-          yearEnrolled: faker.date.between({
-            from: "2020-01-01T00:00:00.000Z",
-            to: "2021-01-01T00:00:00.000Z",
-          }),
-          yearGraduated: faker.date.between({
-            from: "2024-01-01T00:00:00.000Z",
-            to: "2025-01-01T00:00:00.000Z",
-          }),
+          schoolYear: schoolYear,
+          yearEnrolled: yearEnrolled,
+          yearGraduated: yearGraduated,
           alternative_email: faker.internet.email(),
           firstname: firstName,
           lastname: lastName,
@@ -155,34 +192,8 @@ const createUser = async (role: string) => {
           province: faker.location.state(),
           contactNo: faker.phone.number(),
           parents: {
-            // create: {
-            //   firstname: faker.person.firstName(),
-            //   lastname: faker.person.lastName(),
-            //   occupation: faker.person.jobTitle(),
-            //   contactNo: faker.phone.number(),
-            //   relationship: faker.helpers.arrayElement([
-            //     "Father",
-            //     "Mother",
-            //     "Guardian",
-            //   ]),
-            // },
             createMany: {
-              data: [
-                {
-                  firstname: faker.person.firstName(),
-                  lastname: faker.person.lastName(),
-                  occupation: faker.person.jobTitle(),
-                  contactNo: faker.phone.number(),
-                  relationship: "Father",
-                },
-                {
-                  firstname: faker.person.firstName(),
-                  lastname: faker.person.lastName(),
-                  occupation: faker.person.jobTitle(),
-                  contactNo: faker.phone.number(),
-                  relationship: "Mother",
-                },
-              ],
+              data: guardians,
             },
           },
         },
@@ -194,17 +205,24 @@ const createUser = async (role: string) => {
 };
 
 async function main() {
-  await Promise.all(
+  const departmentIds = await Promise.all(
     departments.map((department) => createDepartment(department))
   );
 
-  console.log("departments created.");
-
-  // await Promise.all(sections.map((section) => createSection(section)));
+  // create section per department
   await Promise.all(
-    Array.from({
-      length: 10,
-    }).map(() => createSection())
+    departmentIds.map((departmentId) =>
+      Promise.all(
+        sections.map((section) =>
+          createSection({
+            name: section,
+            departmentId: departmentId.id,
+            course_year: 1,
+            school_year: "2023-2027",
+          })
+        )
+      )
+    )
   );
 
   console.log("sections created.");
@@ -212,47 +230,70 @@ async function main() {
   // create STUDENT
   await Promise.all(
     Array.from({
-      length: 100,
-    }).map(() => createUser("STUDENT"))
+      length: 900,
+    }).map(() =>
+      createUser({
+        role: "STUDENT",
+        schoolYear: 1,
+        yearEnrolled: new Date("2023-01-01T00:00:00.000Z").toISOString(),
+      })
+    )
   );
   // create ALUMNI
   await Promise.all(
     Array.from({
-      length: 100,
-    }).map(() => createUser("ALUMNI"))
+      length: 900,
+    }).map(() =>
+      createUser({
+        role: "ALUMNI",
+        schoolYear: 4,
+        //  Expected ISO-8601 DateTime year 2019
+        yearEnrolled: new Date("2019-01-01T00:00:00.000Z").toISOString(),
+        yearGraduated: new Date("2023-01-01T00:00:00.000Z").toISOString(),
+      })
+    )
   );
 
   // create ADVISER
   await Promise.all(
     Array.from({
       length: 10,
-    }).map(() => createUser("ADVISER"))
+    }).map(() => createUser({ role: "ADVISER" }))
   );
 
   // create COORDINATOR
   await Promise.all(
     Array.from({
       length: 10,
-    }).map(() => createUser("COORDINATOR"))
+    }).map(() => createUser({ role: "COORDINATOR" }))
   );
 
   // create PESO
   await Promise.all(
     Array.from({
       length: 10,
-    }).map(() => createUser("PESO"))
+    }).map(() => createUser({ role: "PESO" }))
   );
 
   await Promise.all(
     Array.from({
       length: 10,
-    }).map(() => createUser("BULSU_PARTNER"))
+    }).map(() => createUser({ role: "BULSU_PARTNER" }))
   );
 
   // create ADMIN
-  await createUser("ADMIN");
+  await createUser({ role: "ADMIN" });
 
   console.log("users created.");
+
+  // create event
+  await Promise.all(
+    Array.from({
+      length: 15,
+    }).map(() => createEvent())
+  );
+
+  console.log("events created.");
 
   console.log("Seeding completed.");
 }

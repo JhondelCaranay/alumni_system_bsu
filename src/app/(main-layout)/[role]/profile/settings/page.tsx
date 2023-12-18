@@ -4,6 +4,7 @@ import UserCardForm from "./components/UserCardForm";
 import GeneralInfoForm from "./components/GeneralInfoForm";
 import PasswordsForm from "./components/PasswordsForm";
 import GuardianInfoForm from "./components/GuardianInfoForm";
+import WorkExperiences from "./components/WorkExperiences";
 
 const UserSettingsPage = async () => {
   const user = await getCurrentUser();
@@ -18,8 +19,8 @@ const UserSettingsPage = async () => {
           <GeneralInfoForm data={user} />
         </div>
       </div>
-
       <GuardianInfoForm data={user} studentProfileId={user?.profile?.id} />
+      <WorkExperiences data={user} />
     </div>
   );
 };

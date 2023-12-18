@@ -30,7 +30,7 @@ import {
 } from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-import { CreateJobSchema } from "@/schema/jobs";
+import { CreateJobSchema, CreateJobSchemaType, JobSchemaType } from "@/schema/jobs";
 import { Checkbox } from "../ui/checkbox";
 
 const CreateWorkExperienceModal = () => {
@@ -40,8 +40,8 @@ const CreateWorkExperienceModal = () => {
   const onHandleClose = () => {
     onClose();
   };
-
-  const form = useForm<CreateJobSchema>({
+  
+  const form = useForm<CreateJobSchemaType>({
     resolver: zodResolver(CreateJobSchema),
     defaultValues: {
       company: "",
@@ -52,7 +52,18 @@ const CreateWorkExperienceModal = () => {
     mode: "all",
   });
 
-  const onSubmit: SubmitHandler<CreateJobSchema> = async (values) => {};
+  const createJobExperience = useMutateProcessor<CreateJobSchemaType, JobSchemaType> (`/users/${data.user?.id}/jobs`, null, 'POST', ['user', 'jobs', data.user?.id]);
+
+  const onSubmit: SubmitHandler<CreateJobSchemaType> = async (values) => {
+    console.log(values)
+
+    createJobExperience.mutate(values, {
+      onSuccess(data, variables, context) {
+        toast.success('Work experience has been added')
+        form.reset()
+      },
+    });
+  };
 
   const isLoading = form.formState.isSubmitting;
 

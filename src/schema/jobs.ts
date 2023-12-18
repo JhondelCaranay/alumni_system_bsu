@@ -3,9 +3,9 @@ import { z } from "zod";
 
 export const JobSchema = z.object({
   id: z.string(),
-  jobTitle: z.string(),
-  company: z.string(),
-  location: z.string(),
+  jobTitle: z.string().min(1, 'Required'),
+  company: z.string().min(1, 'Required'),
+  location: z.string().min(1, 'Required'),
   yearStart: z.date(),
   yearEnd: z.date(),
   isCurrentJob: z.boolean(),
@@ -15,14 +15,21 @@ export const JobSchema = z.object({
   userId: z.string(),
 }) satisfies z.ZodType<Job>;
 
-export const CreateJobSchema = z.object({
-  jobTitle: z.string(),
-  company: z.string(),
-  location: z.string(),
-  yearStart: z.date(),
-  yearEnd: z.date(),
-  isCurrentJob: z.boolean(),
-});
+export const CreateJobSchema = JobSchema.pick({
+  jobTitle: true,
+  company: true,
+  location: true,
+  yearStart: true,
+  yearEnd: true,
+  isCurrentJob: true,
+})
+.extend({
+  yearStart: z.string(),
+  yearEnd: z.string()
+})
+.partial({
+  yearEnd:true,
+})
 
 export const UpdateJobSchema = z
   .object({

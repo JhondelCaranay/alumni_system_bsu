@@ -239,7 +239,7 @@ model Job {
   company      String
   location     String
   yearStart    DateTime
-  yearEnd      DateTime
+  yearEnd      DateTime?
   isCurrentJob Boolean @default(false)
 
   isArchived Boolean @default(false)

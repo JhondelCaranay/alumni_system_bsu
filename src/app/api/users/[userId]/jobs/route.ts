@@ -99,20 +99,21 @@ export async function POST(
     const { jobTitle, company, location, yearStart, yearEnd, isCurrentJob } =
       result.data;
 
+      console.log(result.data)
     /* 
         if user add new current job, set all previous job to isCurrentJob false
     */
-    if (isCurrentJob) {
-      await prisma.job.updateMany({
-        where: {
-          userId: userId as string,
-          isArchived: false,
-        },
-        data: {
-          isCurrentJob: false,
-        },
-      });
-    }
+    // if (isCurrentJob) {
+    //   await prisma.job.updateMany({
+    //     where: {
+    //       userId: userId as string,
+    //       isArchived: false,
+    //     },
+    //     data: {
+    //       isCurrentJob: false,
+    //     },
+    //   });
+    // }
 
     /* 
         create new job
@@ -122,42 +123,45 @@ export async function POST(
         jobTitle,
         company,
         location,
-        yearStart,
-        yearEnd,
+        yearStart: '',
+        
+        // yearStart: new Date(yearStart),
+        // yearEnd: yearEnd ? new Date(yearEnd) : undefined,
         isCurrentJob,
         userId: userId,
       },
     });
 
+    console.log(job)
     /* 
         find all job where isCurrentJob is true
-    */
-    const jobs = await prisma.job.findFirst({
-      where: {
-        userId: userId as string,
-        isArchived: false,
-        isCurrentJob: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      select: {
-        id: true,
-      },
-    });
+    // */
+    // const jobs = await prisma.job.findFirst({
+    //   where: {
+    //     userId: userId as string,
+    //     isArchived: false,
+    //     isCurrentJob: true,
+    //   },
+    //   orderBy: {
+    //     createdAt: "desc",
+    //   },
+    //   select: {
+    //     id: true,
+    //   },
+    // });
 
     /* 
         if user have current job, user is employed
         else user is unemployed
     */
-    await prisma.profile.update({
-      where: {
-        id: userId as string,
-      },
-      data: {
-        isEmployed: jobs ? true : false,
-      },
-    });
+    // await prisma.profile.update({
+    //   where: {
+    //     id: userId as string,
+    //   },
+    //   data: {
+    //     isEmployed: jobs ? true : false,
+    //   },
+    // });
 
     return NextResponse.json(job);
   } catch (error) {

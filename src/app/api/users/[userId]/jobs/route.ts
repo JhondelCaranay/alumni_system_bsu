@@ -99,7 +99,7 @@ export async function POST(
     const { jobTitle, company, location, yearStart, yearEnd, isCurrentJob } =
       result.data;
 
-      console.log(result.data)
+    console.log(result.data);
     /* 
         if user add new current job, set all previous job to isCurrentJob false
     */
@@ -130,7 +130,6 @@ export async function POST(
       },
     });
 
-
     /* 
         find all job where isCurrentJob is true
     // */
@@ -154,7 +153,7 @@ export async function POST(
     */
     await prisma.profile.update({
       where: {
-        id: userId as string,
+        userId: userId,
       },
       data: {
         isEmployed: jobs ? true : false,

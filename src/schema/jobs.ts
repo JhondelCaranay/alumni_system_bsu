@@ -31,16 +31,22 @@ export const CreateJobSchema = JobSchema.pick({
   yearEnd:true,
 })
 
-export const UpdateJobSchema = z
-  .object({
-    jobTitle: z.string(),
-    company: z.string(),
-    location: z.string(),
-    yearStart: z.date(),
-    yearEnd: z.date(),
-    isCurrentJob: z.boolean(),
+export const UpdateJobSchema = JobSchema
+  .pick({
+  jobTitle: true,
+  company: true,
+  location: true,
+  yearStart: true,
+  yearEnd: true,
+  isCurrentJob: true,
   })
-  .partial();
+  .extend({
+    yearStart: z.string(),
+    yearEnd: z.string()
+  })
+  .partial({
+    yearEnd:true,
+  });
 
 export type JobSchemaType = z.infer<typeof JobSchema>;
 export type CreateJobSchemaType = z.infer<typeof CreateJobSchema>;

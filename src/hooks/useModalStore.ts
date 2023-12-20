@@ -1,6 +1,7 @@
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import { CommentSchemaType } from "@/schema/comment";
 import { GuardianSchemaType } from "@/schema/guardian";
+import { JobSchemaType } from "@/schema/jobs";
 import { PostSchemaType } from "@/schema/post";
 import {
   UserProfileWithDepartmentSection,
@@ -21,7 +22,9 @@ export type ModalType =
   | "deletePost"
   | "editDiscussion"
   | "deleteComment"
-  | "createJobExperience"
+  | "createWorkExperience"
+  | "deleteWorkExperience"
+  | "updateWorkExperience"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."
@@ -35,6 +38,7 @@ type ModalData = {
   guardian?: GuardianSchemaType;
   post?: PostSchemaType;
   comment?: CommentSchemaType;
+  workExperience?: JobSchemaType
 };
 
 type ModalStore = {

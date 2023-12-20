@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,19 +24,23 @@ import { Loader } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-import { CreateJobSchema, CreateJobSchemaType, JobSchemaType } from "@/schema/jobs";
+import {
+  JobSchemaType,
+  UpdateJobSchemaType,
+  UpdateJobSchema,
+} from "@/schema/jobs";
 import { Checkbox } from "../ui/checkbox";
 
-const CreateWorkExperienceModal = () => {
+const UpdateWorkExperienceModal = () => {
   const { isOpen, type, onClose, data } = useModal();
-  const isModalOpen = isOpen && type === "createWorkExperience";
+  const isModalOpen = isOpen && type === "updateWorkExperience";
 
   const onHandleClose = () => {
     onClose();
   };
-  
-  const form = useForm<CreateJobSchemaType>({
-    resolver: zodResolver(CreateJobSchema),
+
+  const form = useForm<UpdateJobSchemaType>({
+    resolver: zodResolver(UpdateJobSchema),
     defaultValues: {
       company: "",
       isCurrentJob: false,
@@ -46,14 +50,57 @@ const CreateWorkExperienceModal = () => {
     mode: "all",
   });
 
-  const createJobExperience = useMutateProcessor<CreateJobSchemaType, JobSchemaType> (`/users/${data.user?.id}/jobs`, null, 'POST', ['users', 'jobs', data.user?.id]);
+  const getMonthAndYear = (dateTime: string) => {
+    const m = new Date(dateTime).getMonth() + 1;
+    const month = m < 10 ? `0${m}` : m;
+    const year = new Date(dateTime).getFullYear();
 
-  const onSubmit: SubmitHandler<CreateJobSchemaType> = async (values) => {
-    createJobExperience.mutate(values, {
+    return `${year}-${month}`;
+  };
+
+  const setChildren = () => {
+    form.setValue("company", data?.workExperience?.company as string);
+    form.setValue(
+      "isCurrentJob",
+      data?.workExperience?.isCurrentJob as boolean
+    );
+    form.setValue("jobTitle", data?.workExperience?.jobTitle as string);
+    form.setValue("location", data?.workExperience?.location as string);
+    form.setValue(
+      "yearStart",
+      getMonthAndYear(data?.workExperience?.yearStart.toString() as string)
+    );
+    if(data?.workExperience?.yearEnd) {
+      form.setValue(
+        "yearEnd",
+        getMonthAndYear(data?.workExperience?.yearEnd?.toString() as string)
+      );
+    }
+  };
+
+  console.log(data);
+  useEffect(() => {
+    setChildren();
+  }, [isModalOpen]);
+
+  const updateJobExperience = useMutateProcessor<
+    UpdateJobSchemaType,
+    JobSchemaType
+  >(`/users/${data.user?.id}/jobs/${data.workExperience?.id}`, null, "PATCH", [
+    "users",
+    "jobs",
+    data.user?.id,
+  ]);
+
+  const onSubmit: SubmitHandler<UpdateJobSchemaType> = async (values) => {
+    updateJobExperience.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Work experience has been added')
-        form.reset()
-        onHandleClose()
+        toast.success("Work experience has been updated");
+        form.reset();
+        onHandleClose();
+      },
+      onError(error, variables, context) {
+        console.log(error);
       },
     });
   };
@@ -66,11 +113,10 @@ const CreateWorkExperienceModal = () => {
         <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
-              Add work experience
+              Edit work experience
             </DialogTitle>
-
             <DialogDescription className="text-center text-zinc m-2 font-semibold dark:text-white">
-              Add information about your current job/past experience.
+              Edit information about your current job/past experience.
             </DialogDescription>
           </DialogHeader>
 
@@ -207,7 +253,9 @@ const CreateWorkExperienceModal = () => {
                         <FormControl>
                           <Input
                             type="month"
-                            disabled={isLoading || form.getValues('isCurrentJob')}
+                            disabled={
+                              isLoading || form.getValues("isCurrentJob")
+                            }
                             className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
                             placeholder={`Enter the year you left the job`}
                             {...field}
@@ -235,7 +283,7 @@ const CreateWorkExperienceModal = () => {
                           saving <Loader size={20} />
                         </div>
                       );
-                    return "Add work experience";
+                    return "Update work experience";
                   })()}
                 </Button>
               </DialogFooter>
@@ -247,4 +295,4 @@ const CreateWorkExperienceModal = () => {
   );
 };
 
-export default CreateWorkExperienceModal;
+export default UpdateWorkExperienceModal;

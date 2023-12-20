@@ -12,6 +12,8 @@ import EditDiscussionModal from "../modals/EditDiscussionModal";
 import ViewOnylyEventModal from "../modals/ViewOnylyEventModal";
 import DeleteCommentModal from "../modals/DeleteCommentModal";
 import CreateWorkExperienceModal from "../modals/CreateWorkExperienceModal";
+import DeleteWorkExperienceModal from "../modals/DeleteWorkExperienceModal";
+import UpdateWorkExperienceModal from "../modals/UpdateWorkExperienceModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -38,6 +40,8 @@ const ModalProvider = () => {
       <EditDiscussionModal />
       <DeleteCommentModal />
       <CreateWorkExperienceModal />
+      <DeleteWorkExperienceModal />
+      <UpdateWorkExperienceModal />
     </>
   );
 };

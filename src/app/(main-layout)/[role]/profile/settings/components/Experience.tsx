@@ -1,13 +1,24 @@
+"use client"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { JobSchemaType } from "@/schema/jobs";
 import { Archive, MoreHorizontal, Pencil, XSquare } from "lucide-react";
 import React from "react";
+import { format } from "date-fns";
+import { useModal } from "@/hooks/useModalStore";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
+type ExperienceProps = {
+  data: JobSchemaType;
+  user: GetCurrentUserType
+};
+const DATE_FORMAT = `MMMM yyyy`;
 
-const Experience = () => {
+const Experience: React.FC<ExperienceProps> = ({ data, user }) => {
+  const {onOpen} = useModal()
   return (
     <li className="flex justify-between">
       <div className="mb-10 ms-6">
@@ -23,17 +34,20 @@ const Experience = () => {
           </svg>
         </span>
         <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-          Full Stack Web Developer{" "}
-          {/* <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ms-3">
-          Latest
-        </span> */}
+          {data.jobTitle}
+          {data.isCurrentJob && (
+            <span className="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ms-3">
+              Current Work
+            </span>
+          )}
         </h3>
-        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-          January 13th, 2022
-        </time>
-        <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-          Franz Orchard 868 Fort Maxchester Utah West Virginia
+        <p className="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">
+          {data.company}
         </p>
+        <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+          {format(new Date(data.yearStart || new Date()), DATE_FORMAT)}
+          {data.yearEnd && `- ${format(new Date(data.yearEnd), DATE_FORMAT)}`}
+        </time>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger className="h-fit border-0 focus-visible:ring-0 focus-visible:ring-offset-0">
@@ -46,14 +60,14 @@ const Experience = () => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-xs cursor-pointer hover:bg-zinc-400"
-            // onClick={() => onOpen('updateGuardian', {guardian: data})}
+            onClick={() => onOpen('updateWorkExperience', {user, workExperience: data})}
           >
             <Pencil className="h-4 w-4 mr-2" />
             Update
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
-            // onClick={() => onOpen('deleteGuardian', {guardian: data})}
+            onClick={() => onOpen('deleteWorkExperience', {user, workExperience: data})}
           >
             <Archive className="h-4 w-4 mr-2" />
             Delete

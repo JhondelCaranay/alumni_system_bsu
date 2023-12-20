@@ -1,4 +1,5 @@
 import useWindowSize from "@/hooks/useWindowSize";
+import { DashboardAlumniTotalType } from "@/queries/dashboard";
 import React, { PureComponent } from "react";
 import {
   AreaChart,
@@ -10,42 +11,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  {
-    year: 2023,
-    graduates: 4000,
-  },
-  {
-    year: 2022,
-    graduates: 3000,
-  },
-  {
-    year: 2021,
-    graduates: 2000,
-  },
-  {
-    year: 2020,
-    graduates: 2780,
-  },
-  {
-    year: 2019,
-    graduates: 1890,
-  },
-  {
-    year: 2018,
-    graduates: 2390,
-  },
-  {
-    year: 2017,
-    graduates: 3490,
-  },
-  {
-    year: 2016,
-    graduates: 4000,
-  },
-];
+type AlumniChartProps = {
+  data: DashboardAlumniTotalType[];
+};
 
-export default function AlumniChart() {
+export default function AlumniChart({ data }: AlumniChartProps) {
   // 768px
   const windowSize = useWindowSize();
   return (

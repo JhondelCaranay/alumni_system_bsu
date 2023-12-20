@@ -26,8 +26,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getDashboardWidget } from "@/queries/dashboard";
 
 const DashboardClient = () => {
-  const totalsQuery = useQuery({
-    queryKey: ["todos"],
+  const dashboardTotalsQuery = useQuery({
+    queryKey: ["dashboard-totals"],
     queryFn: getDashboardWidget,
   });
 
@@ -39,26 +39,26 @@ const DashboardClient = () => {
 
   return (
     <div className="p-6">
-      {totalsQuery.data ? (
+      {dashboardTotalsQuery.data ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <div onClick={() => setSelected("STUDENTS")}>
             <Widget
               title="STUDENTS"
-              total={totalsQuery.data?.students || 0}
+              total={dashboardTotalsQuery.data?.students || 0}
               icon={LucideUserSquare2}
             />
           </div>
           <div onClick={() => setSelected("ALUMNI")}>
             <Widget
               title="ALUMNI"
-              total={totalsQuery.data?.alumni || 0}
+              total={dashboardTotalsQuery.data?.alumni || 0}
               icon={GraduationCap}
             />
           </div>
           <div onClick={() => setSelected("JOBS")}>
             <Widget
               title="JOBS"
-              total={totalsQuery.data?.student_alumni_with_jobs || 0}
+              total={dashboardTotalsQuery.data?.student_alumni_with_jobs || 0}
               icon={LayoutDashboard}
             />
           </div>
@@ -67,7 +67,7 @@ const DashboardClient = () => {
               <AlertDialogTrigger className="w-full text-left">
                 <Widget
                   title="UPCOMING EVENTS"
-                  total={totalsQuery.data?.upcomming_events || 0}
+                  total={dashboardTotalsQuery.data?.upcomming_events || 0}
                   icon={ListChecks}
                 />
               </AlertDialogTrigger>

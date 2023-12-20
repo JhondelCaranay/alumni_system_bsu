@@ -86,7 +86,6 @@ export async function PATCH(
 
     const { jobTitle, company, location, yearStart, yearEnd, isCurrentJob } =
       result.data;
-
     const job = await prisma.job.findUnique({
       where: {
         id: jobId,
@@ -123,8 +122,8 @@ export async function PATCH(
         jobTitle,
         company,
         location,
-        yearStart,
-        yearEnd,
+        yearStart: new Date(yearStart),
+        yearEnd: yearEnd ? new Date(yearEnd) : undefined,
         isCurrentJob,
       },
     });
@@ -152,7 +151,7 @@ export async function PATCH(
     */
     await prisma.profile.update({
       where: {
-        id: userId as string,
+        userId: userId as string,
       },
       data: {
         isEmployed: jobs ? true : false,

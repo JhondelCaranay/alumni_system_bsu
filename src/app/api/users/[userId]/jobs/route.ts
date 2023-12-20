@@ -9,14 +9,16 @@ export async function GET(
   { params }: { params: { userId: string } }
 ) {
   try {
-    const currentUser = await getCurrentUser();
+    // const currentUser = await getCurrentUser();
 
     const { userId } = params;
 
+    // console.log("userId", userId);
+
     if (!userId) return new NextResponse("User ID missing", { status: 400 });
 
-    if (userId === currentUser?.id)
-      return new NextResponse("Something went wrong...", { status: 400 });
+    // if (userId !== currentUser?.id)
+    //   return new NextResponse("Unauthorized", { status: 401 });
 
     const user = await prisma.user.findUnique({
       where: {
@@ -41,7 +43,6 @@ export async function GET(
     if (!jobs) {
       return new NextResponse("Jobs Not Found", { status: 404 });
     }
-
     return NextResponse.json(jobs);
   } catch (error) {
     console.log("[USERS_GET]", error);

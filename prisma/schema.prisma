@@ -240,7 +240,7 @@ model Job {
   location     String
   yearStart    DateTime
   yearEnd      DateTime?
-  isCurrentJob Boolean @default(false)
+  isCurrentJob Boolean   @default(false)
 
   isArchived Boolean @default(false)
 

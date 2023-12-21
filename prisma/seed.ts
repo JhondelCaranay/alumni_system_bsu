@@ -14,6 +14,7 @@ $ npx prisma generate  // (optional)
 $ npx prisma db seed  // then you can seed the database
 
 OR
+
 $ npx prisma db push --force-reset
 $ npx prisma db seed
 
@@ -112,7 +113,7 @@ const getFullEmail = (firstName: string, lastName: string) => {
   return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${faker.number.int(
     {
       min: 0,
-      max: 10,
+      max: 99,
     }
   )}@bulsu.edu.ph`;
 };
@@ -134,6 +135,12 @@ const createUser = async ({
   const full_email = getFullEmail(firstName, lastName);
 
   const sectionsIds = await prisma.section.findMany({
+    select: {
+      id: true,
+    },
+  });
+
+  const departmentIds = await prisma.department.findMany({
     select: {
       id: true,
     },
@@ -162,7 +169,7 @@ const createUser = async ({
       },
       department: {
         connect: {
-          name: faker.helpers.arrayElement(departments),
+          id: faker.helpers.arrayElement(departmentIds).id,
         },
       },
       profile: {
@@ -228,29 +235,77 @@ async function main() {
   console.log("sections created.");
 
   // create STUDENT
+  // await Promise.all(
+  //   Array.from({
+  //     length: 900,
+  //   }).map(() =>
+  //     createUser({
+  //       role: "STUDENT",
+  //       schoolYear: 1,
+  //       yearEnrolled: new Date("2023-01-01T00:00:00.000Z").toISOString(),
+  //     })
+  //   )
+  // );
+
+  // create ALUMNI
+  // await Promise.all(
+  //   Array.from({
+  //     length: 500,
+  //   }).map(() =>
+  //     createUser({
+  //       role: "ALUMNI",
+  //       schoolYear: 4,
+  //       //  Expected ISO-8601 DateTime year 2019
+  //       yearEnrolled: new Date("2019-01-01T00:00:00.000Z").toISOString(),
+  //       yearGraduated: new Date("2023-01-01T00:00:00.000Z").toISOString(),
+  //     })
+  //   )
+  // );
+
+  // const years = [
+  //   2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012,
+  //   2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
+  // ];
+  // Get the current year
+  const currentYear = new Date().getFullYear();
+
+  // Generate an array with a 16-year span starting from the current year
+  const years = Array.from({ length: 25 }, (_, index) => currentYear - index);
+
+  // create STUDENT
   await Promise.all(
-    Array.from({
-      length: 900,
-    }).map(() =>
-      createUser({
-        role: "STUDENT",
-        schoolYear: 1,
-        yearEnrolled: new Date("2023-01-01T00:00:00.000Z").toISOString(),
-      })
+    years.map(
+      async (year) =>
+        await Promise.all(
+          Array.from({
+            length: faker.number.int({ min: 50, max: 100 }),
+          }).map(() =>
+            createUser({
+              role: "STUDENT",
+              schoolYear: faker.number.int({ min: 1, max: 4 }),
+              yearEnrolled: new Date(year, 0, 1).toISOString(),
+            })
+          )
+        )
     )
   );
+
   // create ALUMNI
   await Promise.all(
-    Array.from({
-      length: 900,
-    }).map(() =>
-      createUser({
-        role: "ALUMNI",
-        schoolYear: 4,
-        //  Expected ISO-8601 DateTime year 2019
-        yearEnrolled: new Date("2019-01-01T00:00:00.000Z").toISOString(),
-        yearGraduated: new Date("2023-01-01T00:00:00.000Z").toISOString(),
-      })
+    years.map(
+      async (year) =>
+        await Promise.all(
+          Array.from({
+            length: faker.number.int({ min: 100, max: 200 }),
+          }).map(() =>
+            createUser({
+              role: "ALUMNI",
+              schoolYear: 4,
+              yearEnrolled: new Date(year - 4, 0, 1).toISOString(),
+              yearGraduated: new Date(year, 0, 1).toISOString(),
+            })
+          )
+        )
     )
   );
 

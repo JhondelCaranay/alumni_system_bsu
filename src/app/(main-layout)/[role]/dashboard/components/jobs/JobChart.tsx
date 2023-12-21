@@ -1,4 +1,5 @@
 import useWindowSize from "@/hooks/useWindowSize";
+import { DashboardJobsPerYearType } from "@/queries/dashboard";
 import React, { PureComponent } from "react";
 import {
   AreaChart,
@@ -13,63 +14,11 @@ import {
   Bar,
 } from "recharts";
 
-const data = [
-  {
-    id: 1,
-    year: 2023,
-    studentsWithJobs: 4000,
-    AlumniWithJobs: 4000,
-  },
-  {
-    id: 2,
-    year: 2022,
-    studentsWithJobs: 3000,
-    AlumniWithJobs: 3000,
-  },
-  {
-    id: 3,
-    year: 2021,
-    studentsWithJobs: 2000,
-    AlumniWithJobs: 2000,
-  },
-  {
-    id: 4,
-    year: 2020,
-    studentsWithJobs: 2780,
-    AlumniWithJobs: 2780,
-  },
-  {
-    id: 5,
-    year: 2019,
-    studentsWithJobs: 1890,
-    AlumniWithJobs: 1890,
-  },
-  {
-    id: 6,
-    year: 2018,
-    studentsWithJobs: 2390,
-    AlumniWithJobs: 2390,
-  },
-  {
-    id: 7,
-    year: 2017,
-    studentsWithJobs: 3490,
-    AlumniWithJobs: 3490,
-  },
-  {
-    id: 8,
-    year: 2016,
-    studentsWithJobs: 4000,
-    AlumniWithJobs: 4000,
-  },
-  {
-    id: 9,
-    year: 2015,
-    studentsWithJobs: 3000,
-    AlumniWithJobs: 3000,
-  },
-];
-export default function JobChart() {
+type JobChartProps = {
+  data: DashboardJobsPerYearType[];
+};
+
+export default function JobChart({ data }: JobChartProps) {
   const windowSize = useWindowSize();
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -90,13 +39,13 @@ export default function JobChart() {
         <Tooltip />
         <Legend />
         <Bar
-          dataKey="studentsWithJobs"
+          dataKey="studentsWithJob"
           name="Students with job"
           stackId="a"
           fill="#3498db"
         />
         <Bar
-          dataKey="AlumniWithJobs"
+          dataKey="alumniWithJob"
           name="Alumni with job"
           stackId="a"
           fill="#2ecc71"

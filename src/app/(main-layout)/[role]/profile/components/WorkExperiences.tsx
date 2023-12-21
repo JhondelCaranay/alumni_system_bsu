@@ -2,10 +2,7 @@
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import React from "react";
 import Experience from "./Experience";
-import { Button } from "@/components/ui/button";
-import { PlusCircleIcon } from "lucide-react";
-import { useModal } from "@/hooks/useModalStore";
-import {useQueryProcessor } from "@/hooks/useTanstackQuery";
+import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { JobSchemaType } from "@/schema/jobs";
 import { Loader } from "@/components/ui/loader";
 
@@ -18,20 +15,10 @@ const WorkExperiences: React.FC<WorkExperiencesProps> = ({data}) => {
 
   const experiences = useQueryProcessor<JobSchemaType[]>(`/users/${data?.id}/jobs`, null, ['users', 'jobs', data?.id])
 
-  const {onOpen} = useModal()
   return (
     <div className="flex rounded-lg p-5 bg-white dark:bg-[#1F2937] ">
       <div className="flex flex-col gap-5 w-full">
         <h1 className="mb-5 text-3xl">Work Experiences</h1>
-
-        <Button
-        variant={"link"}
-        className="flex items-center gap-x-2 w-fit h-fit p-0 my-10"
-        onClick={() => onOpen("createWorkExperience", { user: data })}
-      >
-        <PlusCircleIcon />
-        Add a job/work experience
-      </Button>
       <div className="px-3">
       {
         (() => {

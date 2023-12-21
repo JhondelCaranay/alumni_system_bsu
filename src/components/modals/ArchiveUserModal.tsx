@@ -19,7 +19,6 @@ import { UserProfileWithDepartmentSection, UserWithProfile } from "@/types/types
 const ArchiveUserModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "archiveUser";
-  const router = useRouter();
 
   const archiveUser = useMutateProcessor<
     string,

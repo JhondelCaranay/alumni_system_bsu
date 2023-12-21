@@ -25,6 +25,7 @@ export type ModalType =
   | "createWorkExperience"
   | "deleteWorkExperience"
   | "updateWorkExperience"
+  | "createGroupChat"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

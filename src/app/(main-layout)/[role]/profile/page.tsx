@@ -4,6 +4,7 @@ import InitialUserInfo from "./components/InitialUserInfo";
 import GuardiansInfo from "./components/GuardiansInfo";
 import { UserCog } from "lucide-react";
 import Link from "next/link";
+import WorkExperiences from "./components/WorkExperiences";
 
 const Page = async () => {
   const user = await getCurrentUser();
@@ -25,6 +26,7 @@ const Page = async () => {
           <GeneralUserInfo data={user} />
         </div>
         <GuardiansInfo data={user} studentProfileId={user?.profile?.id} />
+        <WorkExperiences data={user} studentProfileId={user?.profile?.id} />
       </div>
     </div>
   );

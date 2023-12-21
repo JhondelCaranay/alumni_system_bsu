@@ -1,17 +1,9 @@
 "use client"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { JobSchemaType } from "@/schema/jobs";
-import { Archive, MoreHorizontal, Pencil, XSquare } from "lucide-react";
 import React from "react";
 import { format } from "date-fns";
 import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
-
 type ExperienceProps = {
   data: JobSchemaType;
   user: GetCurrentUserType
@@ -19,7 +11,6 @@ type ExperienceProps = {
 const DATE_FORMAT = `MMMM yyyy`;
 
 const Experience: React.FC<ExperienceProps> = ({ data, user }) => {
-  const {onOpen} = useModal()
   return (
     <li className="flex justify-between relative">
       <div className="mb-10 ms-6">
@@ -50,31 +41,6 @@ const Experience: React.FC<ExperienceProps> = ({ data, user }) => {
           {data.yearEnd && `- ${format(new Date(data.yearEnd), DATE_FORMAT)}`}
         </time>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="h-fit border-0 focus-visible:ring-0 focus-visible:ring-offset-0">
-          <MoreHorizontal className="h-6 w-6 text-zinc-400 " />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="">
-          <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400 md:hidden">
-            <XSquare className="h-4 w-4 mr-2" />
-            Close
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-xs cursor-pointer hover:bg-zinc-400"
-            onClick={() => onOpen('updateWorkExperience', {user, workExperience: data})}
-          >
-            <Pencil className="h-4 w-4 mr-2" />
-            Update
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
-            onClick={() => onOpen('deleteWorkExperience', {user, workExperience: data})}
-          >
-            <Archive className="h-4 w-4 mr-2" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>  
-      </DropdownMenu>
     </li>
   );
 };

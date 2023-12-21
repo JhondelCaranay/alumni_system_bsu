@@ -51,11 +51,12 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       { status: 400 }
     );
   }
+  const {name, adviserId, departmentId, sectionId, year} = result.data
 
   // Check if groupChat already exists
   const groupChatExists = await prisma.groupChat.findFirst({
     where: {
-      name: result.data.name,
+      name,
     },
   });
 
@@ -65,10 +66,16 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       { status: 400 }
     );
   }
-
+  
   try {
     const groupChat = await prisma.groupChat.create({
-      data: result.data,
+      data: {
+        name,
+        adviserId,
+        departmentId,
+        sectionId,
+        year: year ? Number(year) : undefined,
+      },
     });
 
     return NextResponse.json(groupChat);

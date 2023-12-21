@@ -1,23 +1,31 @@
-import { DropdownMenu } from "@/components/ui/dropdown-menu";
+"use client"
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
 import React from "react";
 import InboxItem from "./InboxItem";
+import { Plus } from "lucide-react";
+import { useModal } from "@/hooks/useModalStore";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
 
-const Inbox = () => {
+type InboxProps = {
+  currentUser:GetCurrentUserType
+}
+const Inbox:React.FC<InboxProps> = ({currentUser}) => {
+  const { onOpen } = useModal();
   return (
     <div className="flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl">
       <div className="flex flex-col p-5 gap-y-5 border border-x-0 border-t-0 border-b-1">
-        <h1 className="text-[1.5em]">Messages</h1>
-        <Select >
+        <div className="flex items-center">
+          <h1 className="text-[1.5em]">Messages</h1>
+          <Plus className="h-6 w-6 ml-auto" onClick={() => onOpen('createGroupChat', {user: currentUser})} />
+        </div>
+        <Select>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Filter" />
           </SelectTrigger>

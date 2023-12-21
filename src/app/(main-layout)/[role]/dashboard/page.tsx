@@ -6,8 +6,11 @@ import {
 import DashboardClient from "./components/DashboardClient";
 import { getDashboardWidget } from "@/queries/dashboard";
 
-type DashBoardHomePageProps = {};
-const DashBoardHomePage = async (props: DashBoardHomePageProps) => {
+type DashBoardHomePageProps = {
+  searchParams: { tab: string };
+};
+
+const DashBoardHomePage = async ({ searchParams }: DashBoardHomePageProps) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -17,7 +20,7 @@ const DashBoardHomePage = async (props: DashBoardHomePageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardClient />
+      <DashboardClient tab={searchParams.tab} />
     </HydrationBoundary>
   );
 };

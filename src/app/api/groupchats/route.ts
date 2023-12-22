@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreateGroupChatSchema } from "@/schema/groupchats";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
@@ -11,8 +12,30 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  const GetGroupChatsQueriesSchema = z.object({
+    userId: z.string().optional(),
+  });
+
+  const queries = Object.fromEntries(req.nextUrl.searchParams.entries());
+  const result = await GetGroupChatsQueriesSchema.safeParseAsync(queries);
+
+  if (!result.success) {
+    console.log("Invalid query parameters", result.error.flatten().fieldErrors);
+    return new NextResponse("Invalid query parameters", { status: 400 });
+  }
+
+  const { userId } = result.data;
+
   try {
     const groupChats = await prisma.groupChat.findMany({
+      where: {
+        students: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+
       orderBy: {
         createdAt: "desc",
       },
@@ -68,7 +91,15 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
 
   try {
     const groupChat = await prisma.groupChat.create({
-      data: result.data,
+      data: {
+        name: result.data.name,
+        sectionId: result.data.sectionId,
+        students: {
+          connect: {
+            id: result.data.adviserId,
+          },
+        },
+      },
     });
 
     return NextResponse.json(groupChat);

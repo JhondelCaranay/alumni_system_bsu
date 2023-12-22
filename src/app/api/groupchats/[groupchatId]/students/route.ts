@@ -37,7 +37,6 @@ export async function POST(
       { status: 400 }
     );
   }
-
   // Check if groupChat  exists
   const groupChatExists = await prisma.groupChat.findUnique({
     where: {

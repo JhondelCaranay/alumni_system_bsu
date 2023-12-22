@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import JobSummary from "./JobSummary";
-import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { getDeparments } from "@/queries/department";
 import { useEffect, useState } from "react";
@@ -33,10 +32,10 @@ const JobTab = () => {
   });
 
   useEffect(() => {
-    if (departmentData) {
+    if (departmentData && departmentId === "") {
       setDepartmentId(departmentData[0].id);
     }
-  }, []);
+  }, [departmentData]);
 
   if (!departmentData || !jobsData) {
     return null;

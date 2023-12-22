@@ -70,7 +70,7 @@ const UpdateWorkExperienceModal = () => {
       "yearStart",
       getMonthAndYear(data?.workExperience?.yearStart.toString() as string)
     );
-    if(data?.workExperience?.yearEnd) {
+    if (data?.workExperience?.yearEnd) {
       form.setValue(
         "yearEnd",
         getMonthAndYear(data?.workExperience?.yearEnd?.toString() as string)
@@ -78,7 +78,7 @@ const UpdateWorkExperienceModal = () => {
     }
   };
 
-  console.log(data);
+  // console.log(data);
   useEffect(() => {
     setChildren();
   }, [isModalOpen]);

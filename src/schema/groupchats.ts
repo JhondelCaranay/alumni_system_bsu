@@ -58,27 +58,31 @@ export const GroupChatSchema = z.object({
 export const CreateGroupChatSchema = GroupChatSchema.pick({
   name: true,
   year: true,
-  adviserId: true,
   departmentId: true,
   sectionId: true,
 })
-.extend({
-  year: z.string()
-})
-.partial({
-  year: true,
-});
+  .extend({
+    year: z.coerce.number(),
+    adviserId: z.string().optional(),
+  })
+  .partial({
+    year: true,
+    adviserId: true,
+  });
 
 export const UpdateGroupChatSchema = GroupChatSchema.pick({
   name: true,
   year: true,
-  adviserId: true,
   departmentId: true,
   sectionId: true,
-}).partial();
+})
+  .extend({
+    adviserId: z.string().optional(),
+  })
+  .partial();
 
 export const UploadStudentsSchema = z.object({
-  studentIds: z.array(z.string().cuid()),
+  userIds: z.array(z.string().cuid()),
 });
 
 export type GroupChatSchemaType = z.infer<typeof GroupChatSchema>;

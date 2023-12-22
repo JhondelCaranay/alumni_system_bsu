@@ -10,11 +10,11 @@ export async function GET(
     params,
   }: {
     params: {
-      groupChatId: string;
+      groupchatId: string;
     };
   }
 ) {
-  const { groupChatId } = params;
+  const { groupchatId } = params;
 
   const currentUser = await getCurrentUser();
 
@@ -25,11 +25,10 @@ export async function GET(
   try {
     const groupChats = await prisma.groupChat.findUnique({
       where: {
-        id: groupChatId,
+        id: groupchatId,
       },
       include: {
-        students: true,
-        adviser: true,
+        users: true,
         section: true,
         department: true,
       },
@@ -55,11 +54,11 @@ export async function PATCH(
     params,
   }: {
     params: {
-      groupChatId: string;
+      groupchatId: string;
     };
   }
 ) {
-  const { groupChatId } = params;
+  const { groupchatId } = params;
 
   const currentUser = await getCurrentUser();
 
@@ -69,7 +68,7 @@ export async function PATCH(
 
   const groupChats = await prisma.groupChat.findUnique({
     where: {
-      id: groupChatId,
+      id: groupchatId,
     },
   });
 
@@ -93,23 +92,71 @@ export async function PATCH(
     );
   }
 
+  const { name, adviserId, departmentId, sectionId, year } = result.data;
+
   const groupChatExists = await prisma.groupChat.findFirst({
     where: {
-      name: result.data.name,
+      name: name,
     },
   });
 
-  if (groupChatExists && groupChatExists.id !== groupChatId) {
+  // check if there is a groupChat with the same name
+  if (groupChatExists && groupChatExists.id !== groupchatId) {
     return NextResponse.json(
-      { message: "GroupChat already exist" },
+      { message: "Groupchat with same name is already exist" },
       { status: 400 }
     );
+  }
+
+  if (adviserId) {
+    const adviser = await prisma.user.findFirst({
+      where: {
+        id: adviserId,
+      },
+    });
+
+    if (!adviser) {
+      return NextResponse.json(
+        { message: "Adviser does not exist" },
+        { status: 400 }
+      );
+    }
+  }
+
+  if (departmentId) {
+    const department = await prisma.department.findFirst({
+      where: {
+        id: departmentId,
+      },
+    });
+
+    if (!department) {
+      return NextResponse.json(
+        { message: "Department does not exist" },
+        { status: 400 }
+      );
+    }
+  }
+
+  if (sectionId) {
+    const section = await prisma.section.findFirst({
+      where: {
+        id: sectionId,
+      },
+    });
+
+    if (!section) {
+      return NextResponse.json(
+        { message: "Section does not exist" },
+        { status: 400 }
+      );
+    }
   }
 
   try {
     const updatedGroupChat = await prisma.groupChat.update({
       where: {
-        id: groupChatId,
+        id: groupchatId,
       },
       data: result.data,
     });
@@ -127,11 +174,11 @@ export async function DELETE(
     params,
   }: {
     params: {
-      groupChatId: string;
+      groupchatId: string;
     };
   }
 ) {
-  const { groupChatId } = params;
+  const { groupchatId } = params;
 
   const currentUser = await getCurrentUser();
 
@@ -141,7 +188,7 @@ export async function DELETE(
 
   const groupChats = await prisma.groupChat.findUnique({
     where: {
-      id: groupChatId,
+      id: groupchatId,
     },
   });
 
@@ -164,7 +211,7 @@ export async function DELETE(
     // delete groupChat
     const groupChat = await prisma.groupChat.delete({
       where: {
-        id: groupChatId,
+        id: groupchatId,
       },
     });
 

@@ -29,19 +29,17 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   try {
     const groupChats = await prisma.groupChat.findMany({
       where: {
-        students: {
-          some: {
+        users: {
+          every: {
             id: userId,
           },
         },
       },
-
       orderBy: {
         createdAt: "desc",
       },
       include: {
-        students: true,
-        adviser: true,
+        users: true,
         section: true,
         department: true,
       },
@@ -74,9 +72,9 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       { status: 400 }
     );
   }
-  const {name, adviserId, departmentId, sectionId, year} = result.data
+  const { name, adviserId, departmentId, sectionId, year } = result.data;
 
-  // Check if groupChat already exists
+  // check if groupChat already exist
   const groupChatExists = await prisma.groupChat.findFirst({
     where: {
       name,
@@ -85,19 +83,67 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
 
   if (groupChatExists) {
     return NextResponse.json(
-      { message: "GroupChat already exist" },
+      { message: "Groupchat already exist" },
       { status: 400 }
     );
   }
-  
+
+  // check if department exist
+  const department = await prisma.department.findFirst({
+    where: {
+      id: departmentId,
+    },
+  });
+
+  if (!department) {
+    return NextResponse.json(
+      { message: "Department does not exist" },
+      { status: 400 }
+    );
+  }
+
+  // check if section exist
+  const section = await prisma.section.findFirst({
+    where: {
+      id: sectionId,
+    },
+  });
+
+  if (!section) {
+    return NextResponse.json(
+      { message: "Section does not exist" },
+      { status: 400 }
+    );
+  }
+
+  // check if adviser exist
+  if (adviserId) {
+    const adviser = await prisma.user.findFirst({
+      where: {
+        id: adviserId,
+      },
+    });
+
+    if (!adviser) {
+      return NextResponse.json(
+        { message: "Adviser does not exist" },
+        { status: 400 }
+      );
+    }
+  }
+
   try {
     const groupChat = await prisma.groupChat.create({
       data: {
         name,
-        adviserId,
         departmentId,
         sectionId,
-        year: year ? Number(year) : undefined,
+        year,
+        users: {
+          connect: {
+            id: adviserId,
+          },
+        },
       },
     });
 

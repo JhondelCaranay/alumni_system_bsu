@@ -9,12 +9,12 @@ export async function DELETE(
     params,
   }: {
     params: {
-      groupChatId: string;
+      groupchatId: string;
       studentId: string;
     };
   }
 ) {
-  const { groupChatId } = params;
+  const { groupchatId, studentId } = params;
 
   const currentUser = await getCurrentUser();
 
@@ -24,7 +24,7 @@ export async function DELETE(
 
   const groupChats = await prisma.groupChat.findUnique({
     where: {
-      id: groupChatId,
+      id: groupchatId,
     },
   });
 
@@ -39,12 +39,12 @@ export async function DELETE(
     // remove student from groupchat
     const groupChat = await prisma.groupChat.update({
       where: {
-        id: groupChatId,
+        id: groupchatId,
       },
       data: {
-        students: {
+        users: {
           disconnect: {
-            id: params.studentId,
+            id: studentId,
           },
         },
       },

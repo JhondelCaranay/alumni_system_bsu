@@ -19,22 +19,12 @@ import {
 } from "../ui/form";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { z } from "zod";
 import { Input } from "../ui/input";
 import { Loader } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType } from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-
-// import { Relationship } from "@prisma/client";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "../ui/select";
 
 const CreateGuardianModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -44,15 +34,6 @@ const CreateGuardianModal = () => {
     onClose();
   };
 
-  // const formGuardianSchema = z.object({
-  //   firstname: z.string().min(1, { message: "Required" }),
-  //   lastname: z.string().min(1, { message: "Required" }),
-  //   occupation: z.string().min(1, { message: "Required" }),
-  //   relationship: z.string().min(1, { message: "Required" }),
-  // });
-
-  // type formGuardianSchemaType = z.infer<typeof formGuardianSchema>;
-  
   const form = useForm<CreateGuardianInput>({
     resolver: zodResolver(CreateGuardianSchema),
     defaultValues: {
@@ -174,36 +155,6 @@ const CreateGuardianModal = () => {
               </div>
 
               <div className="w-full">
-                {/* <FormField
-                  control={form.control}
-                  name="relationship"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                        Relationship
-                      </FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Relation" id="relation" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {relations.map((relation) => (
-                              <SelectItem
-                                value={relation}
-                                className="capitalize"
-                              >
-                                {relation}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-
                 <FormField
                   control={form.control}
                   name="relationship"

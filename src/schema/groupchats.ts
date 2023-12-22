@@ -1,5 +1,6 @@
 import { GroupChat, Role, User, Section, Department } from "@prisma/client";
 import { z } from "zod";
+
 export const GroupChatSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -60,7 +61,11 @@ export const CreateGroupChatSchema = GroupChatSchema.pick({
   adviserId: true,
   departmentId: true,
   sectionId: true,
-}).partial({
+})
+.extend({
+  year: z.string()
+})
+.partial({
   year: true,
 });
 

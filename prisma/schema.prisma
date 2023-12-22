@@ -68,10 +68,7 @@ model GroupChat {
   year Int?
 
   messages GroupChatMessage[]
-  students User[]             @relation("GroupChatStudents")
-
-  adviser   User?   @relation(name: "GroupChatAdviser", fields: [adviserId], references: [id])
-  adviserId String?
+  users    User[]             @relation("GroupChatStudents")
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
@@ -83,7 +80,6 @@ model GroupChat {
   updatedAt DateTime @updatedAt
 
   @@index([departmentId])
-  @@index([adviserId])
 }
 
 model Event {
@@ -319,7 +315,6 @@ model User {
 
   groupChatMessages GroupChatMessage[] @relation("GroupChatMessages")
   groupChats        GroupChat[]        @relation("GroupChatStudents")
-  adviserGroupChats GroupChat[]        @relation("GroupChatAdviser")
 
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?

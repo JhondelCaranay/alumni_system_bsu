@@ -20,6 +20,14 @@ export type DashboardJobsPerYearType = {
   alumniWithJob: number;
 };
 
+export type TotalMaleFemaleStudentsType = {
+  id: number;
+  year: string;
+  male: number;
+  female: number;
+  total: number;
+};
+
 export const getDashboardWidget = (): Promise<DashboardWidgetTotalType> =>
   axios.get(`/api/dashboard/totals`).then((response) => response.data);
 
@@ -35,4 +43,12 @@ export const getDashboardJobsPerYear = (
 ): Promise<DashboardJobsPerYearType[]> =>
   axios
     .get(`/api/dashboard/jobs?departmentId=${departmentId}`)
+    .then((response) => response.data);
+
+export const getDashboardMaleFemaleStudents = (
+  departmentId: string,
+  year: number
+): Promise<TotalMaleFemaleStudentsType[]> =>
+  axios
+    .get(`/api/dashboard/students?departmentId=${departmentId}&year=${year}`)
     .then((response) => response.data);

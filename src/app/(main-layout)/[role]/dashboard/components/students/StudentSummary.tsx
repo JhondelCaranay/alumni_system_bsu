@@ -8,39 +8,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TotalMaleFemaleStudentsType } from "@/queries/dashboard";
 
-const data = [
-  {
-    id: 1,
-    year: "First Year",
-    male: 99,
-    female: 99,
-    total: 999,
-  },
-  {
-    id: 2,
-    year: "Second Year",
-    male: 120,
-    female: 110,
-    total: 1150,
-  },
-  {
-    id: 3,
-    year: "Third Year",
-    male: 140,
-    female: 130,
-    total: 1450,
-  },
-  {
-    id: 4,
-    year: "Fourth Year",
-    male: 160,
-    female: 150,
-    total: 1750,
-  },
-];
+type StudentSummaryProps = {
+  data: TotalMaleFemaleStudentsType[];
+  name: string;
+  year: string;
+  fullTotal: number;
+};
 
-const StudentSummary = ({ name, year }: { name: string; year: string }) => {
+const StudentSummary = ({
+  data,
+  name,
+  year,
+  fullTotal,
+}: StudentSummaryProps) => {
   return (
     <Table>
       <TableCaption>A list of student of year {year}.</TableCaption>
@@ -65,7 +47,7 @@ const StudentSummary = ({ name, year }: { name: string; year: string }) => {
       <TableFooter>
         <TableRow className="dark:text-white">
           <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">2,500.00</TableCell>
+          <TableCell className="text-right">{fullTotal}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

@@ -101,7 +101,7 @@ const AddMemberModal = () => {
               className="flex flex-col gap-y-5"
             >
               <div className="flex items-center w-full border px-3 rounded-lg ">
-                <Search />
+                <Search className="text-zinc-500" />
                 <Input
                   disabled={isLoading}
                   className="focus-visible:ring-0  focus-visible:ring-offset-0 border-none"

@@ -1,8 +1,34 @@
-import React from 'react'
+"use client"
 
-const InboxItem = () => {
+import { GroupChatSchemaType } from '@/schema/groupchats'
+import { useSearchParams, usePathname, useRouter} from 'next/navigation'
+import React from 'react'
+import qs from 'query-string'
+type InboxItemProps = {
+  data: GroupChatSchemaType
+}
+
+const InboxItem:React.FC<InboxItemProps> = ({data}) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const f = searchParams?.get("f");
+  const router = useRouter();
+
+  const onClick = () => {
+      const url = qs.stringifyUrl(
+        {
+          url: pathname || "",
+          query: {
+            id: data.id
+          },
+        },
+        { skipNull: true }
+      );
+
+      router.push(url);
+  };
   return (
-    <div className="flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2">
+    <div className="flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2 cursor-pointer" onClick={onClick}>
             <div className="w-full flex justify-center items-center">
                 <img
                     src={"/images/logo.png"}
@@ -11,7 +37,7 @@ const InboxItem = () => {
                     />
             </div>
           <div className="flex flex-col">
-            <h2 className="text-[1.2em] font-semibold text-zinc-600">Kooapps Philippines Corporation</h2>
+            <h2 className="text-[1.2em] font-semibold text-zinc-600">{data.name}</h2>
             <p className="text-[0.9em] line-clamp-2 ">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
               iste perspiciatis dolorum, quasi odit commodi reiciendis sapiente

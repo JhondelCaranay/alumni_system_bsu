@@ -15,6 +15,7 @@ import CreateWorkExperienceModal from "../modals/CreateWorkExperienceModal";
 import DeleteWorkExperienceModal from "../modals/DeleteWorkExperienceModal";
 import UpdateWorkExperienceModal from "../modals/UpdateWorkExperienceModal";
 import CreateGroupChatModal from "../modals/CreateGroupChatModal";
+import AddMemberModal from "../modals/AddMemberModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -44,6 +45,7 @@ const ModalProvider = () => {
       <DeleteWorkExperienceModal />
       <UpdateWorkExperienceModal />
       <CreateGroupChatModal />
+      <AddMemberModal />
     </>
   );
 };

@@ -44,10 +44,6 @@ const DashboardClient = ({ tab = "students" }: DashboardClientProps) => {
 
   const { redirectTo } = useRouterPush();
 
-  // const [selected, setSelected] = useState<
-  //   "" | "STUDENTS" | "ALUMNI" | "JOBS" | "EVENTS"
-  // >("STUDENTS");
-
   const handleSelectedTab = (tab: string) => {
     if (searchParams) {
       let currentQueries = qs.parse(searchParams.toString());

@@ -55,7 +55,7 @@ const Inbox:React.FC<InboxProps> = ({currentUser}) => {
             }
 
             return inboxes.data.map((inbox) => (
-              <InboxItem data={inbox} />
+              <InboxItem data={inbox} key={inbox.id}/>
             ))
           })()
         }

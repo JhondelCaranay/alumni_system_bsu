@@ -5,11 +5,9 @@ import { redirect } from "next/navigation";
 
 const Page = async () => {
   const currentUser = await getCurrentUser();
-
   if(!currentUser) {
     return redirect('/')
   }
-  
   return (
     <div className="bg-[#F6F6F6] h-full flex p-10 px-20 gap-x-5">
       <Inbox currentUser={currentUser} />

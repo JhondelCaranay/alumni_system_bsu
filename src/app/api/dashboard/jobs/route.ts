@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(jobsPerYear);
   } catch (error) {
-    console.log("[DASHBOARD_ALUMNI_GET]", error);
+    console.log("[DASHBOARD_JOBS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

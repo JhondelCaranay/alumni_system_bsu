@@ -1,4 +1,5 @@
 import useWindowSize from "@/hooks/useWindowSize";
+import { TotalMaleFemaleStudentsType } from "@/queries/dashboard";
 import React, { PureComponent } from "react";
 import {
   AreaChart,
@@ -10,34 +11,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  {
-    name: "First Year",
-    male: 4000,
-    female: 2400,
-    total: 6400,
-  },
-  {
-    name: "Second Year",
-    male: 3000,
-    female: 1398,
-    total: 4398,
-  },
-  {
-    name: "Third Year",
-    male: 2000,
-    female: 9800,
-    total: 11800,
-  },
-  {
-    name: "Fourth Year",
-    male: 2780,
-    female: 3908,
-    total: 6688,
-  },
-];
+type StudentChartProps = {
+  data: TotalMaleFemaleStudentsType[];
+};
 
-export default function StudentChart() {
+export default function StudentChart({ data }: StudentChartProps) {
   const windowSize = useWindowSize();
   return (
     <ResponsiveContainer width="100%" height="100%">

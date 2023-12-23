@@ -1,6 +1,10 @@
+import { GroupChatSchemaType } from '@/schema/groupchats'
 import React from 'react'
+type InboxItemProps = {
+  data: GroupChatSchemaType
+}
 
-const InboxItem = () => {
+const InboxItem:React.FC<InboxItemProps> = () => {
   return (
     <div className="flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2">
             <div className="w-full flex justify-center items-center">

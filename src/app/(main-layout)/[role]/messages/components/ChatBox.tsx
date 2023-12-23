@@ -11,9 +11,8 @@ const ChatBox = () => {
             <ChatBody />
             <ChatFooter />
         </div>
-        <div className='flex flex-col h-full bg-[#FFFFFF] rounded-xl w-full flex-[0.5]'>
-            {/* <ChatHeader /> */}
-        </div>
+        {/* <div className='flex flex-col h-full bg-[#FFFFFF] rounded-xl w-full flex-[0.5]'>
+        </div> */}
     </div>
   )
 }

@@ -11,7 +11,7 @@ const Page = async () => {
   }
   
   return (
-    <div className="bg-[#F6F6F6] h-full flex p-10 gap-x-5">
+    <div className="bg-[#F6F6F6] h-full flex p-10 px-20 gap-x-5">
       <Inbox currentUser={currentUser} />
       <ChatBox />
     </div>

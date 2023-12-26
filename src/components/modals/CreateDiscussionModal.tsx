@@ -30,7 +30,7 @@ import { useModal } from "@/hooks/useModalStore";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader } from "../ui/loader";
+import { Loader2 } from "../ui/loader";
 import Avatar from "../Avatar";
 import { useSession } from "next-auth/react";
 import {
@@ -512,7 +512,7 @@ const CreateDiscussionModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if (isLoading) return <Loader size={25} />;
+                    if(isLoading) return <div className="flex items-center gap-x-3"> Uploading <Loader2 size={20} /></div>
                     return "Post";
                   })()}
                 </Button>

@@ -7,7 +7,7 @@ import { PlusCircleIcon } from "lucide-react";
 import { useModal } from "@/hooks/useModalStore";
 import {useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { JobSchemaType } from "@/schema/jobs";
-import { Loader } from "@/components/ui/loader";
+import { Loader, Loader2 } from "@/components/ui/loader";
 
 type WorkExperiencesProps = {
   data: GetCurrentUserType;
@@ -36,7 +36,7 @@ const WorkExperiences: React.FC<WorkExperiencesProps> = ({data}) => {
       {
         (() => {
           if(experiences.status == 'pending' || experiences.isFetching) {
-            return <Loader size={30} />;
+            return <Loader2 className="mx-auto" color="#3498db" size={30} />
           }
           return <ol className="relative border-s border-gray-200 dark:border-gray-700 gap-y-5">
           {

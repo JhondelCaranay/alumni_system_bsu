@@ -12,7 +12,6 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +20,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { Loader } from "../ui/loader";
+import { Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 
 import {
@@ -190,8 +189,7 @@ const AddMemberModal = () => {
                     if (isLoading)
                       return (
                         <div className="flex items-center gap-x-1">
-                          {" "}
-                          saving <Loader size={20} />
+                          Adding member <Loader2 size={20} />
                         </div>
                       );
                     return "Add member";

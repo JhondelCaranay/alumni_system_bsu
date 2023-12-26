@@ -20,7 +20,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { Loader } from "../ui/loader";
+import { Loader, Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 import {
   CreateGroupChatSchema,
@@ -33,18 +33,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useMutateProcessor, useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  useMutateProcessor,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import { Role } from "@prisma/client";
 import { UserProfileWithDepartmentSection } from "@/types/types";
 import { DepartmentSchemaType } from "@/schema/department";
 import { SectionSchemaType } from "@/schema/section";
 import toast from "react-hot-toast";
+import { Download, X } from "lucide-react";
+import Image from 'next/image'
+import { dataURItoBlob, uploadPhoto } from "@/lib/utils";
 
 const CreateGuardianModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "createGroupChat";
 
   const onHandleClose = () => {
+    form.reset()
     onClose();
   };
 
@@ -68,7 +75,9 @@ const CreateGuardianModal = () => {
     "sections",
   ]);
 
-  const createGroupChat = useMutateProcessor('/groupchats', null, 'POST', ['groupchats']);
+  const createGroupChat = useMutateProcessor("/groupchats", null, "POST", [
+    "groupchats",
+  ]);
 
   useEffect(() => {
     if (data?.user?.role === Role.ADVISER) {
@@ -78,17 +87,34 @@ const CreateGuardianModal = () => {
   }, [isModalOpen]);
 
   const onSubmit: SubmitHandler<CreateGroupChatSchemaType> = async (values) => {
-    createGroupChat.mutate(values, {
-      onSuccess(data, variables, context) {
-        toast.success('Group chat created')
-        onClose()
-      },
-      onError(error, variables, context) {
-        console.error(error)
-        toast.error('Group chat did not create')
-      },
-    })
+
+    const {url} = await uploadPhoto(dataURItoBlob(values.image as string) as File)
+    const image = url
+    if(values.image && image) {
+      createGroupChat.mutate({...values, image}, {
+        onSuccess(data, variables, context) {
+          toast.success("Group chat created");
+          onClose();
+        },
+        onError(error, variables, context) {
+          console.error(error);
+          toast.error("Group chat did not create");
+        },
+      });
+    } else {
+      createGroupChat.mutate(values, {
+        onSuccess(data, variables, context) {
+          toast.success("Group chat created");
+          onClose();
+        },
+        onError(error, variables, context) {
+          console.error(error);
+          toast.error("Group chat did not create");
+        },
+      });
+    }
   };
+
 
   const isFetchingData =
     advisers.status == "pending" ||
@@ -103,19 +129,15 @@ const CreateGuardianModal = () => {
     departments.status == "error" ||
     sections.status == "error";
 
-  form.watch(["departmentId"]);
+  form.watch(["departmentId", 'image']);
 
-  
   const departmentId = form.getValues("departmentId");
-  if (isFetchingData) {
-    return <Loader size={30} />;
-  }
-  
-  const isLoading = form.formState.isSubmitting || createGroupChat.status === 'pending'
-
-  if (isErrorFetchingData) {
+  if (isErrorFetchingData ||isFetchingData ) {
     return null;
   }
+
+  const isLoading =
+    form.formState.isSubmitting || createGroupChat.status === "pending";
 
   const filteredSections = departmentId
     ? sections.data.filter((section) => section.departmentId === departmentId)
@@ -144,6 +166,73 @@ const CreateGuardianModal = () => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col gap-y-5"
             >
+              {(() => {
+                const value = form.getValues("image");
+                if (!value) {
+                  return (
+                    <FormField
+                      control={form.control}
+                      name="image"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <label
+                            htmlFor="upload"
+                            className=" hover:bg-zinc-200 w-[60%] transition-all m-auto cursor-pointer py-5 border-zinc-300 border-2 rounded-lg flex flex-col justify-center items-center gap-5 "
+                          >
+                            <Download className=" text-gray-400 ml-2 h-10 w-10 " />
+                            <span className="text-[#42579E] text-sm font-semibold">
+                              Choose a file
+                            </span>
+                            <span className="text-xs text-zinc-500 font-semibold">
+                              Photo (png, jpg, etc)
+                            </span>
+                          </label>
+                          <FormControl>
+                            <Input
+                              className="hidden"
+                              id="upload"
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                if(e?.target?.files?.[0]) {
+                                  const reader = new FileReader();
+                                  reader.readAsDataURL(e?.target?.files?.[0]);
+
+                                  reader.onloadend = () => {
+                                    field.onChange(reader.result)
+                                  };
+                                }
+                                else {
+                                  field.onChange('')
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                }
+
+                return (
+                  <div className="relative h-20 w-20 mx-auto border rounded-full">
+                    <Image
+                      src={value}
+                      fill
+                      alt="group chat image upload"
+                      className="rounded-full object-cover"
+                    />
+                    <button
+                      className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
+                      type="button"
+                    >
+                      <X className="h-4 w-4" onClick={() => form.setValue('image', '')} />
+                    </button>
+                  </div>
+                );
+              })()}
+
               <div className="w-full">
                 <FormField
                   control={form.control}
@@ -276,13 +365,7 @@ const CreateGuardianModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if (isLoading)
-                      return (
-                        <div className="flex items-center gap-x-1">
-                          {" "}
-                          saving <Loader size={20} />
-                        </div>
-                      );
+                    if(isLoading) return <div className="flex items-center gap-x-3"> Creating <Loader2 size={20} /></div>
                     return "Add group chat";
                   })()}
                 </Button>

@@ -5,7 +5,7 @@ import Guardian from "./Guardian";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { GuardianSchemaType } from "@/schema/guardian";
-import { Loader } from "@/components/ui/loader";
+import { Loader, Loader2 } from "@/components/ui/loader";
 
 type GuardianInfoProps = {
   data: GetCurrentUserType;
@@ -28,7 +28,7 @@ const GuardianInfo: React.FC<GuardianInfoProps> = ({
 
       {(() => {
         if (guardians.status === "pending" || guardians.isFetching) {
-          return <Loader size={30} />;
+          return <Loader2 className="mx-auto" color="#3498db" size={30} />;
         }
 
         if (

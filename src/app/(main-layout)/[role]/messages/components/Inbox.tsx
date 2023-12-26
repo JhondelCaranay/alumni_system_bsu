@@ -14,6 +14,7 @@ import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { GroupChatSchemaType } from "@/schema/groupchats";
+import { Loader2 } from "@/components/ui/loader";
 
 type InboxProps = {
   currentUser:GetCurrentUserType
@@ -47,7 +48,7 @@ const Inbox:React.FC<InboxProps> = ({currentUser}) => {
         {
           (() => {
             if(inboxes.status === 'pending' || inboxes.isFetching) {
-              return <div>loading...</div>
+              return <Loader2 size={30} className="mx-auto mt-20" color="#3498db"></Loader2>
             }
 
             if(inboxes.status === 'error') {

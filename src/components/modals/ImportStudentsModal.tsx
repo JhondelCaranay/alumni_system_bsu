@@ -22,10 +22,11 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Loader2, FileDown, FileIcon, X, Download, DownloadCloud, DownloadIcon } from "lucide-react";
+import { FileIcon, X, Download } from "lucide-react";
 import toast from "react-hot-toast";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { SafeUser } from "@/types/types";
+import { Loader2 } from "../ui/loader";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -205,9 +206,7 @@ const ImportStudentsModal = () => {
                 {(() => {
                   if (isLoading)
                     return (
-                      <>
-                        <Loader2 className="animate-spin mr-2" /> importing
-                      </>
+                      <div className="flex items-center gap-x-3"> Importing <Loader2 size={20} /></div>
                     );
 
                   return "Import";

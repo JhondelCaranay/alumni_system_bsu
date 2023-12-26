@@ -38,7 +38,6 @@ export const handleImageDeleteOrReplace = async (publicId: string) => {
 };
 
 export const uploadPhoto = async (file: File) => {
-  console.log(file);
   const formData = new FormData();
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", file);
@@ -50,16 +49,17 @@ export const uploadPhoto = async (file: File) => {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     }
   );
-  console.log("uploadPhoto", res.data, file);
 
-  return res.data;
+  return {
+    url: res.data.url,
+    public_id:  res.data.url
+  };
 };
 
 export const uploadPhotoForum = async (data: {
   file: File;
   id: number | string;
 }) => {
-  console.log(data.file);
   const formData = new FormData();
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", data.file);
@@ -70,10 +70,28 @@ export const uploadPhotoForum = async (data: {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     }
   );
-  console.log("uploadPhotoForum", res.data, data.file);
 
   return {
     public_url: res.data.url,
     public_id: res.data.public_id,
   };
 };
+
+export const dataURItoBlob = (dataURI:string) => {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  const byteString = atob(dataURI.split(',')[1]);
+
+  // separate out the mime component
+  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+  // write the bytes of the string to an ArrayBuffer
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([ab], {type: mimeString});
+
+}

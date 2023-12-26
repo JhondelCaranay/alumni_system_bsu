@@ -31,8 +31,8 @@ const InboxItem:React.FC<InboxItemProps> = ({data}) => {
     <div className="flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2 cursor-pointer" onClick={onClick}>
             <div className="w-full flex justify-center items-center">
                 <img
-                    src={"/images/logo.png"}
-                    className="w-12 h-12 object-contain m-auto"
+                    src={ data?.image || "/images/logo.png"}
+                    className="w-12 h-12 object-cover m-auto rounded-full"
                     alt="inbox item"
                     />
             </div>

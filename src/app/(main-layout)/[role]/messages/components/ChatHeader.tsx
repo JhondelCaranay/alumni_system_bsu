@@ -34,9 +34,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
     <div className="border border-b-1 border-x-0 border-t-0 w-full flex p-3 gap-x-3 items-center">
       <div className="">
         <img
-          src="/images/logo.png"
+          src={data?.image || "/images/logo.png"}
           alt="chat header profile"
-          className="w-12 h-12 object-cover"
+          className="w-12 h-12 object-cover rounded-full"
         />
       </div>
       <div className="flex justify-between w-full items-center">

@@ -6,7 +6,7 @@ import ChatFooter from './ChatFooter'
 import {useSearchParams} from "next/navigation"
 import {MessageSquareDashed} from 'lucide-react'
 import { useQueryProcessor } from '@/hooks/useTanstackQuery'
-import { Loader } from '@/components/ui/loader'
+import { Loader, Loader2 } from '@/components/ui/loader'
 import { GroupChatSchemaType } from '@/schema/groupchats'
 import { User } from '@prisma/client'
 const ChatBox = () => {
@@ -23,9 +23,8 @@ const ChatBox = () => {
   }
 
   if(groupChat.status === 'pending') {
-    return <Loader size={30} />
+    return <div className='flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl justify-center items-center'><Loader2 color='#3498db' size={30} /></div>  
   }
-
 
   if(groupChat.status === 'error') {
     return <div>Error fetching group chat</div>

@@ -20,7 +20,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { Loader } from "../ui/loader";
+import { Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType } from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
@@ -188,10 +188,7 @@ const CreateGuardianModal = () => {
                   {(() => {
                     if (isLoading)
                       return (
-                        <div className="flex items-center gap-x-1">
-                          {" "}
-                          saving <Loader size={20} />
-                        </div>
+                        <div className="flex items-center gap-x-3"> Saving <Loader2 size={20} /></div>
                       );
                     return "Add guardian";
                   })()}

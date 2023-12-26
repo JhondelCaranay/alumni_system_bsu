@@ -5,6 +5,7 @@ export const GroupChatSchema = z.object({
   id: z.string(),
   name: z.string(),
   year: z.number(),
+  image: z.string(),
   adviserId: z.string(),
   departmentId: z.string(),
   sectionId: z.string(),
@@ -58,6 +59,7 @@ export const GroupChatSchema = z.object({
 export const CreateGroupChatSchema = GroupChatSchema.pick({
   name: true,
   year: true,
+  image: true,
   departmentId: true,
   sectionId: true,
 })
@@ -67,6 +69,7 @@ export const CreateGroupChatSchema = GroupChatSchema.pick({
   })
   .partial({
     year: true,
+    image: true,
     adviserId: true,
   });
 

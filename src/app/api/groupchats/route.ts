@@ -72,7 +72,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       { status: 400 }
     );
   }
-  const { name, adviserId, departmentId, sectionId, year } = result.data;
+  const { name, adviserId, departmentId, sectionId, year, image } = result.data;
 
   // check if groupChat already exist
   const groupChatExists = await prisma.groupChat.findFirst({
@@ -139,6 +139,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         departmentId,
         sectionId,
         year,
+        image,
         users: {
           connect: {
             id: adviserId,

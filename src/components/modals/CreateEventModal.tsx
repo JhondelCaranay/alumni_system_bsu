@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createId } from "@paralleldrive/cuid2";
 import { Input } from "../ui/input";
-import { Loader } from "../ui/loader";
+import { Loader2 } from "../ui/loader";
 
 const CreateEventModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -150,7 +150,7 @@ const CreateEventModal = () => {
 
                   {
                     (() => {
-                      if(isLoading) return <div> Adding event <Loader /></div>
+                      if(isLoading) return <div className="flex items-center gap-x-3"> Adding event <Loader2 size={20} /></div>
                       return 'Add event'
                     })()
                   }

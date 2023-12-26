@@ -23,7 +23,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Input } from "../ui/input";
-import { Loader } from "../ui/loader";
+import { Loader2 } from "../ui/loader";
 import { Pencil } from "lucide-react";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { Event } from "@prisma/client";
@@ -231,9 +231,7 @@ const ViewEventModal = () => {
                           {(() => {
                             if (isUpdateLoading)
                               return (
-                                <div className="flex items-center">
-                                    <span className="mr-2">Updating</span> <Loader size={20} />
-                                </div>
+                                <div className="flex items-center gap-x-3"> Updating <Loader2 size={20} /></div>
                               )
                             return "Save update"
                           })()}

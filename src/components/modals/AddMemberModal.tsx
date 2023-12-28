@@ -28,59 +28,87 @@ import {
   useQueryProcessor,
 } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { z } from "zod";
 import { UserProfileWithDepartmentSection } from "@/types/types";
 import { Checkbox } from "../ui/checkbox";
 import Avatar from "../Avatar";
-import { GroupChatSchemaType, UploadStudentsSchema, UploadStudentsSchemaType } from "@/schema/groupchats";
+import {
+  GroupChatSchemaType,
+  UploadStudentsSchema,
+  UploadStudentsSchemaType,
+} from "@/schema/groupchats";
 import { useSearchParams } from "next/navigation";
 
 const AddMemberModal = () => {
   const { isOpen, type, onClose, data } = useModal();
+  const [search, setSearch] = useState("");
   const isModalOpen = isOpen && type === "addNewMember";
-  const searchParams = useSearchParams()
-  const [memberToDisplay, setMemberToDisplay] = useState<UserProfileWithDepartmentSection[]>([])
-  
+  const searchParams = useSearchParams();
+  const [memberToDisplay, setMemberToDisplay] = useState<
+    UserProfileWithDepartmentSection[]
+  >([]);
+
   const form = useForm<UploadStudentsSchemaType>({
     resolver: zodResolver(UploadStudentsSchema),
     defaultValues: {
-      userIds: []
+      userIds: [],
     },
-    mode: 'all'
+    mode: "all",
   });
 
   const onHandleClose = () => {
     onClose();
-    form.reset()
-    setMemberToDisplay([])
+    form.reset();
+    setMemberToDisplay([]);
   };
-  
-  const groupchatId = searchParams?.get('id')
 
-  const addMembers = useMutateProcessor<UploadStudentsSchemaType, GroupChatSchemaType>(`/groupchats/${groupchatId}/users/`, null, 'POST', ['groupchats', groupchatId, 'users'])
+  const groupchatId = searchParams?.get("id");
+
+  const addMembers = useMutateProcessor<
+    UploadStudentsSchemaType,
+    GroupChatSchemaType
+  >(`/groupchats/${groupchatId}/users/`, null, "POST", [
+    "groupchats",
+    groupchatId,
+    "users",
+  ]);
 
   const onSubmit: SubmitHandler<UploadStudentsSchemaType> = (values) => {
-
     addMembers.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Members has been added');
-        onHandleClose()
+        toast.success("Members has been added");
+        onHandleClose();
       },
       onError(error, variables, context) {
-        console.log(error)
+        console.log(error);
       },
-    })
+    });
   };
 
   const students = useQueryProcessor<UserProfileWithDepartmentSection[]>(
     "/users",
-    { role: "STUDENT" },
+    { role: "STUDENT", department: data.groupChat?.department.name },
     ["students"]
   );
 
-  const isLoading = false;
-  
+  const isLoading =
+    addMembers.status === "pending" || form.formState.isSubmitting;
+
+  const filteredStudents = students.data?.filter(
+    (student) => student.profile.firstname
+        ?.toLowerCase()
+        ?.includes(search.toLowerCase()) ||
+      student.profile.lastname?.toLowerCase()?.includes(search.toLowerCase()) ||
+      student.profile.middlename?.toLowerCase()?.includes(search.toLowerCase())
+  );
+
+  const removeFromSelectedMember = (userId: string) => {
+    setMemberToDisplay(prev => prev.filter(member => member.id != userId))
+    
+    form.setValue('userIds', form.getValues('userIds').filter(memberId => memberId != userId))
+  }
+
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -104,79 +132,94 @@ const AddMemberModal = () => {
                 <Input
                   disabled={isLoading}
                   className="focus-visible:ring-0  focus-visible:ring-offset-0 border-none"
+                  onChange={(e) => setSearch(e.target.value)}
                   placeholder={`Search for member`}
                 />
               </div>
 
               {/* list of selected members */}
-              <div className="flex gap-x-5 overflow-x-auto w-full p-5 max-w-[450px]">
-              {
-                memberToDisplay.map((member) => (
-                  <div className="flex flex-col items-center w-[100px]" key={member.id}>
-                    <Avatar src={member.image} />
-                    <span className="text-sm line-clamp-2">{member.name} 
-                    </span>
-                  </div>
-                ))
-              }
+              <div className="flex gap-x-5 overflow-x-auto w-full p-5 max-w-[450px] flex-nowrap">
+                {memberToDisplay.length <= 0 ? (
+                  <span className="text-sm text-center">
+                    No selected students
+                  </span>
+                ) : (
+                  memberToDisplay.map((member) => (
+                    <div
+                      className="flex flex-col items-center w-[100px] relative hover:bg-zinc-200 p-3 rounded-md cursor-pointer"
+                      onClick={() => removeFromSelectedMember(member.id)}
+                      key={member.id}
+                    >
+                      <Avatar src={member.image} />
+                      <span className="text-sm line-clamp-2 text-center">
+                        {member.profile.firstname} {member.profile.lastname}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
 
               {/* list of members to select */}
-                <FormField
-                  control={form.control}
-                  name="userIds"
-                  render={() => (
-                    <FormItem className="max-h-[350px] overflow-y-auto">
-                      <div className="mb-4">
-                        <FormLabel className="text-base">Students</FormLabel>
-                      </div>
-                      {students.data?.map((student) => (
-                        <FormField
-                          key={student.id}
-                          control={form.control}
-                          name="userIds"
-                          render={({ field }) => {
-                            return (
-                              <FormItem
-                                key={student.id}
-                                className="flex flex-row items-center justify-between px-3 py-2 cursor-pointer rounded-md hover:bg-zinc-100"
-                              >
-                                <FormLabel className="font-semibold flex items-center gap-x-3 cursor-pointer">
-                                  <Avatar src={student.image} />
-                                  {student.name}
-                                </FormLabel>
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(student.id)}
-                                    onCheckedChange={(checked) => {
-
-                                      if(checked) {
-                                        setMemberToDisplay((prev) => [...prev, student])
-                                        return field.onChange([
-                                          ...field.value,
-                                          student.id,
-                                        ])
-                                      } else {
-                                        setMemberToDisplay((prev) => prev.filter(((value) => value.id !== student.id)))
-                                        return field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== student.id
-                                          )
-                                        );
-                                      }
-                                    }}
-                                  />
-                                </FormControl>
-                                
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      ))}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="userIds"
+                render={() => (
+                  <FormItem className="max-h-[350px] overflow-y-auto">
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Students</FormLabel>
+                    </div>
+                    {filteredStudents?.map((student) => (
+                      <FormField
+                        key={student.id}
+                        control={form.control}
+                        name="userIds"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={student.id}
+                              className="flex flex-row items-center justify-between px-3 py-2 cursor-pointer rounded-md hover:bg-zinc-100"
+                            >
+                              <FormLabel className="font-semibold flex items-center gap-x-3 cursor-pointer">
+                                <Avatar src={student.image} />
+                                {student.profile.firstname} {student.profile.lastname}
+                              </FormLabel>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(student.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setMemberToDisplay((prev) => [
+                                        ...prev,
+                                        student,
+                                      ]);
+                                      return field.onChange([
+                                        ...field.value,
+                                        student.id,
+                                      ]);
+                                    } else {
+                                      setMemberToDisplay((prev) =>
+                                        prev.filter(
+                                          (value) => value.id !== student.id
+                                        )
+                                      );
+                                      return field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== student.id
+                                        )
+                                      );
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <DialogFooter className="py-4">
                 <Button

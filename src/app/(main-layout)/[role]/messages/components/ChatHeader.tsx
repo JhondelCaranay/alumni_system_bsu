@@ -6,7 +6,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -19,12 +24,21 @@ import {
 } from "@/components/ui/sheet";
 import { useModal } from "@/hooks/useModalStore";
 import { GroupChatSchemaType } from "@/schema/groupchats";
+import { UserWithProfile } from "@/types/types";
 import { User } from "@prisma/client";
-import { Archive, ChevronDown, ChevronUp, MoreHorizontal, MoreVertical, Pencil, UserPlus } from "lucide-react";
+import {
+  Archive,
+  ChevronDown,
+  ChevronUp,
+  MoreHorizontal,
+  MoreVertical,
+  Pencil,
+  UserPlus,
+} from "lucide-react";
 import React, { useState } from "react";
 
 type ChatHeaderProps = {
-  data: GroupChatSchemaType & { users: User[] };
+  data: GroupChatSchemaType & { users: UserWithProfile[] };
 };
 const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,8 +56,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
         <div className="flex flex-col">
           <h1 className="font-semibold text-[1.3em] text-black">{data.name}</h1>
           <p className="text-sm text-zinc-500">
-            {data.department.name} {data.section.name}{" "}
-            {data.section.course_year}
+            {data.department.name} {data.section.course_year}{" "}
+            {data.section.name}
           </p>
         </div>
         <Sheet>
@@ -63,7 +77,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                 variant={"ghost"}
                 size="sm"
                 className="w-full flex justify-between"
-                onClick={() => onOpen("addNewMember")}
+                onClick={() => onOpen("addNewMember", { groupChat: data })}
               >
                 <span>Add new member</span>
                 <UserPlus className=" w-5 h-5 " />
@@ -89,9 +103,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-2">
                   {data.users.map((member) => (
-                    <div className="rounded-md px-4 py-3 font-mono text-sm flex items-center  justify-between" key={member.id}>
+                    <div
+                      className="rounded-md px-4 py-3 font-mono text-sm flex items-center  justify-between"
+                      key={member.id}
+                    >
                       <div className="flex items-center gap-x-3  font-semibold">
-                        <Avatar src={member.image} /> {member.name}
+                        <Avatar src={member.image} /> {member.profile.firstname} {member.profile.lastname}
                       </div>
 
                       <DropdownMenu>
@@ -99,15 +116,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                           <MoreHorizontal className="h-4 w-4 text-zinc-500" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            className="text-xs cursor-pointer hover:bg-zinc-400"
-                          >
+                          <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
                             <Pencil className="h-4 w-4 mr-2" />
                             Update
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100"
-                          >
+                          <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
                             <Archive className="h-4 w-4 mr-2" />
                             Archive
                           </DropdownMenuItem>

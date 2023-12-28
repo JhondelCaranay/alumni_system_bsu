@@ -1,5 +1,6 @@
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import { CommentSchemaType } from "@/schema/comment";
+import { GroupChatSchemaType } from "@/schema/groupchats";
 import { GuardianSchemaType } from "@/schema/guardian";
 import { JobSchemaType } from "@/schema/jobs";
 import { PostSchemaType } from "@/schema/post";
@@ -40,7 +41,8 @@ type ModalData = {
   guardian?: GuardianSchemaType;
   post?: PostSchemaType;
   comment?: CommentSchemaType;
-  workExperience?: JobSchemaType
+  workExperience?: JobSchemaType;
+  groupChat?: GroupChatSchemaType
 };
 
 type ModalStore = {

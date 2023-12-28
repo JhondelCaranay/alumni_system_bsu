@@ -4,15 +4,13 @@ import ChatMessage from './ChatMessage'
 import { useQueryProcessor } from '@/hooks/useTanstackQuery'
 import { useSearchParams } from 'next/navigation'
 import { GroupChatMessageSchemaType } from '@/schema/groupchat-message'
-import { User } from '@prisma/client'
 import { GetCurrentUserType } from '@/actions/getCurrentUser'
 import { useChatSocket } from '@/hooks/useChatSocket'
-
+import { UserWithProfile } from '@/types/types'
 
 type ChatBodyProps = {
   currentUser:GetCurrentUserType
 }
-
 
 const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
   const searchParams = useSearchParams()
@@ -20,7 +18,7 @@ const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
   const messagesQueryKey = [`groupchat`, groupchatId, 'messages']
   const chatKey = `chats:${groupchatId}:messages`
 
-  const messages = useQueryProcessor<(GroupChatMessageSchemaType & {sender: User})[]>(`/groupchat/${groupchatId}/messages`, null, messagesQueryKey)
+  const messages = useQueryProcessor<(GroupChatMessageSchemaType & {sender: UserWithProfile})[]>(`/groupchat/${groupchatId}/messages`, null, messagesQueryKey)
 
   useChatSocket({
     chatKey: chatKey,

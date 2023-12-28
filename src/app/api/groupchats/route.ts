@@ -2,6 +2,7 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreateGroupChatSchema } from "@/schema/groupchats";
+import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -25,12 +26,11 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   }
 
   const { userId } = result.data;
-
   try {
     const groupChats = await prisma.groupChat.findMany({
-      where: {
+      where: currentUser.role === Role.ADMIN ? undefined : {
         users: {
-          every: {
+          some: {
             id: userId,
           },
         },
@@ -39,6 +39,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         createdAt: "desc",
       },
       include: {
+        messages:true,
         users: true,
         section: true,
         department: true,

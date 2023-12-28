@@ -9,6 +9,7 @@ import {
   CreateGroupChatMessageSchemaType,
 } from "@/schema/groupchat-message";
 import { GroupChatSchemaType } from "@/schema/groupchats";
+import { UserWithProfile } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -17,7 +18,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type ChatFooterProps = {
-  data: GroupChatSchemaType & { users: User[] };
+  data: GroupChatSchemaType & { users: UserWithProfile[] };
 };
 
 const ChatFooter: React.FC<ChatFooterProps> = ({ data }) => {

@@ -10,6 +10,7 @@ import { Loader, Loader2 } from '@/components/ui/loader'
 import { GroupChatSchemaType } from '@/schema/groupchats'
 import { User } from '@prisma/client'
 import { GetCurrentUserType } from '@/actions/getCurrentUser'
+import { UserWithProfile } from '@/types/types'
 
 type ChatBoxProps = {
   currentUser:GetCurrentUserType
@@ -20,7 +21,7 @@ const ChatBox:React.FC<ChatBoxProps> = ({currentUser}) => {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
 
-  const groupChat = useQueryProcessor< GroupChatSchemaType & {users: User[]}>(`/groupchats/${id}`, null, ['groupchats', id]);
+  const groupChat = useQueryProcessor< GroupChatSchemaType & {users: UserWithProfile[]}>(`/groupchats/${id}`, null, ['groupchats', id]);
 
   if(!id) {
     return <div className='flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl'>
@@ -33,7 +34,7 @@ const ChatBox:React.FC<ChatBoxProps> = ({currentUser}) => {
   }
 
   if(groupChat.status === 'error') {
-    return <div>Error fetching group chat</div>
+    return <div className='flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1 justify-center items-center'> Group chat not found</div>
   }
 
   return (

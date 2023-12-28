@@ -43,7 +43,11 @@ export default async function handler(
           createdAt: "asc",
         },
         include: {
-          sender: true,
+          sender: {
+            include:{
+              profile:true
+            }
+          },
         },
       });
 
@@ -89,7 +93,11 @@ export default async function handler(
           senderId: currentUser.id, // or senderId: bodyResult.data.senderId
         },
         include: {
-          sender: true,
+          sender: {
+            include:{
+              profile:true
+            }
+          },
         },
       });
       const Key = `chats:${groupChatMessage.groupChatId}:messages`;

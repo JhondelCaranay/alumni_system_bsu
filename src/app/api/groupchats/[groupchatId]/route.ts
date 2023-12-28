@@ -2,6 +2,7 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { UpdateGroupChatSchema } from "@/schema/groupchats";
+import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -23,25 +24,61 @@ export async function GET(
   }
 
   try {
-    const groupChats = await prisma.groupChat.findUnique({
-      where: {
-        id: groupchatId,
-      },
-      include: {
-        users: true,
-        section: true,
-        department: true,
-      },
-    });
+    // can view the group chat if admin
+    if(currentUser.role === Role.ADMIN) {
+      const groupChats = await prisma.groupChat.findUnique({
+        where: {
+          id: groupchatId,
+        },
+        include: {
+          users: {
+            include: {
+              profile: true
+            }
+          },
+          section: true,
+          department: true,
+        },
+      });
 
-    if (!groupChats) {
-      return NextResponse.json(
-        { message: "GrougroupChat not found" },
-        { status: 404 }
-      );
-    }
+      if (!groupChats) {
+        return NextResponse.json(
+          { message: "GrougroupChat not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(groupChats);
 
-    return NextResponse.json(groupChats);
+    } 
+
+      // if not we should check if he's member of the groupchat
+      const groupChats = await prisma.groupChat.findUnique({
+        where: {
+          id: groupchatId,
+          users: {
+            some: {
+              id: currentUser.id
+            }
+          }
+        },
+        include: {
+          users: {
+            include: {
+              profile: true
+            }
+          },
+          section: true,
+          department: true,
+        },
+      });
+      if (!groupChats) {
+        return NextResponse.json(
+          { message: "GrougroupChat not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(groupChats);
+
   } catch (error) {
     console.log("[GROUgroupChat_GET]", error);
     return new NextResponse("Internal error", { status: 500 });

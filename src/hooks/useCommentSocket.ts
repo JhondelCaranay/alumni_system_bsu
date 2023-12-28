@@ -1,10 +1,9 @@
 import { useSocket } from "@/components/providers/SocketProvider";
-import { CommentSchemaType } from "@/schema/comment";
 import { CommentSchema, UserWithProfile } from "@/types/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-type ChatSocketProps = {
+type CommentSocketProps = {
   commentsKey?:string;
   repliesKey: string;
   editCommentsKey: string;
@@ -12,7 +11,7 @@ type ChatSocketProps = {
   queryKey: (string | any)[];
 };
 
-export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommentsKey, deleteCommentsKey }: ChatSocketProps) => {
+export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommentsKey, deleteCommentsKey }: CommentSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 

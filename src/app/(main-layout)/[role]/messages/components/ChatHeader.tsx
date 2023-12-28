@@ -27,7 +27,6 @@ type ChatHeaderProps = {
   data: GroupChatSchemaType & { users: User[] };
 };
 const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
-  console.log(data);
   const [isOpen, setIsOpen] = useState(false);
   const { onOpen } = useModal();
   return (
@@ -90,7 +89,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-2">
                   {data.users.map((member) => (
-                    <div className="rounded-md px-4 py-3 font-mono text-sm flex items-center  justify-between">
+                    <div className="rounded-md px-4 py-3 font-mono text-sm flex items-center  justify-between" key={member.id}>
                       <div className="flex items-center gap-x-3  font-semibold">
                         <Avatar src={member.image} /> {member.name}
                       </div>

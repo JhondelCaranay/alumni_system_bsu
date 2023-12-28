@@ -61,7 +61,6 @@ const AddMemberModal = () => {
   const addMembers = useMutateProcessor<UploadStudentsSchemaType, GroupChatSchemaType>(`/groupchats/${groupchatId}/users/`, null, 'POST', ['groupchats', groupchatId, 'users'])
 
   const onSubmit: SubmitHandler<UploadStudentsSchemaType> = (values) => {
-    console.log(values)
 
     addMembers.mutate(values, {
       onSuccess(data, variables, context) {
@@ -81,6 +80,7 @@ const AddMemberModal = () => {
   );
 
   const isLoading = false;
+  
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -112,7 +112,7 @@ const AddMemberModal = () => {
               <div className="flex gap-x-5 overflow-x-auto w-full p-5 max-w-[450px]">
               {
                 memberToDisplay.map((member) => (
-                  <div className="flex flex-col items-center w-[100px]">
+                  <div className="flex flex-col items-center w-[100px]" key={member.id}>
                     <Avatar src={member.image} />
                     <span className="text-sm line-clamp-2">{member.name} 
                     </span>

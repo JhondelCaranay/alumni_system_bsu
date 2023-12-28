@@ -1,24 +1,26 @@
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
+import Avatar from "@/components/Avatar";
+import { cn } from "@/lib/utils";
+import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
+import { User } from "@prisma/client";
 import React from "react";
 
-const ChatMessage = () => {
+type ChatMessageProps = {
+  data: GroupChatMessageSchemaType & {sender: User}
+  currentUser:GetCurrentUserType;
+
+}
+
+const ChatMessage:React.FC<ChatMessageProps> = ({data, currentUser}) => {
   return (
-    <div className="flex">
+    <div className={ cn("flex w-fit gap-x-3", data.senderId == currentUser?.id && 'flex-row-reverse ml-auto')}>
       <div className="flex w-[70px] mt-2">
-        <img
-          src="/images/logo.png"
-          alt="user profile"
-          className="h-12 w-12 object-cover"
-        />
+        <Avatar src={data?.sender?.image}/>
       </div>
       <div className="flex flex-col w-full">
-        <h1 className="text-[1em]">Andro Eugenio</h1>
-        <p className="text-sm">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex saepe
-          maxime sunt quia officia error repudiandae quae quibusdam dolores
-          expedita assumenda nulla odio dicta incidunt reprehenderit dolorem,
-          quis neque quas ab? Vero quam a commodi culpa molestiae delectus earum
-          minus, dolor eligendi voluptatum quod sequi quibusdam eos modi, quia
-          iusto.
+        <h1 className={cn("text-[1em]", data.senderId == currentUser?.id && 'text-end' )}>{data.sender.name}</h1>
+        <p className={cn("text-sm", data.senderId == currentUser?.id && 'text-end' )}>
+          {data.message}
         </p>
       </div>
     </div>

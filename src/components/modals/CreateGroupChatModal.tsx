@@ -277,7 +277,7 @@ const CreateGuardianModal = () => {
                           </FormControl>
                           <SelectContent>
                             {departments.data.map((department) => (
-                              <SelectItem value={department.id}>
+                              <SelectItem value={department.id} key={department.id}>
                                 {department.name}
                               </SelectItem>
                             ))}
@@ -310,7 +310,7 @@ const CreateGuardianModal = () => {
                         </FormControl>
                         <SelectContent>
                           {filteredSections.map((section) => (
-                            <SelectItem value={section.id}>
+                            <SelectItem value={section.id} key={section.id}>
                               {section.name}
                             </SelectItem>
                           ))}
@@ -343,7 +343,7 @@ const CreateGuardianModal = () => {
                           </FormControl>
                           <SelectContent>
                             {filteredAdvisers.map((adviser) => (
-                              <SelectItem value={adviser.id}>
+                              <SelectItem value={adviser.id} key={adviser.id}>
                                 {adviser.profile.firstname}{" "}
                                 {adviser.profile.lastname}
                               </SelectItem>

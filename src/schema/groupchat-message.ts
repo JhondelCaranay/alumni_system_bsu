@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const GroupChatMessageSchema = z.object({
   id: z.string(),
-  message: z.string().cuid(),
+  message: z.string(),
   senderId: z.string().cuid(),
   groupChatId: z.string(),
   createdAt: z.date(),
@@ -16,7 +16,7 @@ export const CreateGroupChatMessageSchema = GroupChatMessageSchema.pick({
   groupChatId: true,
 });
 
-export type GroupChatSchemaType = z.infer<typeof GroupChatMessageSchema>;
-export type CreateGroupChatSchemaType = z.infer<
+export type GroupChatMessageSchemaType = z.infer<typeof GroupChatMessageSchema>;
+export type CreateGroupChatMessageSchemaType = z.infer<
   typeof CreateGroupChatMessageSchema
 >;

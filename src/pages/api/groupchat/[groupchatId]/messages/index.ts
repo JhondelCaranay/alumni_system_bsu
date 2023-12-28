@@ -92,7 +92,11 @@ export default async function handler(
           sender: true,
         },
       });
+      const Key = `chats:${groupChatMessage.groupChatId}:messages`;
 
+      console.log(Key)
+
+      res.socket?.server?.io.emit(Key, groupChatMessage);
       res.status(200).json(groupChatMessage);
     } catch (error) {
       console.log("[GROUPCHATMESSAGES_POST]", error);

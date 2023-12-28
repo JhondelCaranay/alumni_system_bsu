@@ -9,7 +9,13 @@ import { useQueryProcessor } from '@/hooks/useTanstackQuery'
 import { Loader, Loader2 } from '@/components/ui/loader'
 import { GroupChatSchemaType } from '@/schema/groupchats'
 import { User } from '@prisma/client'
-const ChatBox = () => {
+import { GetCurrentUserType } from '@/actions/getCurrentUser'
+
+type ChatBoxProps = {
+  currentUser:GetCurrentUserType
+}
+
+const ChatBox:React.FC<ChatBoxProps> = ({currentUser}) => {
 
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
@@ -34,8 +40,8 @@ const ChatBox = () => {
     <div className='flex flex-1 gap-x-3'>
         <div className='flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1'>
             <ChatHeader data={groupChat.data} />
-            <ChatBody />
-            <ChatFooter />
+            <ChatBody currentUser={currentUser} />
+            <ChatFooter data={groupChat.data}/>
         </div>
     </div>
   )

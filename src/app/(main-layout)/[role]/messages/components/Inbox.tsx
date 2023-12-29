@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Select,
   SelectContent,
@@ -19,22 +19,28 @@ import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { Role } from "@prisma/client";
 
 type InboxProps = {
-  currentUser:GetCurrentUserType
-}
-const Inbox:React.FC<InboxProps> = ({currentUser}) => {
+  currentUser: GetCurrentUserType;
+};
+const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
+  const inboxes = useQueryProcessor<
+    (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
+  >("/groupchats", { userId: currentUser?.id }, ["groupchats"], {
+    enabled: !!currentUser?.id,
+  });
 
-  const inboxes = useQueryProcessor<(GroupChatSchemaType & {messages: GroupChatMessageSchemaType[]})[]>('/groupchats', {userId: currentUser?.id}, ['groupchats']);
-  
   const { onOpen } = useModal();
   return (
     <div className="flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl">
       <div className="flex flex-col p-5 gap-y-5 border border-x-0 border-t-0 border-b-1">
         <div className="flex items-center">
           <h1 className="text-[1.5em]">Messages</h1>
-          {
-            (currentUser?.role === Role.ADMIN || currentUser?.role === Role.ADVISER) && <Plus className="h-6 w-6 ml-auto cursor-pointer" onClick={() => onOpen('createGroupChat', {user: currentUser})} />
-          }
-          
+          {(currentUser?.role === Role.ADMIN ||
+            currentUser?.role === Role.ADVISER) && (
+            <Plus
+              className="h-6 w-6 ml-auto cursor-pointer"
+              onClick={() => onOpen("createGroupChat", { user: currentUser })}
+            />
+          )}
         </div>
         <Select>
           <SelectTrigger className="w-full">
@@ -50,21 +56,25 @@ const Inbox:React.FC<InboxProps> = ({currentUser}) => {
         </Select>
       </div>
       <div className="flex flex-col">
-        {
-          (() => {
-            if(inboxes.status === 'pending' || inboxes.isFetching) {
-              return <Loader2 size={30} className="mx-auto mt-20" color="#3498db"></Loader2>
-            }
+        {(() => {
+          if (inboxes.status === "pending" || inboxes.isFetching) {
+            return (
+              <Loader2
+                size={30}
+                className="mx-auto mt-20"
+                color="#3498db"
+              ></Loader2>
+            );
+          }
 
-            if(inboxes.status === 'error') {
-              return <div>errror...</div>
-            }
+          if (inboxes.status === "error") {
+            return <div>errror...</div>;
+          }
 
-            return inboxes.data.map((inbox) => (
-              <InboxItem data={inbox} key={inbox?.id}/>
-            ))
-          })()
-        }
+          return inboxes.data.map((inbox) => (
+            <InboxItem data={inbox} key={inbox?.id} />
+          ));
+        })()}
       </div>
     </div>
   );

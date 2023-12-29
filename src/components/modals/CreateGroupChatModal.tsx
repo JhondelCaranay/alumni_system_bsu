@@ -43,7 +43,7 @@ import { DepartmentSchemaType } from "@/schema/department";
 import { SectionSchemaType } from "@/schema/section";
 import toast from "react-hot-toast";
 import { Download, X } from "lucide-react";
-import Image from 'next/image'
+import Image from "next/image";
 import { dataURItoBlob, uploadPhoto } from "@/lib/utils";
 
 const CreateGuardianModal = () => {
@@ -51,7 +51,7 @@ const CreateGuardianModal = () => {
   const isModalOpen = isOpen && type === "createGroupChat";
 
   const onHandleClose = () => {
-    form.reset()
+    form.reset();
     onClose();
   };
 
@@ -87,24 +87,31 @@ const CreateGuardianModal = () => {
   }, [isModalOpen]);
 
   const onSubmit: SubmitHandler<CreateGroupChatSchemaType> = async (values) => {
+    if (values.image) {
+      const { url } = await uploadPhoto(
+        dataURItoBlob(values.image as string) as File
+      );
+      const image = url;
 
-    const {url} = await uploadPhoto(dataURItoBlob(values.image as string) as File)
-    const image = url
-    if(values.image && image) {
-      createGroupChat.mutate({...values, image}, {
-        onSuccess(data, variables, context) {
-          toast.success("Group chat created");
-          onClose();
-        },
-        onError(error, variables, context) {
-          console.error(error);
-          toast.error("Group chat did not create");
-        },
-      });
+      createGroupChat.mutate(
+        { ...values, image },
+        {
+          onSuccess(data, variables, context) {
+            toast.success("Group chat created");
+            form.reset();
+            onClose();
+          },
+          onError(error, variables, context) {
+            console.error(error);
+            toast.error("Group chat did not create");
+          },
+        }
+      );
     } else {
       createGroupChat.mutate(values, {
         onSuccess(data, variables, context) {
           toast.success("Group chat created");
+          form.reset();
           onClose();
         },
         onError(error, variables, context) {
@@ -114,7 +121,6 @@ const CreateGuardianModal = () => {
       });
     }
   };
-
 
   const isFetchingData =
     advisers.status == "pending" ||
@@ -129,10 +135,10 @@ const CreateGuardianModal = () => {
     departments.status == "error" ||
     sections.status == "error";
 
-  form.watch(["departmentId", 'image']);
+  form.watch(["departmentId", "image"]);
 
   const departmentId = form.getValues("departmentId");
-  if (isErrorFetchingData ||isFetchingData ) {
+  if (isErrorFetchingData || isFetchingData) {
     return null;
   }
 
@@ -194,16 +200,15 @@ const CreateGuardianModal = () => {
                               type="file"
                               accept="image/*"
                               onChange={(e) => {
-                                if(e?.target?.files?.[0]) {
+                                if (e?.target?.files?.[0]) {
                                   const reader = new FileReader();
                                   reader.readAsDataURL(e?.target?.files?.[0]);
 
                                   reader.onloadend = () => {
-                                    field.onChange(reader.result)
+                                    field.onChange(reader.result);
                                   };
-                                }
-                                else {
-                                  field.onChange('')
+                                } else {
+                                  field.onChange("");
                                 }
                               }}
                             />
@@ -227,7 +232,10 @@ const CreateGuardianModal = () => {
                       className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
                       type="button"
                     >
-                      <X className="h-4 w-4" onClick={() => form.setValue('image', '')} />
+                      <X
+                        className="h-4 w-4"
+                        onClick={() => form.setValue("image", "")}
+                      />
                     </button>
                   </div>
                 );
@@ -277,7 +285,10 @@ const CreateGuardianModal = () => {
                           </FormControl>
                           <SelectContent>
                             {departments.data.map((department) => (
-                              <SelectItem value={department.id} key={department.id}>
+                              <SelectItem
+                                value={department.id}
+                                key={department.id}
+                              >
                                 {department.name}
                               </SelectItem>
                             ))}
@@ -365,7 +376,13 @@ const CreateGuardianModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if(isLoading) return <div className="flex items-center gap-x-3"> Creating <Loader2 size={20} /></div>
+                    if (isLoading)
+                      return (
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Creating <Loader2 size={20} />
+                        </div>
+                      );
                     return "Add group chat";
                   })()}
                 </Button>

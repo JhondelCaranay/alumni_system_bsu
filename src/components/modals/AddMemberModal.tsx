@@ -87,16 +87,20 @@ const AddMemberModal = () => {
   };
 
   const students = useQueryProcessor<UserProfileWithDepartmentSection[]>(
-    "/users",
+    `/users`,
     { role: "STUDENT", department: data.groupChat?.department.name },
-    ["students"]
+    ["students"],
+    { enabled: !!data.groupChat?.department.name }
   );
+
+  console.log(students.data?.map((student) => student.department.name));
 
   const isLoading =
     addMembers.status === "pending" || form.formState.isSubmitting;
 
   const filteredStudents = students.data?.filter(
-    (student) => student.profile.firstname
+    (student) =>
+      student.profile.firstname
         ?.toLowerCase()
         ?.includes(search.toLowerCase()) ||
       student.profile.lastname?.toLowerCase()?.includes(search.toLowerCase()) ||
@@ -104,10 +108,13 @@ const AddMemberModal = () => {
   );
 
   const removeFromSelectedMember = (userId: string) => {
-    setMemberToDisplay(prev => prev.filter(member => member.id != userId))
-    
-    form.setValue('userIds', form.getValues('userIds').filter(memberId => memberId != userId))
-  }
+    setMemberToDisplay((prev) => prev.filter((member) => member.id != userId));
+
+    form.setValue(
+      "userIds",
+      form.getValues("userIds").filter((memberId) => memberId != userId)
+    );
+  };
 
   return (
     <div>
@@ -181,7 +188,8 @@ const AddMemberModal = () => {
                             >
                               <FormLabel className="font-semibold flex items-center gap-x-3 cursor-pointer">
                                 <Avatar src={student.image} />
-                                {student.profile.firstname} {student.profile.lastname}
+                                {student.profile.firstname}{" "}
+                                {student.profile.lastname}
                               </FormLabel>
                               <FormControl>
                                 <Checkbox

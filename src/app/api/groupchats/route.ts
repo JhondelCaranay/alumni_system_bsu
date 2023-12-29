@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   }
 
   const { userId } = result.data;
+  console.log("🚀 ~ file: route.ts:29 ~ GET ~ userId:", userId)
   try {
     const groupChats = await prisma.groupChat.findMany({
       where: currentUser.role === Role.ADMIN ? undefined : {

@@ -40,6 +40,11 @@ const ChatFooter: React.FC<ChatFooterProps> = ({ data }) => {
   const onSubmit: SubmitHandler<CreateGroupChatMessageSchemaType> = (values) => {
     sendMessage.mutate(values, {
       onSuccess(data, variables, context) {
+        const chatbody = document.querySelector('#chatbody');
+        if(chatbody) {
+          chatbody.scrollTop = chatbody.scrollHeight;
+
+        }
         form.setValue('message', '')
       },
       onError(error, variables, context) {

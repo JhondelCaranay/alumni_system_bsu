@@ -1,4 +1,5 @@
 "use client";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import Avatar from "@/components/Avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,24 +26,27 @@ import {
 import { useModal } from "@/hooks/useModalStore";
 import { GroupChatSchemaType } from "@/schema/groupchats";
 import { UserWithProfile } from "@/types/types";
-import { User } from "@prisma/client";
+import { Role } from "@prisma/client";
 import {
-  Archive,
   ChevronDown,
   ChevronUp,
+  Gavel,
   MoreHorizontal,
   MoreVertical,
-  Pencil,
   UserPlus,
 } from "lucide-react";
 import React, { useState } from "react";
 
 type ChatHeaderProps = {
   data: GroupChatSchemaType & { users: UserWithProfile[] };
+  currentUser:GetCurrentUserType
 };
-const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ data, currentUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { onOpen } = useModal();
+  const allowedRoles = ["ADMIN", "ADVISER"]
+  const canKick = allowedRoles.includes(currentUser?.role as string)
   return (
     <div className="border border-b-1 border-x-0 border-t-0 w-full flex p-3 gap-x-3 items-center">
       <div className="">
@@ -113,22 +117,19 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                         <Avatar src={member.image} /> {member.profile.firstname}{" "}
                         {member.profile.lastname}
                       </div>
-
-                      <DropdownMenu>
+                     { canKick && <DropdownMenu>
                         <DropdownMenuTrigger>
                           <MoreHorizontal className="h-4 w-4 text-zinc-500" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="text-xs cursor-pointer hover:bg-zinc-400">
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Update
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100">
-                            <Archive className="h-4 w-4 mr-2" />
-                            Archive
+                          <DropdownMenuItem className="text-xs cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-100" 
+                          onClick={() => onOpen('removeMember', {groupChat: data, user: member})}
+                          >
+                            <Gavel className="h-4 w-4 mr-2" />
+                            Kick member
                           </DropdownMenuItem>
                         </DropdownMenuContent>
-                      </DropdownMenu>
+                      </DropdownMenu>}
                     </div>
                   ))}
                 </CollapsibleContent>

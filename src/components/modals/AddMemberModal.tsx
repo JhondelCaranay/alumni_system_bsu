@@ -71,9 +71,8 @@ const AddMemberModal = () => {
   >(`/groupchats/${groupchatId}/users/`, null, "POST", [
     "groupchats",
     groupchatId,
-    "users",
   ]);
-
+  
   const onSubmit: SubmitHandler<UploadStudentsSchemaType> = (values) => {
     addMembers.mutate(values, {
       onSuccess(data, variables, context) {

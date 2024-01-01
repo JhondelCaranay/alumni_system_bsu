@@ -23,7 +23,7 @@ const Page = async () => {
   }
 
   return (
-    <div className="bg-[#F6F6F6] h-full flex p-10 px-20 gap-x-5">
+    <div className="bg-[#F6F6F6] h-full flex p-10 px-20 gap-x-5 dark:bg-[#020817]">
       {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
       <MessagesClient currentUser={currentUser} />
       {/* </HydrationBoundary> */}

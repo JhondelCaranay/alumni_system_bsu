@@ -26,7 +26,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
 
   if (!id) {
     return (
-      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl">
+      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl dark:bg-slate-900">
         <h1 className="text-zinc-500 text-md text-center w-full flex items-center justify-center gap-x-2">
           {" "}
           <MessageSquareDashed className="w-10 h-10" />{" "}
@@ -38,7 +38,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
 
   if (groupChat.status === "pending") {
     return (
-      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl justify-center items-center">
+      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl justify-center items-center dark:bg-slate-900">
         <Loader2 color="#3498db" size={30} />
       </div>
     );
@@ -54,8 +54,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
   }
 
   return (
-    <div className="flex flex-1 gap-x-3">
-      <div className="flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1">
+    <div className="flex flex-1 gap-x-3 ">
+      <div className="flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1 dark:dark:bg-slate-900">
         <ChatHeader data={groupChat.data} />
         <ChatBody currentUser={currentUser} />
         <ChatFooter data={groupChat.data} />

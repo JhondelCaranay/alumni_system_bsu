@@ -36,7 +36,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
     <div
       className={cn(
         "flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2 cursor-pointer",
-        id === data?.id && "bg-zinc-100"
+        id === data?.id && "bg-zinc-100 dark:bg-slate-800 "
       )}
       onClick={onClick}
     >
@@ -47,7 +47,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
         />
       </div>
       <div className="flex flex-col">
-        <h2 className="text-[1.2em] font-semibold text-zinc-600">
+        <h2 className="text-[1.2em] font-semibold text-zinc-600 dark:text-gray-400">
           {data?.name}
         </h2>
         <p className="text-[0.9em] line-clamp-2 ">

@@ -54,8 +54,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
       </div>
       <div className="flex justify-between w-full items-center">
         <div className="flex flex-col">
-          <h1 className="font-semibold text-[1.3em] text-black">{data.name}</h1>
-          <p className="text-sm text-zinc-500">
+          <h1 className="font-semibold text-[1.3em] text-black dark:text-white">
+            {data.name}
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-gray-400">
             {data.department.name} {data.section.course_year}{" "}
             {data.section.name}
           </p>
@@ -108,7 +110,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data }) => {
                       key={member.id}
                     >
                       <div className="flex items-center gap-x-3  font-semibold">
-                        <Avatar src={member.image} /> {member.profile.firstname} {member.profile.lastname}
+                        <Avatar src={member.image} /> {member.profile.firstname}{" "}
+                        {member.profile.lastname}
                       </div>
 
                       <DropdownMenu>

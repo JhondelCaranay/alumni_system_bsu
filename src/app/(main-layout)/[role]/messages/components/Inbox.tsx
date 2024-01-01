@@ -30,7 +30,7 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
 
   const { onOpen } = useModal();
   return (
-    <div className="flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl">
+    <div className="flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl dark:bg-slate-900">
       <div className="flex flex-col p-5 gap-y-5 border border-x-0 border-t-0 border-b-1">
         <div className="flex items-center">
           <h1 className="text-[1.5em]">Messages</h1>
@@ -64,7 +64,7 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
                 className="mx-auto mt-20"
                 color="#3498db"
               ></Loader2>
-            );
+            );  
           }
 
           if (inboxes.status === "error") {

@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 type LoaderProps = {
   size?: number;
   className?: string;
-  color?:string;
+  color?: string;
 };
 export const Loader: React.FC<LoaderProps> = ({ size = 55 }) => {
   return (
@@ -17,8 +17,16 @@ export const Loader: React.FC<LoaderProps> = ({ size = 55 }) => {
   );
 };
 
-export const Loader2: React.FC<LoaderProps> = ({ size = 55, className, color }) => {
+export const Loader2: React.FC<LoaderProps> = ({
+  size = 55,
+  className,
+  color,
+}) => {
   return (
-      <LoaderLucide color={color} className={cn("animate-spin mr-2", className)} size={size}/> 
+    <LoaderLucide
+      color={color}
+      className={cn("animate-spin mr-2", className)}
+      size={size}
+    />
   );
 };

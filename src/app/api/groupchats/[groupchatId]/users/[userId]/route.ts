@@ -10,12 +10,11 @@ export async function DELETE(
   }: {
     params: {
       groupchatId: string;
-      studentId: string;
+      userId: string;
     };
   }
 ) {
-  const { groupchatId, studentId } = params;
-
+  const { groupchatId, userId } = params;
   const currentUser = await getCurrentUser();
 
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
@@ -44,7 +43,7 @@ export async function DELETE(
       data: {
         users: {
           disconnect: {
-            id: studentId,
+            id: userId,
           },
         },
       },

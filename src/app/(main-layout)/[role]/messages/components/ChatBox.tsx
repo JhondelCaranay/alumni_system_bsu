@@ -56,7 +56,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
   return (
     <div className="flex flex-1 gap-x-3 ">
       <div className="flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1 dark:dark:bg-slate-900">
-        <ChatHeader data={groupChat.data} />
+        <ChatHeader data={groupChat.data} currentUser={currentUser} />
         <ChatBody currentUser={currentUser} />
         <ChatFooter data={groupChat.data} />
       </div>

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { ModalType, useModal } from "@/hooks/useModalStore";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
-import { Search, UserPlus, File, Filter, Loader2 } from "lucide-react";
+import { Search, UserPlus, File, Filter } from "lucide-react";
 import { capitalizeWords } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { Loader } from "@/components/ui/loader";

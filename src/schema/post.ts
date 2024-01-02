@@ -8,6 +8,7 @@ export const PostSchema = z.object({
   company: z.string(),
   location: z.string(),
   isArchived: z.boolean(),
+  pollQuestion:z.string(),
   type: z.nativeEnum(PostType),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -42,6 +43,7 @@ export const CreatePostSchema = PostSchema.pick({
   title: true,
   company: true,
   location: true,
+  pollQuestion:true
 })
   .extend({
     photos: z.array(
@@ -51,6 +53,7 @@ export const CreatePostSchema = PostSchema.pick({
     pollOptions: z.string().array(),
   })
   .partial({
+    pollQuestion:true,
     department: true,
     photos: true,
     company: true,

@@ -374,7 +374,7 @@ const EditDiscussionModal = () => {
                           ref={inputRef}
                           disabled={isLoading}
                           value={field.value}
-                          className=" dark:bg-[#52525B] dark:text-white w-full overflow-hidden outline-none max-h-[20em] bg-white placeholder:text-lg placeholder:font-semibold placeholder:text-zinc-400 focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none border-0"
+                          className=" dark:bg-[#52525B] dark:text-white w-full overflow-hidden outline-none max-h-[15em] bg-white placeholder:text-lg placeholder:font-semibold placeholder:text-zinc-400 focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none border-0"
                           placeholder={`Write your thoughts here...`}
                           // dont remove this textareaHeightUpdater(e.target.value)
                           onChange={(e) => {

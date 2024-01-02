@@ -140,6 +140,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     company,
     location,
     pollOptions,
+    pollQuestion
   } = result.data;
 
   try {
@@ -152,6 +153,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
           description,
           company,
           location,
+          pollQuestion,
           type,
           userId: currentUser.id,
           photos: {

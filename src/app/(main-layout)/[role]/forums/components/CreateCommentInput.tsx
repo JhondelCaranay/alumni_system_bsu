@@ -1,12 +1,10 @@
 import EmojiPicker from "@/components/EmojiPicker";
-import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { mutationFn } from "@/hooks/useTanstackQuery";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Send } from "lucide-react";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,7 +53,7 @@ const CreateCommentInput: React.FC<createCommentInputProps> = ({ postId, apiUrl,
           onSuccess(data, variables, context) {
             toast({
               variant: "default",
-              description: "Your createComment has been sent.",
+              description: "Your comment has been sent.",
             });
             form.reset();
           },

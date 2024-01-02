@@ -125,7 +125,7 @@ const CreateDiscussionModal = () => {
     return () => {
       form.reset();
     };
-  }, [form, session]);
+  }, [form, session, isModalOpen]);
 
   const [_, textareaHeightUpdater] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();

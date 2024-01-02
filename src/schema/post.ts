@@ -48,6 +48,7 @@ export const CreatePostSchema = PostSchema.pick({
       z.object({ public_url: z.string(), public_id: z.string() })
     ),
     department: z.string().array(),
+    pollOptions: z.string().array(),
   })
   .partial({
     department: true,
@@ -55,6 +56,7 @@ export const CreatePostSchema = PostSchema.pick({
     company: true,
     location: true,
     title: true,
+    pollOptions: true,
   });
 
 export type CreatePostSchemaType = z.infer<typeof CreatePostSchema>;

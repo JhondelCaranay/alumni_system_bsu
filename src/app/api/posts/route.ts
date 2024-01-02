@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   // const type = searchParams.get("type")?.toUpperCase();
 
   try {
-    if (type === "FEED" || type === "POLL") {
+    if (type === "FEED") {
       let queryData = {};
 
       if (currentUser.role === "STUDENT" || currentUser.role === "ALUMNI") {
@@ -53,9 +53,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         where: {
           isArchived: false,
           ...queryData,
-          type: {
-            in: ["FEED", "POLL"],
-          },
+          type: type,
         },
         orderBy: {
           createdAt: "desc",
@@ -133,8 +131,16 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
-  const { department, photos, type, description, title, company, location } =
-    result.data;
+  const {
+    department,
+    photos,
+    type,
+    description,
+    title,
+    company,
+    location,
+    pollOptions,
+  } = result.data;
 
   try {
     let post: Post;
@@ -152,6 +158,11 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
             create: photos?.map((photo) => ({
               public_id: photo.public_id,
               public_url: photo.public_url,
+            })),
+          },
+          poll_options: {
+            create: pollOptions?.map((option) => ({
+              option,
             })),
           },
           department: {

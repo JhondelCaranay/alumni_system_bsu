@@ -133,6 +133,8 @@ model Post {
 
   title       String?
   description String  @db.Text
+ 
+  pollQuestion String? @db.Text
 
   company  String?
   location String?

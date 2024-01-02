@@ -29,15 +29,35 @@ import { Badge } from "@/components/ui/badge";
 import { Role } from "@prisma/client";
 import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
+import { PollOption } from "@prisma/client";
+
+// @ts-ignore
+// @ts-nocheck
+import Poll from 'react-polls';
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type PostTypeProps = {
-  postData: PostSchemaType & { user: UserWithProfile };
+  postData: PostSchemaType & { user: UserWithProfile,poll_options: PollOption[] };
   currentUser: GetCurrentUserType;
 };
 
+const pollStyle = {
+  questionSeparator: false,
+  questionSeparatorWidth: "question",
+  questionBold: false,
+  questionColor: "#4fbbd6",
+  align: "center",
+  theme: "blue"
+};
+
 const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
+
+  const pollOptions = postData?.poll_options?.map(pollOption => ({
+    option: pollOption?.option,
+    votes: pollOption?.votes
+  }))
+
   const [isCommenting, setIsCommenting] = useState(false);
   const { onOpen } = useModal();
   const comments = useQueryProcessor<
@@ -132,7 +152,9 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
           {postData?.description}
         </p>
       </div>
-
+        {
+          pollOptions?.length > 0 && <Poll customStyles={pollStyle} question={postData.pollQuestion} noStorage answers={pollOptions} onVote={() => {}} />
+        }
       <div className="flex py-5 gap-5 flex-wrap gap justify-center">
         {postData?.photos?.map((photo) => (
           <Image
@@ -145,6 +167,9 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
           />
         ))}
       </div>
+
+        
+         
 
       <div className="border border-y-2 flex items-center h-10 border-x-0 dark:border-[#71717A]">
         <Button

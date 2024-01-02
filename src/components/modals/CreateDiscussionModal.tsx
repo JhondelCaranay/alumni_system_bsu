@@ -47,20 +47,28 @@ import {
 import { DepartmentSchemaType } from "@/schema/department";
 import { Checkbox } from "../ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronsUpDown, X, Image as ImageUpload } from "lucide-react";
+import {
+  ChevronsUpDown,
+  X,
+  Image as ImageUpload,
+  BarChart,
+  BarChart3,
+  BarChartHorizontal,
+  BarChart2,
+} from "lucide-react";
 import EmojiPicker from "../EmojiPicker";
 import ActionTooltip from "../ActionTooltip";
 import { Input } from "../ui/input";
 import { CreatePostSchemaType, PostSchemaType } from "@/schema/post";
 import { PostType } from "@prisma/client";
 import { useToast } from "../ui/use-toast";
-import { uploadPhotoForum } from "@/lib/utils";
+import { cn, uploadPhotoForum } from "@/lib/utils";
 
 const CreateDiscussionModal = () => {
   const { data: session } = useSession();
   const { isOpen, type, onClose } = useModal();
   const isModalOpen = isOpen && type === "createDiscussion";
-
+  const [isPolling, setIsPolling] = useState(false);
   const onHandleClose = () => {
     onClose();
     setFilesToDisPlay([]);
@@ -78,6 +86,9 @@ const CreateDiscussionModal = () => {
         message: "You have to select at least one department",
       }),
     photos: z.array(z.any()).optional(),
+    pollOptions: z.array(z.object({
+      id: z.string(), value: z.string().min(1, 'required')
+    })).optional(),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -88,10 +99,12 @@ const CreateDiscussionModal = () => {
       description: "",
       departments: [],
       photos: [],
+      pollOptions: [],
     },
     mode: "all",
   });
 
+  form.watch(["pollOptions"]);
   const allowedRoles = [
     "ADMIN",
     "COORDINATOR",
@@ -181,7 +194,8 @@ const CreateDiscussionModal = () => {
   const onSubmit: SubmitHandler<formSchemaType> = async (values) => {
     // we append all the file into files array to make it iterateable
     const files = [];
-    console.log(values)
+
+    const pollOptions = values?.pollOptions?.map((pollOption) => pollOption.value as string)
     if (values.photos && values.photos.length > 0) {
       for (const file of values.photos) {
         files.push(file);
@@ -198,6 +212,7 @@ const CreateDiscussionModal = () => {
           department: values.departments,
           type: PostType.FEED,
           photos,
+          pollOptions
         },
         {
           onError(error, variables, context) {
@@ -222,6 +237,7 @@ const CreateDiscussionModal = () => {
           description: values.description,
           department: values.departments,
           type: PostType.FEED,
+          pollOptions
         },
         {
           onError(error, variables, context) {
@@ -365,7 +381,7 @@ const CreateDiscussionModal = () => {
                           ref={inputRef}
                           disabled={isLoading}
                           value={field.value}
-                          className=" dark:bg-[#52525B] dark:text-white w-full overflow-hidden outline-none max-h-[20em] bg-white placeholder:text-lg placeholder:font-semibold placeholder:text-zinc-400 focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none border-0"
+                          className=" dark:bg-[#52525B] dark:text-white w-full overflow-hidden outline-none max-h-[15em] bg-white placeholder:text-lg placeholder:font-semibold placeholder:text-zinc-400 focus-visible:ring-0 text-black focus-visible:ring-offset-0 resize-none border-0"
                           placeholder={`Write your thoughts here...`}
                           // dont remove this textareaHeightUpdater(e.target.value)
                           onChange={(e) => {
@@ -397,11 +413,117 @@ const CreateDiscussionModal = () => {
                     );
                   })}
                 </div>
+
+                {isPolling && (
+                  <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5 border rounded-md p-5">
+                    <h3 className="text-sm text-zinc-500 text-center ">Poll options</h3>
+                    <FormField
+                      control={form.control}
+                      name="pollOptions"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          {form.getValues("pollOptions")?.map((outerPoll) => (
+                            <FormField
+                              name="pollOptions"
+                              key={outerPoll.id}
+                              render={({ field }) => (
+                                <FormItem className="w-full flex items-center gap-x-3">
+                                  <Input
+                                    className="focus-visible:ring-0  focus-visible:ring-offset-0"
+                                    placeholder={`Enter option`}
+                                    onChange={(e) => {
+                                      outerPoll = {
+                                        value: e.target.value,
+                                        id: outerPoll.id,
+                                      };
+
+                                      form.setValue(
+                                        "pollOptions",
+                                        form
+                                          .getValues("pollOptions")
+                                          ?.map((innerPoll) => {
+                                            if (outerPoll.id === innerPoll.id)
+                                              return outerPoll;
+
+                                            return innerPoll;
+                                          })
+                                      );
+                                    }}
+                                  />
+                                  <X
+                                    className="w-5 h-5 cursor-pointer "
+                                    onClick={() =>
+                                      form.setValue(
+                                        "pollOptions",
+                                        form
+                                          .getValues("pollOptions")
+                                          ?.filter(
+                                            (poll) => poll.id != outerPoll.id
+                                          )
+                                      )
+                                    }
+                                  />
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      variant={"secondary"}
+                      type="button"
+
+                      onClick={() =>
+                        form.setValue("pollOptions", [
+                          ...(form.getValues("pollOptions") as any),
+                          { value: "", id: createId() },
+                        ])
+                      }
+                    >
+                      Add new options
+                    </Button>
+                  </div>
+                )}
+
+                {isPolling && (
+                  <div className="mt-5 flex flex-col gap-y-3">
+                    <h3 className="text-sm text-rose-500 font-normal text-center ">You can't create a poll without options in your post.</h3>
+                    <Button
+                      variant={"secondary"}
+                      type="button"
+                      onClick={() => {
+                        setIsPolling(false);
+                        form.setValue("pollOptions", []);
+                      }}
+                    >
+                      Cancel Poll
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <section className="border rounded-md py-2 px-3 border-zinc-500 flex justify-between items-center mt-5">
                 <span className="text-sm font-semibold">Add to your post</span>
                 <div className="flex gap-x-2">
+                  <ActionTooltip label="Create poll">
+                    <div className="w-full">
+                      <BarChart2
+                        onClick={() => {
+                          setIsPolling(true)
+                          form.setValue('photos', []);
+                          setFilesToDisPlay([])
+                          form.setValue('pollOptions', [
+                            {
+                              id: createId(),
+                              value:''
+                            },
+                          ])
+                        }}
+                        className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300 "
+                      />
+                    </div>
+                  </ActionTooltip>
                   <ActionTooltip label="Photo/video">
                     {/* 
                       This component gives error when createDiscussionModal is open
@@ -419,16 +541,22 @@ const CreateDiscussionModal = () => {
                       render={({ field }) => (
                         <FormItem className="w-full">
                           <label htmlFor="photos">
-                            <ImageUpload className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300" />
+                            <ImageUpload
+                              className={cn(
+                                "w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300",
+                                isPolling && " cursor-not-allowed"
+                              )}
+                            />
                           </label>
                           <FormControl>
-                          <Input
+                            <Input
                               {...form.register("photos")}
                               className="hidden"
                               id="photos"
                               type="file"
                               accept="image/*"
                               multiple
+                              disabled={isPolling}
                               onChange={async (e) => {
                                 setFilesToDisPlay([]); // initiate a photo to display array
                                 const files = e.target.files;
@@ -512,7 +640,13 @@ const CreateDiscussionModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if(isLoading) return <div className="flex items-center gap-x-3"> Uploading <Loader2 size={20} /></div>
+                    if (isLoading)
+                      return (
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Uploading <Loader2 size={20} />
+                        </div>
+                      );
                     return "Post";
                   })()}
                 </Button>

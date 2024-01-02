@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   // const type = searchParams.get("type")?.toUpperCase();
 
   try {
-    if (type === "FEED") {
+    if (type === "FEED" || type === "POLL") {
       let queryData = {};
 
       if (currentUser.role === "STUDENT" || currentUser.role === "ALUMNI") {
@@ -52,8 +52,10 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         take: 50,
         where: {
           isArchived: false,
-          type: type,
           ...queryData,
+          type: {
+            in: ["FEED", "POLL"],
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -71,6 +73,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
           },
           photos: true,
           department: true,
+          poll_options: true,
         },
       });
 

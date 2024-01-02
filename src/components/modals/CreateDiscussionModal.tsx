@@ -497,7 +497,7 @@ const CreateDiscussionModal = () => {
                 {isPolling && (
                   <div className="mt-5 flex flex-col gap-y-3">
                     <h3 className="text-sm text-rose-500 font-normal text-center ">
-                      You can't create a poll without options in your post.
+                      You can`t create a poll without options in your post.
                     </h3>
                     <Button
                       variant={"secondary"}

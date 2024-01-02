@@ -72,6 +72,7 @@ const CreateDiscussionModal = () => {
   const onHandleClose = () => {
     onClose();
     setFilesToDisPlay([]);
+    setIsPolling(false)
     form.reset();
   };
   const [open, setOpen] = useState(false);
@@ -125,7 +126,7 @@ const CreateDiscussionModal = () => {
     return () => {
       form.reset();
     };
-  }, [form, session]);
+  }, [form, session, isModalOpen]);
 
   const [_, textareaHeightUpdater] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>();

@@ -86,9 +86,14 @@ const CreateDiscussionModal = () => {
         message: "You have to select at least one department",
       }),
     photos: z.array(z.any()).optional(),
-    pollOptions: z.array(z.object({
-      id: z.string(), value: z.string().min(1, 'required')
-    })).optional(),
+    pollOptions: z
+      .array(
+        z.object({
+          id: z.string(),
+          value: z.string().min(1, "required"),
+        })
+      )
+      .optional(),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -195,7 +200,9 @@ const CreateDiscussionModal = () => {
     // we append all the file into files array to make it iterateable
     const files = [];
 
-    const pollOptions = values?.pollOptions?.map((pollOption) => pollOption.value as string)
+    const pollOptions = values?.pollOptions?.map(
+      (pollOption) => pollOption.value as string
+    );
     if (values.photos && values.photos.length > 0) {
       for (const file of values.photos) {
         files.push(file);
@@ -212,7 +219,7 @@ const CreateDiscussionModal = () => {
           department: values.departments,
           type: PostType.FEED,
           photos,
-          pollOptions
+          pollOptions,
         },
         {
           onError(error, variables, context) {
@@ -237,7 +244,7 @@ const CreateDiscussionModal = () => {
           description: values.description,
           department: values.departments,
           type: PostType.FEED,
-          pollOptions
+          pollOptions,
         },
         {
           onError(error, variables, context) {
@@ -416,7 +423,9 @@ const CreateDiscussionModal = () => {
 
                 {isPolling && (
                   <div className="flex flex-col max-h-[15em] overflow-y-auto gap-y-2 mt-5 border rounded-md p-5">
-                    <h3 className="text-sm text-zinc-500 text-center ">Poll options</h3>
+                    <h3 className="text-sm text-zinc-500 text-center ">
+                      Poll options
+                    </h3>
                     <FormField
                       control={form.control}
                       name="pollOptions"
@@ -473,7 +482,6 @@ const CreateDiscussionModal = () => {
                     <Button
                       variant={"secondary"}
                       type="button"
-
                       onClick={() =>
                         form.setValue("pollOptions", [
                           ...(form.getValues("pollOptions") as any),
@@ -488,7 +496,9 @@ const CreateDiscussionModal = () => {
 
                 {isPolling && (
                   <div className="mt-5 flex flex-col gap-y-3">
-                    <h3 className="text-sm text-rose-500 font-normal text-center ">You can't create a poll without options in your post.</h3>
+                    <h3 className="text-sm text-rose-500 font-normal text-center ">
+                      You can't create a poll without options in your post.
+                    </h3>
                     <Button
                       variant={"secondary"}
                       type="button"
@@ -510,15 +520,15 @@ const CreateDiscussionModal = () => {
                     <div className="w-full">
                       <BarChart2
                         onClick={() => {
-                          setIsPolling(true)
-                          form.setValue('photos', []);
-                          setFilesToDisPlay([])
-                          form.setValue('pollOptions', [
+                          setIsPolling(true);
+                          form.setValue("photos", []);
+                          setFilesToDisPlay([]);
+                          form.setValue("pollOptions", [
                             {
                               id: createId(),
-                              value:''
+                              value: "",
                             },
-                          ])
+                          ]);
                         }}
                         className="w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300 "
                       />
@@ -540,14 +550,16 @@ const CreateDiscussionModal = () => {
                       name="photos"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <label htmlFor="photos">
-                            <ImageUpload
-                              className={cn(
-                                "w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300",
-                                isPolling && " cursor-not-allowed"
-                              )}
-                            />
-                          </label>
+                          <ActionTooltip label="Photo/Video">
+                            <label htmlFor="photos">
+                              <ImageUpload
+                                className={cn(
+                                  "w-7 h-7 cursor-pointer text-zinc-500 dark:text-white hover:text-zinc-600 dark:hover:text-zinc-300",
+                                  isPolling && " cursor-not-allowed"
+                                )}
+                              />
+                            </label>
+                          </ActionTooltip>
                           <FormControl>
                             <Input
                               {...form.register("photos")}

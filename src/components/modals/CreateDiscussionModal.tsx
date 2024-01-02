@@ -72,6 +72,7 @@ const CreateDiscussionModal = () => {
   const onHandleClose = () => {
     onClose();
     setFilesToDisPlay([]);
+    setIsPolling(false)
     form.reset();
   };
   const [open, setOpen] = useState(false);

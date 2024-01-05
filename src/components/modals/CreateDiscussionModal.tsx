@@ -87,14 +87,16 @@ const CreateDiscussionModal = () => {
         message: "You have to select at least one department",
       }),
     photos: z.array(z.any()).optional(),
-    pollOptions: z
-      .array(
-        z.object({
-          id: z.string(),
-          value: z.string().min(1, "required"),
-        })
-      )
-      .optional(),
+  
+      pollOptions: z.array(z.object({
+        id: z.string(),
+        value: z.string().min(1, "required"),
+      })).refine(options => {
+        const filteredOptions = options.map((option) => option.value);
+        return new Set(filteredOptions).size === filteredOptions?.length
+      }, {
+        message: 'Options must be unique"',
+    }),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -477,6 +479,8 @@ const CreateDiscussionModal = () => {
                               )}
                             />
                           ))}
+
+                          <FormMessage />
                         </FormItem>
                       )}
                     />

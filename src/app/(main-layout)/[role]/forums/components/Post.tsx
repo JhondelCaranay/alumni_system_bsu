@@ -11,7 +11,7 @@ import {
   Pencil,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateCommentInput from "./CreateCommentInput";
 import { PostSchemaType } from "@/schema/post";
 import { CommentSchema, UserWithProfile } from "@/types/types";
@@ -22,7 +22,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Comment from "./Comment";
-import { useQueryProcessor } from "@/hooks/useTanstackQuery";
+import {
+  apiClient,
+  useQueryProcessor,
+} from "@/hooks/useTanstackQuery";
 import { Loader } from "@/components/ui/loader";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import { Badge } from "@/components/ui/badge";
@@ -33,12 +36,17 @@ import { PollOption } from "@prisma/client";
 
 // @ts-ignore
 // @ts-nocheck
-import Poll from 'react-polls';
+import Poll from "react-polls";
+import { useQueryClient } from "@tanstack/react-query";
+import { L } from "@fullcalendar/list/internal-common";
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type PostTypeProps = {
-  postData: PostSchemaType & { user: UserWithProfile,poll_options: PollOption[] };
+  postData: PostSchemaType & {
+    user: UserWithProfile;
+    poll_options: (PollOption & { voters: UserWithProfile[] })[];
+  };
   currentUser: GetCurrentUserType;
 };
 
@@ -48,18 +56,27 @@ const pollStyle = {
   questionBold: false,
   questionColor: "#4fbbd6",
   align: "center",
-  theme: "blue"
+  theme: "blue",
 };
 
 const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
 
-  const pollOptions = postData?.poll_options?.map(pollOption => ({
+  const pollOptions = postData?.poll_options?.map((pollOption) => ({
+    id: pollOption.id,
     option: pollOption?.option,
-    votes: pollOption?.votes
+    votes: pollOption?.votes,
+    voters: pollOption.voters,
   }))
+  
+  const [pollOpts, setPollOpts] = useState(() => pollOptions)
+  const isVoted = pollOptions?.find((poll) =>
+    poll?.voters?.some((voter) => voter?.id == currentUser?.id)
+  )
 
+  console.log(isVoted)
   const [isCommenting, setIsCommenting] = useState(false);
   const { onOpen } = useModal();
+
   const comments = useQueryProcessor<
     (CommentSchema & { replies: CommentSchema[] })[]
   >(
@@ -82,7 +99,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
   useCommentSocket({
     commentsKey: `posts:${postData.id}:comments`,
     repliesKey: `posts:${postData.id}:reply`,
-    editCommentsKey:`posts:comment-update`,
+    editCommentsKey: `posts:comment-update`,
     deleteCommentsKey: `posts:comment-delete`,
     queryKey: ["discussions", postData.id, "comments"],
   });
@@ -152,9 +169,40 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
           {postData?.description}
         </p>
       </div>
-        {
-          pollOptions?.length > 0 && <Poll customStyles={pollStyle} question={postData.pollQuestion} noStorage answers={pollOptions} onVote={() => {}} />
+      {(() => {
+        if (pollOpts?.length) {
+            return <Poll
+              customStyles={pollStyle}
+              question={postData.pollQuestion}
+              noStorage
+              answers={pollOpts}
+              vote={isVoted ? isVoted.option : undefined}
+              onVote={async (option: string) => {
+                const chosenPoll = pollOpts?.find(
+                  (poll) => option == poll.option
+                );
+
+                if(chosenPoll) {
+                  chosenPoll?.voters.push(currentUser as any)
+                  chosenPoll.votes = chosenPoll.votes + 1;
+                  setPollOpts((prev) => {
+                    return prev.map((pollOption) => {
+                      if(pollOption.id === chosenPoll?.id) {
+                        return chosenPoll
+                      }
+                      return pollOption
+                    })
+                  })
+                  apiClient.post(
+                    `/posts/${postData.id}/poll/${chosenPoll?.id}`
+                  );
+                }
+                  
+              }}
+            />
         }
+        return null;
+      })()}
       <div className="flex py-5 gap-5 flex-wrap gap justify-center">
         {postData?.photos?.map((photo) => (
           <Image
@@ -167,9 +215,6 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
           />
         ))}
       </div>
-
-        
-         
 
       <div className="border border-y-2 flex items-center h-10 border-x-0 dark:border-[#71717A]">
         <Button
@@ -218,7 +263,12 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
               }
 
               return comments.data?.map((comment) => (
-                <Comment key={comment.id} data={comment} currentUserId={currentUser!.id!} postId={postData.id} />
+                <Comment
+                  key={comment.id}
+                  data={comment}
+                  currentUserId={currentUser!.id!}
+                  postId={postData.id}
+                />
               ));
             })()}
           </section>

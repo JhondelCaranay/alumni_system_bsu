@@ -55,11 +55,11 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return studentNumber;
       },
       header: ({ column }) => {
-        return <div className="sr-only dark:text-white">LRN</div>;
+        return <div className="dark:text-white">LRN</div>;
       },
       cell: ({ row }) => {
         const studentNumber = row.original.profile.studentNumber;
-        return <div className="sr-only dark:text-white">{studentNumber}</div>;
+        return <div className="dark:text-white flex justify-center">{studentNumber}</div>;
       },
     },
     {
@@ -72,7 +72,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return (
           <Button
             variant="ghost"
-            className=" dark:text-white"
+            className=" dark:text-white flex justify-center"
             // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Email
@@ -84,7 +84,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         const image = row.original.image;
         const email = row.original.email;
         return (
-          <div className={`flex items-center justify-start`}>
+          <div className={`flex items-center`}>
             <Avatar src={image} className="mr-3" /> {email}
           </div>
         );
@@ -113,7 +113,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         const firstname = row.original.profile.firstname;
         const lastname = row.original.profile.lastname;
         return (
-          <div>
+          <div className="flex justify-center">
             {firstname} {lastname}
           </div>
         );
@@ -129,7 +129,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return (
           <Button
             variant="ghost"
-            className=" dark:text-white"
+            className=" dark:text-white "
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Gender
@@ -139,7 +139,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
       },
       cell: ({ row }) => {
         const gender = row.original.profile.gender;
-        return <div>{capitalizeWords(gender)}</div>;
+        return <div className="flex justify-center">{capitalizeWords(gender)}</div>;
       },
     },
 
@@ -167,7 +167,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return (
           <Badge
             className={cn(
-              "bg-slate-500 dark:text-white",
+              "w-fit flex justify-center bg-slate-500 dark:text-white",
               isEmployed && "bg-sky-700"
             )}
           >
@@ -201,7 +201,8 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return (
           <Badge
             className={cn(
-              "bg-slate-500 dark:text-white",
+              
+              "flex justify-center w-fit bg-slate-500 dark:text-white",
               role === "ALUMNI" && "bg-sky-700"
             )}
           >
@@ -230,7 +231,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
       },
       cell: ({ row }) => {
         const schoolYear = row.original.profile.schoolYear;
-        return <div>{schoolYear}</div>;
+        return <div className="flex justify-center">{schoolYear}</div>;
       },
     },
     {
@@ -253,7 +254,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
       },
       cell: ({ row }) => {
         const name = row.original.department.name;
-        return <div>{name}</div>;
+        return <div className="flex justify-center">{name}</div>;
       },
     },
     {

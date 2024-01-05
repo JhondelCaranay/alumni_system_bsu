@@ -16,7 +16,7 @@ type FeedProps = {
 const Feed:React.FC<FeedProps> = ({currentUser}) => {
 
   const feed = useQueryProcessor<
-    (PostSchemaType & { user: UserWithProfile, poll_options: PollOption[]})[]
+    (PostSchemaType & { user: UserWithProfile, poll_options: (PollOption & {voters: UserWithProfile[]}) [] })[]
   >("/posts", { type: "feed" }, ["discussions"]);
 
   if (feed.status === "pending" || feed.isFetching) {

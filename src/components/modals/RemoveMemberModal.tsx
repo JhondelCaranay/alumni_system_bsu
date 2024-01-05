@@ -23,27 +23,27 @@ const RemoveMemberModal = () => {
     onClose();
   };
 
-  console.log(data)
   const removeMember = useMutateProcessor<null, unknown>(
-   `/groupchats/${data?.groupChat?.id}/users/${data?.user?.id}`,null,
-     'DELETE',
-    ['groupchats', data?.groupChat?.id]
-  )
+    `/groupchats/${data?.groupChat?.id}/users/${data?.user?.id}`,
+    null,
+    "DELETE",
+    ["groupchats", data?.groupChat?.id]
+  );
 
   const onConfirm = async () => {
     try {
-        removeMember.mutate(null, {
-            onSuccess(response, variables, context) {
-                toast({
-                  title:'A member has kicked',
-                  description: `${data.user?.profile?.firstname} ${data.user?.profile?.lastname} has been removed from the group chat`
-                })
-                onClose()
-            },
-            onError(error, variables, context) {
-                console.error(error)
-            },
-        })
+      removeMember.mutate(null, {
+        onSuccess(response, variables, context) {
+          toast({
+            title: "A member has kicked",
+            description: `${data.user?.profile?.firstname} ${data.user?.profile?.lastname} has been removed from the group chat`,
+          });
+          onClose();
+        },
+        onError(error, variables, context) {
+          console.error(error);
+        },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -59,7 +59,9 @@ const RemoveMemberModal = () => {
           <DialogDescription className="text-center text-zinc-500">
             Are you sure you want to do this?
             <br />
-            {data.user?.profile?.firstname} {data.user?.profile?.lastname}  will be <span className="text-rose-500 font-semibold">remove</span> from the groupchat
+            {data.user?.profile?.firstname} {data.user?.profile?.lastname} will
+            be <span className="text-rose-500 font-semibold">remove</span> from
+            the groupchat
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="bg-gray-100 px-6 py-4 ">

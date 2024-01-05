@@ -72,7 +72,7 @@ const AddMemberModal = () => {
     "groupchats",
     groupchatId,
   ]);
-  
+
   const onSubmit: SubmitHandler<UploadStudentsSchemaType> = (values) => {
     addMembers.mutate(values, {
       onSuccess(data, variables, context) {
@@ -92,7 +92,7 @@ const AddMemberModal = () => {
     { enabled: !!data.groupChat?.department.name }
   );
 
-  console.log(students.data?.map((student) => student.department.name));
+  // console.log(students.data?.map((student) => student.department.name));
 
   const isLoading =
     addMembers.status === "pending" || form.formState.isSubmitting;

@@ -57,13 +57,17 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   });
 
   if (departmentExists) {
-    return NextResponse.json({ message: "Department already exist" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Department already exist" },
+      { status: 400 }
+    );
   }
 
   try {
     const department = await prisma.department.create({
       data: {
         name: result.data.name.toUpperCase(),
+        courseYear: result.data.courseYear,
       },
     });
 

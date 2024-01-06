@@ -56,3 +56,17 @@ export const UpdateStudentsSchema = CreateStudentsSchema.extend({
 }).partial();
 
 type UpdateStudentsSchemaType = z.infer<typeof UpdateStudentsSchema>;
+
+export const BulkUpdateStudentsSchema = z.object({
+  departmentId: z.string().cuid(),
+  students: z.array(
+    z.object({
+      studentNumber: z.number({
+        required_error: "Student number is required",
+        invalid_type_error: "Student number must be a number",
+      }),
+      firstname: z.string().min(1),
+      lastname: z.string().min(1),
+    })
+  ),
+});

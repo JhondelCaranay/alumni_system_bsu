@@ -56,6 +56,21 @@ export const columns: ColumnDef<DepartmentSchemaType>[] = [
     },
   },
   {
+    accessorKey: "courseYear",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className=" dark:text-white"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Course Year
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
     accessorKey: "createdAt",
     header: ({ column }) => {
       return (

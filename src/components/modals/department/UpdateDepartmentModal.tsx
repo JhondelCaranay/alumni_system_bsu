@@ -44,6 +44,7 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
     resolver: zodResolver(UpdateDepartmentSchema),
     defaultValues: {
       name: department.name,
+      courseYear: department.courseYear,
     },
   });
 
@@ -110,6 +111,25 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
                     </FormItem>
                   )}
                 />
+                {/* course year */}
+                <FormField
+                  control={form.control}
+                  name="courseYear"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Course Year</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={true}
+                          placeholder="Course Year"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <div className="pt-6 space-x-2 flex items-center justify-end w-full">
                   <Button
                     disabled={isDisabled}
@@ -122,7 +142,7 @@ const UpdateDepartmentModal = ({ department, isOpen, onClose }: Props) => {
                     Cancel
                   </Button>
                   <Button disabled={isDisabled} type="submit">
-                    Add
+                    Update
                   </Button>
                 </div>
               </form>

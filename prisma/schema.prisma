@@ -133,7 +133,7 @@ model Post {
 
   title       String?
   description String  @db.Text
- 
+
   pollQuestion String? @db.Text
 
   company  String?
@@ -209,6 +209,7 @@ model Department {
   id String @id @default(cuid())
 
   name       String  @unique
+  courseYear Int?
   isArchived Boolean @default(false)
 
   users User[]
@@ -272,7 +273,7 @@ model Profile {
 
   isDropOut     Boolean   @default(false)
   isEmployed    Boolean   @default(false)
-  studentNumber Int?
+  studentNumber Int
   schoolYear    Int? // STUDENT CURRENT COURSE YEAR 
   yearEnrolled  DateTime?
   yearGraduated DateTime?

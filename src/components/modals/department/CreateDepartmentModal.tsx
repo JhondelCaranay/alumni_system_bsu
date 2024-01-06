@@ -42,6 +42,7 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
     resolver: zodResolver(CreateDepartmentSchema),
     defaultValues: {
       name: "",
+      courseYear: 4,
     },
   });
 
@@ -99,6 +100,25 @@ const CreateDepartmentModal = ({ isOpen, onClose }: Props) => {
                         <Input
                           disabled={isDisabled}
                           placeholder="Department"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* course year */}
+                <FormField
+                  control={form.control}
+                  name="courseYear"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Course Year</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isDisabled}
+                          placeholder="Course Year"
+                          type="number"
                           {...field}
                         />
                       </FormControl>

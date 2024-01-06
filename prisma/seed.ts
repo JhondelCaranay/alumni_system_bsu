@@ -50,6 +50,7 @@ const createDepartment = async (name: string) => {
   return await prisma.department.create({
     data: {
       name,
+      courseYear: 4,
     },
     select: {
       id: true,
@@ -175,7 +176,10 @@ const createUser = async ({
       profile: {
         create: {
           isEmployed: faker.datatype.boolean(),
-          studentNumber: faker.number.int(),
+          studentNumber: faker.number.int({
+            min: 2019000000,
+            max: 2022999999,
+          }),
           schoolYear: schoolYear,
           yearEnrolled: yearEnrolled,
           yearGraduated: yearGraduated,

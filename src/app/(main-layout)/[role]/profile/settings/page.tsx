@@ -10,7 +10,7 @@ const UserSettingsPage = async () => {
   const user = await getCurrentUser();
   return (
     <div className="flex flex-col p-5 gap-3 dark:bg-transparent bg-[#F9FAFB]">
-      <div className="flex gap-3">
+      <div className="flex flex-col md:flex-row gap-3">
         <div className="flex flex-col gap-3 flex-[0.4]">
           <UserCardForm data={user} />
           <PasswordsForm data={user} />

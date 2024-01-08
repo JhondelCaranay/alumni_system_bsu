@@ -89,12 +89,11 @@ const CreateStudentModal = () => {
     ? sections?.data?.filter((section) => section.departmentId === departmentId)
     : sections.data;
 
-  const createStudent = useMutateProcessor<CreateStudentsSchemaType, unknown>('/students', null, 'POST', ['students'])
+  const createStudent = useMutateProcessor<CreateStudentsSchemaType, unknown>('/students', null, 'POST', ['students/alumni'])
 
   const isLoading = form.formState.isSubmitting || createStudent.status === 'pending';
 
   const onSubmit: SubmitHandler<CreateStudentsSchemaType> = async (values) => {
-    console.log("submitted values", values);
     createStudent.mutate(values, {
         onSuccess(data, variables, context) {
             console.log(data)

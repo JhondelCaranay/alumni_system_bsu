@@ -101,6 +101,15 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     role,
     departmentId,
     sectionId,
+    age,
+    barangay,
+    city,
+    contactNo,
+    dateOfBirth,
+    gender,
+    homeNo,
+    province,
+    street,
   } = result.data;
 
   try {
@@ -137,10 +146,19 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     // create profile
     await prisma.profile.create({
       data: {
-        studentNumber,
+        studentNumber: studentNumber,
         firstname,
         lastname,
         middlename,
+        age: Number(age),
+        barangay,
+        city,
+        contactNo,
+        dateOfBirth: new Date(dateOfBirth),
+        gender,
+        homeNo,
+        province,
+        street,
         user: {
           connect: {
             id: user.id,

@@ -322,7 +322,7 @@ const CreateGuardianModal = () => {
                         <SelectContent>
                           {filteredSections.map((section) => (
                             <SelectItem value={section.id} key={section.id}>
-                              {section.name}
+                              {section.course_year} {section.name}
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -80,6 +80,7 @@ export const BulkUpdateStudentsSchema = z.object({
   ),
 });
 
+export type BulkUpdateStudentsSchemaType = z.infer<typeof BulkUpdateStudentsSchema>;
 
 export const ImportStudentSchema = z.array(
   z.object({

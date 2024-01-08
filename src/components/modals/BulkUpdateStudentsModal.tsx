@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React from "react";
 import {
   Dialog,
@@ -29,10 +29,7 @@ import { SafeUser } from "@/types/types";
 import { Loader2 } from "../ui/loader";
 import { useToast } from "../ui/use-toast";
 import axios, { AxiosError } from "axios";
-import {
-  ImportStudentSchema,
-  ImportStudentSchemaType,
-} from "@/schema/students";
+import { ImportStudentSchema, ImportStudentSchemaType } from "@/schema/students";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -42,10 +39,10 @@ export type formType = z.infer<typeof formSchema>;
 
 // type and validation for excel sheet to json
 
-const ImportStudentsModal = () => {
+const BulkUpdateStudentsModal = () => {
   const { isOpen, onClose, type } = useModal();
 
-  const isModalOpen = isOpen && type === "importStudents";
+  const isModalOpen = isOpen && type === "bulkUpdateStudents";
 
   const form = useForm<formType>({
     resolver: zodResolver(formSchema),
@@ -86,56 +83,54 @@ const ImportStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const createStudents = useMutateProcessor<
-    ImportStudentSchemaType,
-    SafeUser[]
-  >(`/students/import`, null, "POST", ["users"]);
-  const isLoading = createStudents.isPending || form.formState.isSubmitting;
-  const { toast } = useToast();
-
+  const createStudents = useMutateProcessor<ImportStudentSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
+  const isLoading = createStudents.isPending || form.formState.isSubmitting
+  const {toast} = useToast()
+  
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
     // callback pattern
     uploadData(data, (jsonData: ImportStudentSchemaType) => {
+
       // validation
       const validatedJsonData = ImportStudentSchema.safeParse(jsonData);
 
-      if (!validatedJsonData.success) {
-        console.log(validatedJsonData.error);
+      if(!validatedJsonData.success) {
+        console.log(validatedJsonData.error)
         return toast({
-          title: "Excel did not import properly",
-          description: "invalid excel format",
-          variant: "destructive",
-        });
+          title: 'Excel did not import properly',
+          description: 'invalid excel format',
+          variant: 'destructive'
+        })
       }
 
       // api request here...
-
+      
       createStudents.mutate(validatedJsonData.data, {
         onError(error, variables, context) {
-          if (axios.isAxiosError(error)) {
-            form.reset();
-            return toast({
-              title: "Excel did not import properly",
+          if(axios.isAxiosError(error)) {
+          form.reset()
+           return  toast({
+              title: 'Excel did not import properly',
               description: error?.response?.data,
-              variant: "destructive",
-            });
+              variant: 'destructive'
+            })
           }
           toast({
-            title: "Excel did not import properly",
-            description: "Invallid excel format",
-            variant: "destructive",
-          });
-          form.reset();
+            title: 'Excel did not import properly',
+            description: 'Invallid excel format',
+            variant: 'destructive'
+          })
+          form.reset()
         },
         onSuccess(data, variables, context) {
-          console.log(data);
+          console.log(data)
           toast({
-            title: "The excel has been imported",
-          });
-          form.reset();
+            title: 'The excel has been imported',
+          })
+          form.reset()
         },
-      });
+      })
     });
   };
 
@@ -144,11 +139,11 @@ const ImportStudentsModal = () => {
       <DialogContent className="bg-white text-black p-0 overflow-hidden dark:bg-[#020817] dark:text-white">
         <DialogHeader className="pt-3 px-6">
           <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
-            Import Students{" "}
+            Update Students{" "}
           </DialogTitle>
 
           <DialogDescription className="text-center text-zinc m-2 font-semibold dark:text-white">
-            Import students using excel file.
+            Update students using excel file.
           </DialogDescription>
         </DialogHeader>
 
@@ -168,14 +163,10 @@ const ImportStudentsModal = () => {
                             <label
                               htmlFor="upload"
                               className=" hover:bg-zinc-200 w-[60%] transition-all m-auto cursor-pointer py-5 border-zinc-300 border-2 rounded-lg flex flex-col justify-center items-center gap-5 "
-                            >
+                              >
                               <Download className=" text-gray-400 ml-2 h-10 w-10 " />
-                              <span className="text-[#42579E] text-sm font-semibold">
-                                Choose a file
-                              </span>
-                              <span className="text-xs text-zinc-500 font-semibold">
-                                Excel (xlsx, xls)
-                              </span>
+                              <span className="text-[#42579E] text-sm font-semibold">Choose a file</span>
+                              <span className="text-xs text-zinc-500 font-semibold">Excel (xlsx, xls)</span>
                             </label>
                             <FormControl>
                               <Input
@@ -218,25 +209,14 @@ const ImportStudentsModal = () => {
               </div>
             </div>
             <DialogFooter className="px-6 py-4">
-              <a
-                href="/assets/importExcelSample.xlsx"
-                download="sample-file.xlsx"
-              >
-                <Button variant={"link"} type="button">
-                  Download sample
-                </Button>
-              </a>
               <Button variant={"default"} className=" dark:text-white">
                 {(() => {
                   if (isLoading)
                     return (
-                      <div className="flex items-center gap-x-3">
-                        {" "}
-                        Importing <Loader2 size={20} />
-                      </div>
+                      <div className="flex items-center gap-x-3"> Updating <Loader2 size={20} /></div>
                     );
 
-                  return "Import";
+                  return "Update";
                 })()}
               </Button>
             </DialogFooter>
@@ -247,4 +227,4 @@ const ImportStudentsModal = () => {
   );
 };
 
-export default ImportStudentsModal;
+export default BulkUpdateStudentsModal;

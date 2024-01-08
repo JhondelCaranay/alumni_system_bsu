@@ -146,7 +146,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     // create profile
     await prisma.profile.create({
       data: {
-        studentNumber: studentNumber,
+        studentNumber: Number(studentNumber),
         firstname,
         lastname,
         middlename,

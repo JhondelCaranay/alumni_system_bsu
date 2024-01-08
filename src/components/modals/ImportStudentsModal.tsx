@@ -89,7 +89,7 @@ const ImportStudentsModal = () => {
   const createStudents = useMutateProcessor<
     ImportStudentSchemaType,
     SafeUser[]
-  >(`/students/import`, null, "POST", ["users"]);
+  >(`/students/import`, null, "POST", ["students/alumni"]);
   const isLoading = createStudents.isPending || form.formState.isSubmitting;
   const { toast } = useToast();
 

@@ -21,6 +21,10 @@ export const queryFn = async <T>(
     query: {
       ...queryParams,
     },
+  },
+  {
+    skipEmptyString: true,
+    skipNull:true,
   });
 
   const { data } = await apiClient.get<T>(newUrl, {
@@ -56,7 +60,10 @@ export const mutationFn = async <T>(
 ) => {
   const newUrl = qs.stringifyUrl({
     url,
-    query: { ...queryParams },
+    query: { ...queryParams,},
+  }, {
+    skipEmptyString: true,
+    skipNull:true,
   });
 
   switch (method) {

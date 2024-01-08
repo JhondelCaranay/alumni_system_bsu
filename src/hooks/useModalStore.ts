@@ -29,6 +29,7 @@ export type ModalType =
   | "createGroupChat"
   | "addNewMember"
   | "removeMember"
+  | "createStudent"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

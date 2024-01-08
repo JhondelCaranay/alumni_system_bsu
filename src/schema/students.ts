@@ -20,17 +20,26 @@ export const StudentSchema = z.object({
 type PostSchemaType = z.infer<typeof StudentSchema>;
 
 export const CreateStudentsSchema = z.object({
-  studentNumber: z.number(),
-  firstname: z.string().min(1),
-  lastname: z.string().min(1),
-  middlename: z.string().min(1),
-  email: z.string().email().min(1),
+  studentNumber: z.string().min(1, "Required"),
+  firstname: z.string().min(1, "Required"),
+  lastname: z.string().min(1, "Required"),
+  middlename: z.string().min(1, "Required"),
+  age: z.string(),
+  homeNo: z.string().min(1, "Required"),
+  street: z.string().min(1, "Required"),
+  barangay: z.string().min(1, "Required"),
+  city: z.string().min(1, "Required"),
+  province: z.string().min(1, "Required"),
+  contactNo: z.string().min(1, "Required"),
+  gender: z.enum([Gender.MALE, Gender.FEMALE]),
+  dateOfBirth:z.string(),
+  email: z.string().email().min(1, "Required"),
   role: z.enum([Role.STUDENT, Role.ALUMNI]),
   departmentId: z.string().cuid(),
   sectionId: z.string().cuid(),
 });
 
-type CreateStudentsSchemaType = z.infer<typeof CreateStudentsSchema>;
+export type CreateStudentsSchemaType = z.infer<typeof CreateStudentsSchema>;
 
 export const UpdateStudentsSchema = CreateStudentsSchema.extend({
   isEmployed: z.boolean().optional(),
@@ -70,3 +79,28 @@ export const BulkUpdateStudentsSchema = z.object({
     })
   ),
 });
+
+
+export const ImportStudentSchema = z.array(
+  z.object({
+    ['First Name']: z.string(),
+    ['Middle Name']: z.string(),
+    ['Last Name']: z.string(),
+    ['Age']: z.number(),
+    ['Date of birth']: z.any(),
+    ['Gender']: z.string(),
+    ['Home No']: z.number(),
+    ['Street']: z.string(),
+    ['Barangay']: z.string(),
+    ['City']: z.string(),
+    ['Email']: z.string().email(),
+    ['Province']: z.string(),
+    ['Student Number']: z.number(),
+    ['Course']: z.string(),
+    ['Section']: z.string(),
+    ['Contact Number']: z.number(),
+    ['Status']: z.string().optional(),
+  })
+);
+
+export type ImportStudentSchemaType = z.infer<typeof ImportStudentSchema>

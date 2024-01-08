@@ -273,7 +273,7 @@ model Profile {
 
   isDropOut     Boolean   @default(false)
   isEmployed    Boolean   @default(false)
-  studentNumber Int
+  studentNumber String?
   schoolYear    Int? // STUDENT CURRENT COURSE YEAR 
   yearEnrolled  DateTime?
   yearGraduated DateTime?

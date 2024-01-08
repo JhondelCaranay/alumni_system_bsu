@@ -27,6 +27,9 @@ import toast from "react-hot-toast";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import { SafeUser } from "@/types/types";
 import { Loader2 } from "../ui/loader";
+import { useToast } from "../ui/use-toast";
+import axios, { AxiosError } from "axios";
+import { ImportStudentSchema, ImportStudentSchemaType } from "@/schema/students";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -35,19 +38,6 @@ export const formSchema = z.object({
 export type formType = z.infer<typeof formSchema>;
 
 // type and validation for excel sheet to json
-export const excelToJsonSchema = z.array(
-  z.object({
-    ['Full Name']: z.string().min(1),
-    ['Email']: z.string().email(),
-    ['Student No.']: z.number().min(1),
-    ['Gender']: z.string().min(1),
-    ['Level']: z.string().min(1),
-    ['Program']: z.string().min(1),
-    ['Contact']: z.number().min(1),
-  })
-);
-
-export type ExcelToJsonSchemaType = z.infer<typeof excelToJsonSchema>;
 
 const ImportStudentsModal = () => {
   const { isOpen, onClose, type } = useModal();
@@ -59,7 +49,6 @@ const ImportStudentsModal = () => {
     defaultValues: {
       excelFile: null,
     },
-
     mode: "all",
   });
 
@@ -71,10 +60,9 @@ const ImportStudentsModal = () => {
   };
 
   // converting sheet to json and api request
-
   const uploadData = (
     value: formType["excelFile"],
-    callback: (json: ExcelToJsonSchemaType) => void
+    callback: (json: ImportStudentSchemaType) => void
   ) => {
     try {
       const reader = new FileReader();
@@ -86,8 +74,7 @@ const ImportStudentsModal = () => {
         const worksheet = workbook?.Sheets[sheetName];
         const json = xlsx?.utils.sheet_to_json(
           worksheet
-        ) as ExcelToJsonSchemaType;
-
+        ) as ImportStudentSchemaType;
         callback(json);
       };
       reader.readAsArrayBuffer(value);
@@ -96,31 +83,51 @@ const ImportStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const createStudents = useMutateProcessor<ExcelToJsonSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
+  const createStudents = useMutateProcessor<ImportStudentSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
   const isLoading = createStudents.isPending || form.formState.isSubmitting
+  const {toast} = useToast()
   
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
     // callback pattern
-    uploadData(data, (jsonData: ExcelToJsonSchemaType) => {
+    uploadData(data, (jsonData: ImportStudentSchemaType) => {
 
       // validation
-      const validatedJsonData = excelToJsonSchema.safeParse(jsonData);
+      const validatedJsonData = ImportStudentSchema.safeParse(jsonData);
 
       if(!validatedJsonData.success) {
-        return toast.error('Error excel sheet')
+        console.log(validatedJsonData.error)
+        return toast({
+          title: 'Error excel sheet',
+          variant: 'destructive'
+        })
       }
 
-      console.log('client', validatedJsonData.data)
       // api request here...
       
       createStudents.mutate(validatedJsonData.data, {
         onError(error, variables, context) {
-          toast.error('something went wrong...')
+          if(axios.isAxiosError(error)) {
+          form.reset()
+           return  toast({
+              title: 'Excel did not import properly',
+              description: error?.response?.data,
+              variant: 'destructive'
+            })
+          }
+          toast({
+            title: 'Excel did not import properly',
+            description: 'Error might be excel format',
+            variant: 'destructive'
+          })
           form.reset()
         },
         onSuccess(data, variables, context) {
-          toast.success('The file has been imported successfully')
+          console.log(data)
+
+          toast({
+            title: 'The excel has been imported successfully',
+          })
           form.reset()
         },
       })

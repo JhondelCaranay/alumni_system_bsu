@@ -5,7 +5,9 @@ import bcrypt from "bcrypt";
 import sendMail from "@/lib/smtp";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client";
+import { Gender, Role } from "@prisma/client";
+import { MdCatchingPokemon } from "react-icons/md";
+import { ImportStudentSchema, ImportStudentSchemaType } from "@/schema/students";
 
 export async function POST(req: NextRequest) {
   // const currentUser = await getCurrentUser()
@@ -15,38 +17,46 @@ export async function POST(req: NextRequest) {
   // }
 
   try {
-    const excelToJsonSchema = z.array(
-      z.object({
-        ["Full Name"]: z.string().min(1),
-        ["Email"]: z.string().email(),
-        ["Student No."]: z.number().min(1),
-        ["Gender"]: z.string().min(1),
-        ["Level"]: z.string().min(1),
-        ["Program"]: z.string().min(1),
-        ["Contact"]: z.number().min(1),
-      })
-    );
+    const values = (await req.json()) as ImportStudentSchemaType;
 
-    type ExcelToJsonSchemaType = z.infer<typeof excelToJsonSchema>;
-
-    const values = (await req.json()) as ExcelToJsonSchemaType;
-
-    const validatedValues = excelToJsonSchema.safeParse(values);
+    const validatedValues = ImportStudentSchema.safeParse(values);
 
     if (!validatedValues.success) {
       return new NextResponse("invalid json data", { status: 400 });
     }
 
     //createUser student function
-    const createUser = async (data: ExcelToJsonSchemaType[number]) => {
+    const createUser = async (data: ImportStudentSchemaType[number]) => {
+
+      const isUserExist = await prisma.user.findFirst({
+        where: {
+          email: data['Email'],
+        }
+      })
+
+      if (isUserExist) {
+        console.log('Student already exists')
+        throw new Error('Student already exists')
+      }
+
       const department = await prisma.department.findFirst({
         where: {
-          name: data["Program"],
+          name: data["Course"],
         },
       });
 
       if (!department) {
-        return new NextResponse("Department not found", { status: 404 });
+        throw new Error('Department not found')
+      }
+
+      const section = await prisma.section.findFirst({
+        where: {
+          name: data["Section"],
+        },
+      });
+
+      if (!section) {
+        throw new Error('Section not found')
       }
 
       const password = generator.generate({
@@ -56,18 +66,28 @@ export async function POST(req: NextRequest) {
 
       const salt = await bcrypt.genSalt(10);
       const hashPw = await bcrypt.hash(password, salt);
-
       const student = await prisma.user.create({
         data: {
-          name: data["Full Name"],
+          name:`${data['First Name']} ${data['Last Name']}`,
           hashedPassword: hashPw,
           email: data["Email"].toString(),
           role: Role.STUDENT,
           profile: {
             create: {
-              studentNumber: data["Student No."],
-              contactNo: data["Contact"].toString(),
-              gender: data["Gender"] === "F" ? "FEMALE" : "MALE",
+              studentNumber: data["Student Number"].toString(),
+              contactNo: data["Contact Number"].toString(),
+              gender: data["Gender"] as Gender,
+              province: data['Province'].toString(),
+              // dateOfBirth: data['Date of birth'],
+              age: Number(data['Age']),
+              barangay: data['Barangay'].toString(),
+              city: data['City'].toString(),
+              firstname: data['First Name'].toString(),
+              lastname: data['Last Name'].toString(),
+              middlename: data['Middle Name'].toString(),
+              homeNo: data['Home No'].toString(),
+              street: data['Street'],
+
             },
           },
           department: {
@@ -75,6 +95,11 @@ export async function POST(req: NextRequest) {
               id: department?.id,
             },
           },
+          section: {
+            connect: {
+              id: section?.id
+            }
+          }
         },
         include: {
           profile: true,
@@ -82,16 +107,14 @@ export async function POST(req: NextRequest) {
           section: true,
         },
       });
-
       // email sending here
-
       const content = `<div> 
-          <h3> hello ${data["Full Name"]} </h3>
+          <h3> hello ${data["First Name"]} ${data['Last Name']} </h3>
   
           <h4>These are your credentials</h4>
   
           <section>
-            <div> <strong> Contact: </strong> <label> ${data["Contact"]} </label> </div>
+            <div> <strong> Contact: </strong> <label> ${data["Contact Number"]} </label> </div>
             <div> <strong> Email: </strong> <label> ${data["Email"]} </label> </div>
             <div> <strong> Password: </strong> <label> ${password} </label> </div>
           </section>
@@ -109,10 +132,9 @@ export async function POST(req: NextRequest) {
     };
 
     const students = await Promise.all(validatedValues.data.map((data) => createUser(data)));
-
     return NextResponse.json(students);
-  } catch (error) {
+  } catch (error:any) {
     console.log("[STUDENTS_POST]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse(error, { status: 500 });
   }
 }

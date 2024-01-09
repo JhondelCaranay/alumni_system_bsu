@@ -66,18 +66,17 @@ export const UpdateStudentsSchema = CreateStudentsSchema.extend({
 
 type UpdateStudentsSchemaType = z.infer<typeof UpdateStudentsSchema>;
 
-export const BulkUpdateStudentsSchema = z.object({
-  students: z.array(
+export const BulkUpdateStudentsSchema = z.array(
     z.object({
-      studentNumber: z.number({
+      ["Student Number"]: z.number({
         required_error: "Student number is required",
         invalid_type_error: "Student number must be a number",
       }),
-      firstname: z.string().min(1),
-      lastname: z.string().min(1),
-    })
-  ),
-});
+      ["First Name"]: z.string().min(1),
+      ["Last Name"]: z.string().min(1),
+    }))
+  
+
 
 export type BulkUpdateStudentsSchemaType = z.infer<
   typeof BulkUpdateStudentsSchema

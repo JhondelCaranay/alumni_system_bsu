@@ -219,14 +219,14 @@ const ImportStudentsModal = () => {
             </div>
             <DialogFooter className="px-6 py-4">
               <a
-                href="/assets/importExcelSample.xlsx"
-                download="sample-file.xlsx"
+                href="/assets/import-students-sample-file.xlsx"
+                download="import-students-sample-file.xlsx"
               >
                 <Button variant={"link"} type="button">
                   Download sample
                 </Button>
               </a>
-              <Button variant={"default"} className=" dark:text-white">
+              <Button variant={"default"} className=" dark:text-white" disabled={isLoading}>
                 {(() => {
                   if (isLoading)
                     return (

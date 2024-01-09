@@ -28,17 +28,6 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
   const { students } = result.data;
 
   try {
-    // get department
-    const department = await prisma.department.findUnique({
-      where: {
-        id: result.data.departmentId,
-      },
-    });
-
-    if (!department) {
-      return new NextResponse("Department not found", { status: 404 });
-    }
-
     // check if all students exists
     const studentNumbers = students.map((student) => student.studentNumber);
 
@@ -63,11 +52,31 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
             firstname: student.firstname,
             lastname: student.lastname,
           },
+          select: {
+            user: {
+              select: {
+                department: {
+                  select: {
+                    id: true,
+                    courseYear: true,
+                  },
+                },
+              },
+            },
+            id: true,
+            schoolYear: true,
+          },
         });
 
-        if (!studentdata || !studentdata.schoolYear || !department.courseYear) {
+        if (
+          !studentdata ||
+          !studentdata.schoolYear ||
+          !studentdata?.user?.department?.courseYear
+        ) {
           return;
         }
+
+        const department = studentdata.user.department;
 
         await prisma.profile.update({
           where: {
@@ -80,7 +89,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
             user: {
               update: {
                 role:
-                  studentdata.schoolYear + 1 > department.courseYear
+                  studentdata.schoolYear + 1 > Number(department.courseYear)
                     ? "ALUMNI"
                     : undefined,
               },

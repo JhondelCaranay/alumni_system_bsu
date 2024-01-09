@@ -49,7 +49,7 @@ export async function POST(
         },
       });
 
-      return new NextResponse("Post has been unliked", { status: 200 });
+      return NextResponse.json({addedLike: false}, { status: 200 });
     } else {
       await prisma.like.create({
         data: {
@@ -66,7 +66,7 @@ export async function POST(
         },
       });
 
-      return new NextResponse("Post has been liked", { status: 200 });
+      return NextResponse.json({addedLike: true}, { status: 200 });
     }
   } catch (error) {
     console.log("[LIKE_UNLIKE_POST]", error);

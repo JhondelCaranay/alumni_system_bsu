@@ -7,7 +7,7 @@ import JobSkeletonList from "../../jobs/components/JobSkeletonList";
 import { PostSchemaType } from "@/schema/post";
 import { UserWithProfile } from "@/types/types";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
-import { PollOption } from "@prisma/client";
+import { Like, PollOption } from "@prisma/client";
 
 type FeedProps = {
   currentUser: GetCurrentUserType
@@ -16,7 +16,11 @@ type FeedProps = {
 const Feed:React.FC<FeedProps> = ({currentUser}) => {
 
   const feed = useQueryProcessor<
-    (PostSchemaType & { user: UserWithProfile, poll_options: (PollOption & {voters: UserWithProfile[]}) [] })[]
+    (PostSchemaType & { 
+      user: UserWithProfile,
+       poll_options: (PollOption & {voters: UserWithProfile[]}) [];
+       likes: Like[]
+       })[]
   >("/posts", { type: "feed" }, ["discussions"]);
 
   if (feed.status === "pending" || feed.isFetching) {
@@ -30,7 +34,6 @@ const Feed:React.FC<FeedProps> = ({currentUser}) => {
     return <div>someting went wrong...</div>;
   }
 
-  console.log('update')
   return (
     <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto">
       <CreateFeedInput />

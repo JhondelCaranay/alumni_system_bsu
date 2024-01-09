@@ -215,11 +215,11 @@ model Notification {
   post   Post?   @relation(fields: [postId], references: [id])
   postId String?
 
-// Comment-related fields
+  // Comment-related fields
   comment   Comment? @relation(fields: [commentId], references: [id])
   commentId String?
-  
-// Like-related fields
+
+  // Like-related fields
   like   Like?   @relation(fields: [likeId], references: [id])
   likeId String?
 }

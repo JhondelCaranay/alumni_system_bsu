@@ -63,7 +63,12 @@ export async function GET(
         },
         photos: true,
         department: true,
-        Like: true,
+        likes: true,
+        poll_options: {
+          include: {
+            voters: true,
+          },
+        },
       },
     });
 

@@ -24,12 +24,13 @@ import {
 import Comment from "./Comment";
 import {
   apiClient,
+  useMutateProcessor,
   useQueryProcessor,
 } from "@/hooks/useTanstackQuery";
 import { Loader } from "@/components/ui/loader";
 import { useCommentSocket } from "@/hooks/useCommentSocket";
 import { Badge } from "@/components/ui/badge";
-import { Role } from "@prisma/client";
+import { Like, Role } from "@prisma/client";
 import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
 import { PollOption } from "@prisma/client";
@@ -37,8 +38,9 @@ import { PollOption } from "@prisma/client";
 // @ts-ignore
 // @ts-nocheck
 import Poll from "react-polls";
-import { useQueryClient } from "@tanstack/react-query";
-import { L } from "@fullcalendar/list/internal-common";
+import useRouterPush from "@/hooks/useRouterPush";
+import { cn } from "@/lib/utils";
+import { unknown } from "zod";
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
@@ -46,6 +48,7 @@ type PostTypeProps = {
   postData: PostSchemaType & {
     user: UserWithProfile;
     poll_options: (PollOption & { voters: UserWithProfile[] })[];
+    likes: Like[]
   };
   currentUser: GetCurrentUserType;
 };
@@ -61,19 +64,19 @@ const pollStyle = {
 
 const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
 
+  const {redirectTo} = useRouterPush()
   const pollOptions = postData?.poll_options?.map((pollOption) => ({
     id: pollOption.id,
     option: pollOption?.option,
     votes: pollOption?.votes,
     voters: pollOption.voters,
   }))
-  
+  const [isLiked, setIsLiked] = useState(() => postData.likes.some((like) => like.userId === currentUser?.id))
   const [pollOpts, setPollOpts] = useState(() => pollOptions)
   const isVoted = pollOptions?.find((poll) =>
     poll?.voters?.some((voter) => voter?.id == currentUser?.id)
   )
 
-  console.log(isVoted)
   const [isCommenting, setIsCommenting] = useState(false);
   const { onOpen } = useModal();
 
@@ -91,7 +94,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
       // isCommenting,
     }
   );
-
+  const likePost = useMutateProcessor<null, any>(`/posts/${postData?.id}/like`, null, 'POST', ['like', postData.id])
   const isOwner = currentUser?.id === postData.userId;
   const isAdmin = currentUser?.id === Role.ADMIN;
   const canEditOrDelete = isOwner || isAdmin;
@@ -108,6 +111,8 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
     (count, comment) => count + (1 + comment.replies.length || 0),
     0
   );
+
+    const [likesCount, setLikesCount] = useState(() => postData.likes.length)
   return (
     <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative">
       <div className="flex gap-x-2 items-center">
@@ -126,6 +131,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
             <time
               title={postData?.updatedAt?.toString() || new Date()?.toString()}
               className="cursor-pointer hover:underline"
+              onClick={() => redirectTo(`forums/${postData.id}`)}
             >
               {format(new Date(postData?.updatedAt || new Date()), DATE_FORMAT)}
             </time>
@@ -218,11 +224,22 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
 
       <div className="border border-y-2 flex items-center h-10 border-x-0 dark:border-[#71717A]">
         <Button
-          className="w-fit h-fit gap-x-2 text-zinc-500"
+          className={cn("w-fit h-fit gap-x-2 text-zinc-500", isLiked && 'text-rose-500')}
           variant={"link"}
           size={"sm"}
+          onClick={() => {
+            likePost.mutate(null, {
+              onError(error, variables, context) {
+                console.error('error like', error)
+              },
+              onSuccess(data, variables, context) {
+                setIsLiked(data.addedLike)
+                setLikesCount(prev => data.addedLike ? prev + 1 : prev - 1)
+              },
+            })
+          }}
         >
-          <Heart className="w-4 h-4 fill-zinc-500" /> 7 Likes{" "}
+          <Heart className={cn("w-4 h-4 fill-zinc-500", isLiked && 'fill-rose-500')} /> {likesCount || 0} Likes {" "}
         </Button>
         <Button
           className="w-fit h-fit gap-x-2 text-zinc-500"

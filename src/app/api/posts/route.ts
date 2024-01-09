@@ -71,7 +71,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
           },
           photos: true,
           department: true,
-          Like: true,
+          likes: true,
           poll_options: {
             include: {
               voters: true,

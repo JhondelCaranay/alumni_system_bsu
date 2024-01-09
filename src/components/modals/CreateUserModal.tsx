@@ -27,10 +27,7 @@ import {
   useQueryProcessor,
 } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-import {
-  CreateStudentsSchema,
-  CreateStudentsSchemaType,
-} from "@/schema/students";
+import { CreateUserSchema, CreateUserSchemaType } from "@/schema/users";
 import {
   Select,
   SelectContent,
@@ -38,46 +35,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Gender } from "@prisma/client";
+import { Gender, Role } from "@prisma/client";
 import { DepartmentSchemaType } from "@/schema/department";
 import { SectionSchemaType } from "@/schema/section";
 import { C } from "@fullcalendar/core/internal-common";
 import { useToast } from "../ui/use-toast";
 
-const CreateStudentModal = () => {
+const CreateUserModal = () => {
   const { isOpen, type, onClose, data } = useModal();
-  const isModalOpen = isOpen && type === "createStudent";
-  const {toast} = useToast()
+  const isModalOpen = isOpen && type === "createUser";
+  const { toast } = useToast();
 
   const onHandleClose = () => {
     onClose();
-    form.reset()
+    form.reset();
   };
   const [page, setPage] = useState(1);
-  const form = useForm<CreateStudentsSchemaType>({
-    resolver: zodResolver(CreateStudentsSchema),
-    defaultValues: {
-        role: 'STUDENT',
-    },
+
+  const form = useForm<CreateUserSchemaType>({
+    resolver: zodResolver(CreateUserSchema),
+    defaultValues: {},
     mode: "all",
   });
-
 
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
     null,
     ["departments"]
   );
-  form.watch(["departmentId"]);
+
+  form.watch(["departmentId", "role"]);
 
   useEffect(() => {
-    form.setValue('role', 'STUDENT')
-
     return () => {
-        form.reset()
-        setPage(1)
+      form.reset();
+      setPage(1);
+    };
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if(form.getValues('role') !== 'ADVISER') {
+      form.setValue('sectionId', "")
+      form.setValue('departmentId', "")
     }
-  }, [isModalOpen])
+  }, [form.getValues('role')])
 
   const departmentId = form.getValues("departmentId");
 
@@ -89,43 +90,46 @@ const CreateStudentModal = () => {
     ? sections?.data?.filter((section) => section.departmentId === departmentId)
     : sections.data;
 
-  const createStudent = useMutateProcessor<CreateStudentsSchemaType, unknown>('/students', null, 'POST', ['students/alumni'])
+  const createUser = useMutateProcessor<CreateUserSchemaType, unknown>(
+    "/users",
+    null,
+    "POST",
+    ["users"]
+  );
 
-  const isLoading = form.formState.isSubmitting || createStudent.status === 'pending';
+  const isLoading =
+    form.formState.isSubmitting || createUser.status === "pending";
 
-  const onSubmit: SubmitHandler<CreateStudentsSchemaType> = async (values) => {
-    createStudent.mutate(values, {
-        onSuccess(data, variables, context) {
-            console.log(data)
-            toast({
-                title: 'Student successfully created'
-            })
-            onHandleClose()
-        },
-        onError(error, variables, context) {
-            console.error(error)
-            toast({
-                title: 'Student did not create',
-                variant: 'destructive'
-            })
-        },
-    })
+  const onSubmit: SubmitHandler<CreateUserSchemaType> = async (values) => {
+    createUser.mutate(values, {
+      onSuccess(data, variables, context) {
+        console.log(data);
+        toast({
+          title: "Student successfully created",
+        });
+        onHandleClose();
+      },
+      onError(error, variables, context) {
+        console.error(error);
+        toast({
+          title: "Student did not create",
+          variant: "destructive",
+        });
+      },
+    });
   };
-
-  const selectedDepartment = departments.data?.find((department) => department.id === departmentId )
-
-  console.log(selectedDepartment)
+  console.log(form.formState.errors)
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
         <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
-              Add student
+              Add user
             </DialogTitle>
 
             <DialogDescription className="text-center text-zinc m-2 font-semibold dark:text-white">
-              Add information about the student
+              Add information about the user
             </DialogDescription>
           </DialogHeader>
 
@@ -151,7 +155,7 @@ const CreateStudentModal = () => {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                  key={'firstname'}
+                                    key={"firstname"}
                                     disabled={isLoading}
                                     className="focus-visible:ring-0  focus-visible:ring-offset-0"
                                     placeholder={`Enter firstname`}
@@ -194,7 +198,7 @@ const CreateStudentModal = () => {
                           <FormField
                             control={form.control}
                             name="middlename"
-                            key={'middlename'}
+                            key={"middlename"}
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
@@ -218,7 +222,7 @@ const CreateStudentModal = () => {
                           <FormField
                             control={form.control}
                             name="gender"
-                            key={'gender'}
+                            key={"gender"}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
@@ -351,10 +355,45 @@ const CreateStudentModal = () => {
                         </div> */}
                       </div>
 
-                     
-
-                      
-
+                      <div className="w-full">
+                        <FormField
+                          control={form.control}
+                          name="role"
+                          key={"role"}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                Select Privilege
+                              </FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a privilege" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value={Role.ADVISER}>
+                                    {Role.ADVISER}
+                                  </SelectItem>
+                                  <SelectItem value={Role.BULSU_PARTNER}>
+                                    {Role.BULSU_PARTNER.replace('_', ' ')}
+                                  </SelectItem>
+                                  <SelectItem value={Role.COORDINATOR}>
+                                    {Role.COORDINATOR}
+                                  </SelectItem>
+                                  <SelectItem value={Role.PESO}>
+                                    {Role.PESO}
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </>
                   );
                 }
@@ -362,100 +401,24 @@ const CreateStudentModal = () => {
                 if (page === 2) {
                   return (
                     <>
-                    
-
                       <div className="flex gap-x-3">
                         <div className="w-full">
                           <FormField
                             control={form.control}
-                            name="departmentId"
-                            key="departmentId"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select department
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a department" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {departments?.data?.map((department) => (
-                                      <SelectItem
-                                        value={department.id}
-                                        key={department.id}
-                                      >
-                                        {department.name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="sectionId"
-                            key="sectionId"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select section
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a section" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {filteredSections?.map((section) => (
-                                      <SelectItem
-                                        value={section.id}
-                                        key={section.id}
-                                      >
-                                        {section.course_year} {section.name} 
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
-
-                      <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="studentNumber"
-                            key="studentNumber"
+                            name="homeNo"
+                            key="homeNo"
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Student Number
+                                  Home No.
                                 </FormLabel>
                                 <FormControl>
                                   <Input
+                                    key={"homeNo"}
+                                    type="number"
                                     disabled={isLoading}
                                     className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    type="number"
-                                    placeholder={`Enter student number`}
+                                    placeholder={`Enter home no.`}
                                     {...field}
                                   />
                                 </FormControl>
@@ -468,41 +431,103 @@ const CreateStudentModal = () => {
                         <div className="w-full">
                           <FormField
                             control={form.control}
-                            name="schoolYear"
-                            key={'schoolYear'}
+                            name="street"
+                            key="street"
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select Year
+                                  Street
                                 </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a year" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {
-                                      selectedDepartment?.courseYear && new Array(selectedDepartment?.courseYear).fill(null).map((year, index) => (
-                                      <SelectItem value={ (index + 1).toString()} key={index + 1}>
-                                       {index + 1}
-                                      </SelectItem>
-                                      ))
-                                    }
-                                  </SelectContent>
-                                </Select>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter street`}
+                                    {...field}
+                                  />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
-
-
                       </div>
 
+                      {form.getValues("role") === "ADVISER" && (
+                        <div className="flex gap-x-3">
+                          <div className="w-full">
+                            <FormField
+                              control={form.control}
+                              name="departmentId"
+                              key="departmentId"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                    Select department
+                                  </FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select a department" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {departments?.data?.map((department) => (
+                                        <SelectItem
+                                          value={department.id}
+                                          key={department.id}
+                                        >
+                                          {department.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="w-full">
+                            <FormField
+                              control={form.control}
+                              name="sectionId"
+                              key="sectionId"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                    Select section
+                                  </FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select a section" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {filteredSections?.map((section) => (
+                                        <SelectItem
+                                          value={section.id}
+                                          key={section.id}
+                                        >
+                                          {section.course_year} {section.name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       <div className="flex gap-x-3">
                         <div className="w-full">
@@ -558,58 +583,6 @@ const CreateStudentModal = () => {
                         <div className="w-full">
                           <FormField
                             control={form.control}
-                            name="homeNo"
-                            key="homeNo"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Home No.
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                  key={'homeNo'}
-                                    type="number"
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter home no.`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="street"
-                            key="street"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Street
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter street`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
                             name="barangay"
                             key="barangay"
                             render={({ field }) => (
@@ -641,7 +614,9 @@ const CreateStudentModal = () => {
                   if (page === 1) {
                     return (
                       <div className="flex justify-between">
-                        <Button type="button" onClick={() => setPage(2)}>Next</Button>
+                        <Button type="button" onClick={() => setPage(2)}>
+                          Next
+                        </Button>
                       </div>
                     );
                   }
@@ -649,7 +624,9 @@ const CreateStudentModal = () => {
                   if (page === 2) {
                     return (
                       <div className="flex justify-between w-full">
-                        <Button  type="button" onClick={() => setPage(1)}>Prev</Button>
+                        <Button type="button" onClick={() => setPage(1)}>
+                          Prev
+                        </Button>
                         <Button
                           variant={"default"}
                           type="submit"
@@ -664,7 +641,7 @@ const CreateStudentModal = () => {
                                   Saving <Loader2 size={20} />
                                 </div>
                               );
-                            return "Add student";
+                            return "Add user";
                           })()}
                         </Button>
                       </div>
@@ -681,4 +658,4 @@ const CreateStudentModal = () => {
   );
 };
 
-export default CreateStudentModal;
+export default CreateUserModal;

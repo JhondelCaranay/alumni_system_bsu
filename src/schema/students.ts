@@ -21,10 +21,11 @@ type PostSchemaType = z.infer<typeof StudentSchema>;
 
 export const CreateStudentsSchema = z.object({
   studentNumber: z.string().min(1, "Required"),
+  schoolYear: z.string().min(1, "Required"),
   firstname: z.string().min(1, "Required"),
   lastname: z.string().min(1, "Required"),
   middlename: z.string().min(1, "Required"),
-  age: z.string(),
+  // age: z.string(),
   homeNo: z.string().min(1, "Required"),
   street: z.string().min(1, "Required"),
   barangay: z.string().min(1, "Required"),
@@ -105,3 +106,5 @@ export const ImportStudentSchema = z.array(
 );
 
 export type ImportStudentSchemaType = z.infer<typeof ImportStudentSchema>;
+
+

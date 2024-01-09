@@ -6,6 +6,7 @@ import { isUserAllowed } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { z } from "zod";
 import { CreateStudentsSchema } from "@/schema/students";
+import bcrypt from 'bcrypt'
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     role,
     departmentId,
     sectionId,
-    age,
+    // age,
     barangay,
     city,
     contactNo,
@@ -110,13 +111,21 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     homeNo,
     province,
     street,
+    schoolYear
   } = result.data;
 
+  const bday = new Date(dateOfBirth)
+  const saltRounds = await bcrypt.genSalt(10);
+  const pass = `@${firstname}${bday.getDate()}${(bday.getMonth() + 1) < 10 ? `0${bday.getMonth() + 1}`: (bday.getMonth() + 1)}${bday.getFullYear()}`
+  const hashedPassword = await bcrypt.hash(pass,saltRounds)
+  console.log(pass)
   try {
     const user = await prisma.user.create({
       data: {
         email,
         role,
+        name: firstname + " " + lastname, 
+        hashedPassword,
         department: {
           connect: {
             id: departmentId,
@@ -150,13 +159,14 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         firstname,
         lastname,
         middlename,
-        age: Number(age),
+        // age: Number(age),
         barangay,
         city,
         contactNo,
-        dateOfBirth: new Date(dateOfBirth),
+        dateOfBirth: bday,
         gender,
         homeNo,
+        schoolYear: Number(schoolYear),
         province,
         street,
         user: {

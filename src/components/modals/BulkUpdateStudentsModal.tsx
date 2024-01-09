@@ -29,7 +29,7 @@ import { SafeUser } from "@/types/types";
 import { Loader2 } from "../ui/loader";
 import { useToast } from "../ui/use-toast";
 import axios, { AxiosError } from "axios";
-import { ImportStudentSchema, ImportStudentSchemaType } from "@/schema/students";
+import { BulkUpdateStudentsSchema, BulkUpdateStudentsSchemaType } from "@/schema/students";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -62,7 +62,7 @@ const BulkUpdateStudentsModal = () => {
   // converting sheet to json and api request
   const uploadData = (
     value: formType["excelFile"],
-    callback: (json: ImportStudentSchemaType) => void
+    callback: (json: BulkUpdateStudentsSchemaType) => void
   ) => {
     try {
       const reader = new FileReader();
@@ -74,7 +74,7 @@ const BulkUpdateStudentsModal = () => {
         const worksheet = workbook?.Sheets[sheetName];
         const json = xlsx?.utils.sheet_to_json(
           worksheet
-        ) as ImportStudentSchemaType;
+        ) as BulkUpdateStudentsSchemaType;
         callback(json);
       };
       reader.readAsArrayBuffer(value);
@@ -83,17 +83,17 @@ const BulkUpdateStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const createStudents = useMutateProcessor<ImportStudentSchemaType, SafeUser[]>(`/students/import`, null, 'POST', ['users']);
-  const isLoading = createStudents.isPending || form.formState.isSubmitting
+  const updateStudents = useMutateProcessor<BulkUpdateStudentsSchemaType, SafeUser[]>(`/students/bulk-update`, null, 'PATCH', ["students/alumni"]);
+  const isLoading = updateStudents.isPending || form.formState.isSubmitting
   const {toast} = useToast()
   
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
     // callback pattern
-    uploadData(data, (jsonData: ImportStudentSchemaType) => {
+    uploadData(data, (jsonData: BulkUpdateStudentsSchemaType) => {
 
       // validation
-      const validatedJsonData = ImportStudentSchema.safeParse(jsonData);
+      const validatedJsonData = BulkUpdateStudentsSchema.safeParse(jsonData);
 
       if(!validatedJsonData.success) {
         console.log(validatedJsonData.error)
@@ -106,7 +106,7 @@ const BulkUpdateStudentsModal = () => {
 
       // api request here...
       
-      createStudents.mutate(validatedJsonData.data, {
+      updateStudents.mutate(validatedJsonData.data, {
         onError(error, variables, context) {
           if(axios.isAxiosError(error)) {
           form.reset()
@@ -209,7 +209,16 @@ const BulkUpdateStudentsModal = () => {
               </div>
             </div>
             <DialogFooter className="px-6 py-4">
-              <Button variant={"default"} className=" dark:text-white">
+            <a
+                href="/assets/update-students-sample-file.xlsx"
+                download="update-students-sample-file.xlsx"
+              >
+                <Button variant={"link"} type="button">
+                  Download sample
+                </Button>
+              </a>
+
+              <Button variant={"default"} className=" dark:text-white" disabled={isLoading}>
                 {(() => {
                   if (isLoading)
                     return (

@@ -151,8 +151,10 @@ model Post {
   photos       Photos[]
   poll_options PollOption[]
   // user who owns the post
-  user         User         @relation(fields: [userId], references: [id])
+  user         User           @relation(fields: [userId], references: [id])
   userId       String
+  Like         Like[]
+  notifications Notification[]
 
   @@index([userId])
 }
@@ -172,12 +174,60 @@ model Comment {
   post   Post?   @relation(fields: [postId], references: [id])
   postId String?
 
-  commentId String?
-  comment   Comment?  @relation("CommentReply", fields: [commentId], references: [id])
-  replies   Comment[] @relation("CommentReply")
+  commentId    String?
+  comment      Comment?       @relation("CommentReply", fields: [commentId], references: [id])
+  replies      Comment[]      @relation("CommentReply")
+  notifications Notification[]
 
   @@index([userId])
   @@index([postId])
+}
+
+model Like {
+  id String @id @default(cuid())
+
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  post         Post           @relation(fields: [postId], references: [id])
+  postId       String
+  notifications Notification[]
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  type    NotificationType
+  content String
+
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+// User who is receiving the notification
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  // Post-related fields
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
+
+  // Comment-related fields
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?
+
+  // Like-related fields
+  like   Like?   @relation(fields: [likeId], references: [id])
+  likeId String?
+}
+
+enum NotificationType {
+  POST_LIKE
+  COMMENT_ON_POST
+  REPLY_TO_COMMENT
 }
 
 model Section {
@@ -338,8 +388,10 @@ model User {
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
 
-  section   Section? @relation(fields: [sectionId], references: [id])
-  sectionId String?
+  section      Section?       @relation(fields: [sectionId], references: [id])
+  sectionId    String?
+  likes         Like[]
+  notifications Notification[]
 
   @@index([sectionId])
   @@index([departmentId])

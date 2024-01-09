@@ -66,6 +66,10 @@ export async function POST(req: NextRequest) {
 
       const salt = await bcrypt.genSalt(10);
       const hashPw = await bcrypt.hash(password, salt);
+
+      const date = new Date((data['Date of birth'] - 1) * 24 * 60 * 60 * 1000 + Date.UTC(1900, 0, 1));
+      date.setDate(date.getDate() - 1)
+      
       const student = await prisma.user.create({
         data: {
           name:`${data['First Name']} ${data['Last Name']}`,
@@ -78,7 +82,8 @@ export async function POST(req: NextRequest) {
               contactNo: data["Contact Number"].toString(),
               gender: data["Gender"] as Gender,
               province: data['Province'].toString(),
-              // dateOfBirth: data['Date of birth'],
+              dateOfBirth: date,
+              schoolYear: 1,
               age: Number(data['Age']),
               barangay: data['Barangay'].toString(),
               city: data['City'].toString(),

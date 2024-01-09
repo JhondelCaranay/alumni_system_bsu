@@ -4,7 +4,7 @@ import { isUserAllowed } from "@/lib/utils";
 import { BulkUpdateStudentsSchema } from "@/schema/students";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, { params }: { params: {} }) {
+export async function PATCH(req: NextRequest, { params }: { params: {} }) {
   // const currentUser = await getCurrentUser();
 
   // if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
@@ -25,11 +25,11 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
   }
 
-  const { students } = result.data;
+  const students = result.data;
 
   try {
     // check if all students exists
-    const studentNumbers = students.map((student) => student.studentNumber);
+    const studentNumbers = students.map((student) => student['Student Number']);
 
     const existingStudents = await prisma.profile.findMany({
       where: {
@@ -48,9 +48,9 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       students.map(async (student) => {
         const studentdata = await prisma.profile.findFirst({
           where: {
-            studentNumber: student.studentNumber,
-            firstname: student.firstname,
-            lastname: student.lastname,
+            studentNumber: student['Student Number'],
+            firstname: student['First Name'],
+            lastname: student['Last Name'],
           },
           select: {
             user: {
@@ -73,18 +73,17 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
           !studentdata.schoolYear ||
           !studentdata?.user?.department?.courseYear
         ) {
-          return;
+          throw new Error('Students not found');
         }
 
         const department = studentdata.user.department;
-
-        await prisma.profile.update({
+        const updatedStudent = await prisma.profile.update({
           where: {
             id: studentdata.id,
           },
           data: {
             schoolYear: {
-              increment: 1,
+              increment: studentdata.schoolYear < Number(department.courseYear) ? 1 : 0,
             },
             user: {
               update: {
@@ -97,6 +96,10 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
           },
         });
 
+        if (!updatedStudent) {
+          throw new Error('Students not found');
+        }
+
         console.log("====================================");
         console.log("schoolYear", studentdata.schoolYear + 1);
         console.log("courseYear", department.courseYear);
@@ -105,8 +108,8 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     );
 
     return new NextResponse("Successfully updated students", { status: 200 });
-  } catch (error) {
+  } catch (error:any) {
     console.log("[POST_POST]", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse(error, { status: 500 });
   }
 }

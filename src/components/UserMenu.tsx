@@ -37,19 +37,13 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           transition"
         >
           <div className=" relative w-10 h-10">
-            <Image
-              src={currentUser?.image as string}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="rounded-full object-cover"
-              alt="profile image"
-            />
+            <Avatar src={currentUser?.image as string} />
           </div>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
-          {capitalizeWords(currentUser?.role!)}
+          {capitalizeWords(currentUser?.role!).replace('_', ' ')}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem

@@ -31,6 +31,7 @@ export type ModalType =
   | "removeMember"
   | "createStudent"
   | "bulkUpdateStudents"
+  | "createUser"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

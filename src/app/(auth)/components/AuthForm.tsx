@@ -16,6 +16,8 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   email: z.string().min(1, {
@@ -30,7 +32,7 @@ type formSchemaType = z.infer<typeof formSchema> | FieldValues;
 
 const AuthForm = () => {
   const router = useRouter();
-
+  const [showPass, setShowPass] = useState(false);
   const form = useForm({
     defaultValues: {
       email: "",
@@ -55,7 +57,7 @@ const AuthForm = () => {
 
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
-        router.refresh();
+        window.location.reload();
       }
     } catch (error) {
       toast.error("Something went wrong.");
@@ -78,8 +80,8 @@ const AuthForm = () => {
           />
         </div>
 
-        <h1 className=" text-2xl font-semibold text-center mx-10">
-          Alumni System
+        <h1 className=" text-2xl font-semibold text-center mx-10 mt-5">
+          CITZEN
         </h1>
 
         <div className="flex flex-col items-center  w-full gap-2">
@@ -119,7 +121,7 @@ const AuthForm = () => {
                     disabled={isLoading}
                     className="bg-white border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                     placeholder={`Enter Password`}
-                    type="password"
+                    type={showPass ? "text" : "password"}
                     {...field}
                   />
                 </FormControl>
@@ -127,6 +129,17 @@ const AuthForm = () => {
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="w-fit flex self-start mt-5 items-center gap-x-3">
+          <Checkbox
+          id="showPass"
+            checked={showPass === true}
+            onCheckedChange={(checked) => {
+              setShowPass((prev) => !prev);
+            }}
+          />
+          <label htmlFor="showPass" className="text-sm cursor-pointer">Show Password</label>
         </div>
         <button
           disabled={isLoading}

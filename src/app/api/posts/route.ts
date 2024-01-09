@@ -71,10 +71,11 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
           },
           photos: true,
           department: true,
+          Like: true,
           poll_options: {
             include: {
-              voters: true
-            }
+              voters: true,
+            },
           },
         },
       });
@@ -144,7 +145,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     company,
     location,
     pollOptions,
-    pollQuestion
+    pollQuestion,
   } = result.data;
 
   try {

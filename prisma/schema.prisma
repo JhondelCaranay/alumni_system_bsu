@@ -207,15 +207,19 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+// User who is receiving the notification
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
+  // Post-related fields
   post   Post?   @relation(fields: [postId], references: [id])
   postId String?
 
+// Comment-related fields
   comment   Comment? @relation(fields: [commentId], references: [id])
   commentId String?
-
+  
+// Like-related fields
   like   Like?   @relation(fields: [likeId], references: [id])
   likeId String?
 }

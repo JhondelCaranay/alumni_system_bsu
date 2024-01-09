@@ -32,7 +32,7 @@ export const CreateStudentsSchema = z.object({
   province: z.string().min(1, "Required"),
   contactNo: z.string().min(1, "Required"),
   gender: z.enum([Gender.MALE, Gender.FEMALE]),
-  dateOfBirth:z.string(),
+  dateOfBirth: z.string(),
   email: z.string().email().min(1, "Required"),
   role: z.enum([Role.STUDENT, Role.ALUMNI]),
   departmentId: z.string().cuid(),
@@ -67,7 +67,6 @@ export const UpdateStudentsSchema = CreateStudentsSchema.extend({
 type UpdateStudentsSchemaType = z.infer<typeof UpdateStudentsSchema>;
 
 export const BulkUpdateStudentsSchema = z.object({
-  departmentId: z.string().cuid(),
   students: z.array(
     z.object({
       studentNumber: z.number({
@@ -80,28 +79,30 @@ export const BulkUpdateStudentsSchema = z.object({
   ),
 });
 
-export type BulkUpdateStudentsSchemaType = z.infer<typeof BulkUpdateStudentsSchema>;
+export type BulkUpdateStudentsSchemaType = z.infer<
+  typeof BulkUpdateStudentsSchema
+>;
 
 export const ImportStudentSchema = z.array(
   z.object({
-    ['First Name']: z.string(),
-    ['Middle Name']: z.string(),
-    ['Last Name']: z.string(),
-    ['Age']: z.number(),
-    ['Date of birth']: z.any(),
-    ['Gender']: z.string(),
-    ['Home No']: z.number(),
-    ['Street']: z.string(),
-    ['Barangay']: z.string(),
-    ['City']: z.string(),
-    ['Email']: z.string().email(),
-    ['Province']: z.string(),
-    ['Student Number']: z.number(),
-    ['Course']: z.string(),
-    ['Section']: z.string(),
-    ['Contact Number']: z.number(),
-    ['Status']: z.string().optional(),
+    ["First Name"]: z.string(),
+    ["Middle Name"]: z.string(),
+    ["Last Name"]: z.string(),
+    ["Age"]: z.number(),
+    ["Date of birth"]: z.any(),
+    ["Gender"]: z.string(),
+    ["Home No"]: z.number(),
+    ["Street"]: z.string(),
+    ["Barangay"]: z.string(),
+    ["City"]: z.string(),
+    ["Email"]: z.string().email(),
+    ["Province"]: z.string(),
+    ["Student Number"]: z.number(),
+    ["Course"]: z.string(),
+    ["Section"]: z.string(),
+    ["Contact Number"]: z.number(),
+    ["Status"]: z.string().optional(),
   })
 );
 
-export type ImportStudentSchemaType = z.infer<typeof ImportStudentSchema>
+export type ImportStudentSchemaType = z.infer<typeof ImportStudentSchema>;

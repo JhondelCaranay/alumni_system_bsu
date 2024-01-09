@@ -82,8 +82,8 @@ const InboxMobile = ({ currentUser }: Props) => {
           }
 
           return inboxes.data.map((inbox) => (
-            <Hint label={inbox.name} side="right">
-              <InboxItemMobile data={inbox} key={inbox?.id} />
+            <Hint label={inbox.name} side="right" key={inbox.id}>
+              <InboxItemMobile data={inbox} />
             </Hint>
           ));
         })()}

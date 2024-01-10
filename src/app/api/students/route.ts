@@ -111,15 +111,20 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     homeNo,
     province,
     street,
-    schoolYear
   } = result.data;
 
   const bday = new Date(dateOfBirth)
   const saltRounds = await bcrypt.genSalt(10);
   const pass = `@${firstname}${bday.getDate()}${(bday.getMonth() + 1) < 10 ? `0${bday.getMonth() + 1}`: (bday.getMonth() + 1)}${bday.getFullYear()}`
   const hashedPassword = await bcrypt.hash(pass,saltRounds)
-  console.log(pass)
   try {
+
+    const section = await prisma.section.findUnique({
+      where: {
+        id: sectionId
+      }
+    })
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -166,7 +171,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         dateOfBirth: bday,
         gender,
         homeNo,
-        schoolYear: Number(schoolYear),
+        schoolYear: Number(section?.course_year),
         province,
         street,
         user: {

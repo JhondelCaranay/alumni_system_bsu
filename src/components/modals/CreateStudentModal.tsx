@@ -114,7 +114,6 @@ const CreateStudentModal = () => {
 
   const selectedDepartment = departments.data?.find((department) => department.id === departmentId )
 
-  console.log(selectedDepartment)
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -363,6 +362,33 @@ const CreateStudentModal = () => {
                   return (
                     <>
                     
+                    <div className="flex gap-x-3">
+
+<div className="w-full">
+    <FormField
+      control={form.control}
+      name="studentNumber"
+      key="studentNumber"
+      render={({ field }) => (
+        <FormItem className="w-full">
+          <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+            Student Number
+          </FormLabel>
+          <FormControl>
+            <Input
+              disabled={isLoading}
+              className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+              type="number"
+              placeholder={`Enter student number`}
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  </div>
+</div>
 
                       <div className="flex gap-x-3">
                         <div className="w-full">
@@ -409,7 +435,7 @@ const CreateStudentModal = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select section
+                                  Select year & section
                                 </FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
@@ -436,71 +462,6 @@ const CreateStudentModal = () => {
                             )}
                           />
                         </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
-
-                      <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="studentNumber"
-                            key="studentNumber"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Student Number
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    type="number"
-                                    placeholder={`Enter student number`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="schoolYear"
-                            key={'schoolYear'}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select Year
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a year" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {
-                                      selectedDepartment?.courseYear && new Array(selectedDepartment?.courseYear).fill(null).map((year, index) => (
-                                      <SelectItem value={ (index + 1).toString()} key={index + 1}>
-                                       {index + 1}
-                                      </SelectItem>
-                                      ))
-                                    }
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-
                       </div>
 
 

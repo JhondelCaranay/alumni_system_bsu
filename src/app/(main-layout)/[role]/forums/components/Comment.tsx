@@ -64,7 +64,7 @@ const Comment: React.FC<CommentProps> = ({ data, currentUserId, postId }) => {
   }
 
   return (
-    <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent">
+    <article className="px-6 py-3 text-base bg-white rounded-lg dark:bg-transparent" id={data.id}>
       <footer className="flex justify-between items-center mb-1">
         <div className="flex items-center">
           <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
@@ -72,8 +72,7 @@ const Comment: React.FC<CommentProps> = ({ data, currentUserId, postId }) => {
               className="mr-2 w-6 h-6 rounded-full"
               src={data?.user?.image}
             />
-            {data?.user?.name ||
-              `${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
+            {`${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
           </div>
           <span className="text-xs">
             <Badge className="capitalize text-[10px]">

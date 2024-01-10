@@ -21,7 +21,7 @@ export async function POST(
     if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
+    
     // get post by id
     const post = await prisma.post.findUnique({
       where: {

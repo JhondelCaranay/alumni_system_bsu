@@ -65,7 +65,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
         <div className="flex flex-col ml-2 justify-between h-full">
 
             <div className="flex flex-col gap-y-1">
-                <span className="text-md font-semibold text-zinc-600 dark:text-white">{data?.name}</span>
+                <span className="text-md font-semibold text-zinc-600 dark:text-white">{data?.profile?.firstname} {data?.profile?.lastname}</span>
                 <span className="text-sm font-semibold text-zinc-600 dark:text-white capitalize" >{data?.department?.name.toLowerCase()}</span>
             </div>
           

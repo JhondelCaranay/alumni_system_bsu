@@ -77,7 +77,7 @@ const Comment: React.FC<CommentProps> = ({ data, currentUserId, postId }) => {
               className="mr-2 w-6 h-6 rounded-full"
               src={data?.user?.image || ""}
             />
-            {data?.user?.name}
+            {data?.user?.profile?.firstname} {data.user?.profile?.lastname}
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <time title={data?.createdAt?.toString()}>

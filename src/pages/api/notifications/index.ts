@@ -4,6 +4,7 @@ import { isUserAllowed } from "@/lib/utils";
 import { CreateNotificationSchema } from "@/schema/notification";
 import { NextApiResponseServerIo } from "@/types/types";
 import { NextApiRequest } from "next";
+import { truncateByDomain } from "recharts/types/util/ChartUtils";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +23,6 @@ export default async function handler(
     try {
       const notifications = await prisma.notification.findMany({
         where: {
-          isRead: false,
           userId: currentUser.id,
         },
         orderBy: {
@@ -44,6 +44,8 @@ export default async function handler(
           post: true,
           comment: true,
           like: true,
+          usersWhoInteract:true,
+          
         },
       });
 

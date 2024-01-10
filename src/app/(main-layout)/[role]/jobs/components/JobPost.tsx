@@ -4,7 +4,7 @@ import { Heart, MessageSquare, Share2 } from "lucide-react";
 import React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
-import { SafeUser } from "@/types/types";
+import { SafeUser, UserWithProfile } from "@/types/types";
 import { CommentSchemaType } from "@/schema/comment";
 import { PostSchemaType } from "@/schema/post";
 import { format } from "date-fns";
@@ -19,9 +19,9 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
 
 type JobPostProps = {
   post: PostSchemaType;
-  user: SafeUser;
+  user: UserWithProfile;
   comments: CommentSchemaType & {
-    user: SafeUser;
+    user: UserWithProfile;
   };
 };
 
@@ -74,7 +74,7 @@ const JobPost: React.FC<JobPostProps> = ({ user, comments, post }) => {
       </div> */}
       <div className="flex items-center space-x-4">
         <Avatar className="w-7 h-7 rounded-full" src={user?.image} />
-        <span className="font-medium dark:text-white">{user?.name}</span>
+        <span className="font-medium dark:text-white">{user?.profile.firstname} {user?.profile.lastname}</span>
         <span className="text-sm">
           {format(new Date(post?.createdAt || new Date()), DATE_FORMAT)}
         </span>

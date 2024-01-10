@@ -1,9 +1,10 @@
 import { SafeUser } from "@/types/types";
 import { MobileSidebar } from "./MobileSidebar";
 import { NavbarRoutes } from "./NavbarRoutes";
+import { GetCurrentUserType } from "@/actions/getCurrentUser";
 
 type NavbarProps = {
-  currentUser?: SafeUser | null;
+  currentUser?: GetCurrentUserType | null;
 };
 
 export const Navbar = ({ currentUser }: NavbarProps) => {

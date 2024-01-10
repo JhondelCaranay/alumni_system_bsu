@@ -32,6 +32,7 @@ export type ModalType =
   | "createStudent"
   | "bulkUpdateStudents"
   | "createUser"
+  | "viewPhoto"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."
@@ -47,6 +48,7 @@ type ModalData = {
   comment?: CommentSchemaType;
   workExperience?: JobSchemaType;
   groupChat?: GroupChatSchemaType
+  photoUrl?: string
 };
 
 type ModalStore = {

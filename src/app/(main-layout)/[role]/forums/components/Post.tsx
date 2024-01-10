@@ -94,7 +94,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
       // isCommenting,
     }
   );
-  const likePost = useMutateProcessor<null, any>(`/posts/${postData?.id}/like`, null, 'POST', ['like', postData.id])
+  const likePost = useMutateProcessor<null, any>(`/like`, {postId: postData.id}, 'POST', ['like', postData.id])
   const isOwner = currentUser?.id === postData.userId;
   const isAdmin = currentUser?.id === Role.ADMIN;
   const canEditOrDelete = isOwner || isAdmin;

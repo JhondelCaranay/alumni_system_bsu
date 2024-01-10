@@ -27,6 +27,11 @@ export default async function getCurrentUser() {
         },
         section: true,
         department: true,
+        notifications: {
+          include: {
+            usersWhoInteract:true
+          }
+        }
       },
     });
 

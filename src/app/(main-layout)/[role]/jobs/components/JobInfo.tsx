@@ -157,7 +157,7 @@ const JobInfo:React.FC<JobInfoProps> = ({currentUser}) => {
             src={job.data?.user?.image as string}
           />
           <span className="font-medium dark:text-white">
-            {job.data?.user?.name}
+            {job.data?.user?.profile?.firstname} {job.data.user?.profile?.lastname}
           </span>
           <span className="text-sm">
             {format(new Date(job.data.createdAt), DATE_FORMAT)}

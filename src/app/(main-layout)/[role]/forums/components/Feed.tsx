@@ -39,7 +39,7 @@ const Feed:React.FC<FeedProps> = ({currentUser}) => {
       <CreateFeedInput />
     
       {feed.data.map((feedData) => (
-        <Post key={feedData?.id || new Date().toString()} currentUser={currentUser} postData={feedData} />
+        <Post key={feedData?.id || new Date().toString()} currentUser={currentUser} postData={feedData} isCommentSectionOpen={false} />
       ))}
     </div>
   );

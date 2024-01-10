@@ -45,6 +45,7 @@ export default async function hanlder(
       const notificationExist = await prisma.notification.findFirst({
         where: {
           postId: postId as string,
+          type: 'POST_LIKE'
         },
         include: {
           usersWhoInteract: true,
@@ -61,23 +62,49 @@ export default async function hanlder(
         // check if currentUser is not equal to the one who post
         // we dont want to create a notification if the one who post is the current user
         if (currentUser.id !== post.userId) {
-          if (notificationExist) {
-            const updatedNotification = await prisma.notification.update({
-              where: {
-                id: notificationExist.id,
-              },
-              data: {
-                content: `${
-                  notificationExist.usersWhoInteract.length - 1
-                } people liked your post`,
-                usersWhoInteract: {
-                  disconnect: {
-                    id: currentUser.id,
+          if (notificationExist) {  
+            if(notificationExist.usersWhoInteract.length -1 <= 0) {
+              const deletedNotification = await prisma.notification.delete({
+                where: {
+                  id: notificationExist.id
+                }
+              })
+
+            const Key = `notification:${post.userId}:delete`;
+            console.log("new notification socket:", Key);
+            res.socket?.server?.io.emit(Key, deletedNotification);
+            }
+            else {
+              const updatedNotification = await prisma.notification.update({
+                where: {
+                  id: notificationExist.id,
+                },
+                data: {
+                  content: `${
+                    notificationExist.usersWhoInteract.length - 1
+                  } people liked your post`,
+                  usersWhoInteract: {
+                    disconnect: {
+                      id: currentUser.id,
+                    },
                   },
                 },
-              },
-            });
+                include: {
+                  comment:true,
+                  like:true,
+                  post:true,
+                  user:true,
+                  usersWhoInteract:true
+                }
+              });
+
+            const Key = `notification:${post.userId}:update`;
+            console.log("new notification socket:", Key);
+            res.socket?.server?.io.emit(Key, updatedNotification);
+            }
+           
             // socket here (optional)
+            
           }
         }
 
@@ -115,8 +142,18 @@ export default async function hanlder(
                   },
                 },
               },
+              include: {
+                comment:true,
+                like:true,
+                post:true,
+                user:true,
+                usersWhoInteract:true
+              }
             });
             // socket here
+            const Key = `notification:${post.userId}:create`;
+            console.log("new notification socket:", Key);
+            res.socket?.server?.io.emit(Key, createdNotification);
           } else {
             const updatedNotification = await prisma.notification.update({
               where: {
@@ -132,9 +169,19 @@ export default async function hanlder(
                   },
                 },
               },
+              include: {
+                comment:true,
+                like:true,
+                post:true,
+                user:true,
+                usersWhoInteract:true
+              }
             });
+            // socket here
+            const Key = `notification:${post.userId}:update`;
+            console.log("new notification socket:", Key);
+            res.socket?.server?.io.emit(Key, updatedNotification);
           }
-          // socket here
         }
         return res.status(200).json({ addedLike: true });
       }

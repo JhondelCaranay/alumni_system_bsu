@@ -29,7 +29,11 @@ export default async function getCurrentUser() {
         department: true,
         notifications: {
           include: {
-            usersWhoInteract:true
+            post: true,
+            usersWhoInteract:true,
+            comment:true,
+            like:true,
+            user:true
           }
         }
       },

@@ -136,7 +136,7 @@ const JobDetailPage = ({currentUser}: Props) => {
   const canEditOrDelete = isOwner || isAdmin;
 
   return (
-    <article className="w-full flex-1 space-y-2 rounded-lg h-fit px-3">
+    <article className="sm:w-full md:w-[50%] md:mx-auto md:my-auto flex-1 space-y-2 rounded-lg h-fit px-3">
       {/* JOB POST */}
       <div className="shadow-lg p-3 bg-white dark:bg-gray-800 dark:text-white rounded-md relative">
         {canEditOrDelete && (

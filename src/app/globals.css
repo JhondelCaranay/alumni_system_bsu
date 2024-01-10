@@ -237,6 +237,10 @@ NOTE: for old browsers, will need to restart watcher after changing a variable
 }
 
 @layer base {
+  body, html{ 
+    scroll-behavior: smooth
+  }
+
   h1 {
     @apply text-4xl;
     @apply font-bold;

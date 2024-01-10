@@ -11,8 +11,8 @@ const InitialUserInfo: React.FC<IntialUserInfoProps> = ({ data }) => {
     <div className="flex-[0.6] flex flex-col w-full gap-y-5 p-5 bg-white dark:bg-[#1F2937] rounded-lg">
       <div className="flex flex-col gap-y-1">
         <Avatar src={data?.image} className="h-[80px] w-[80px] rounded-md" />
-        <span className="font-semibold text-md text-black dark:text-white">
-          {data?.name}
+        <span className="font-semibold text-md text-black dark:text-white mt-5">
+          {data?.profile?.firstname} {data?.profile?.lastname}
         </span>
       </div>
 

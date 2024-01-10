@@ -40,11 +40,11 @@ import { PollOption } from "@prisma/client";
 import Poll from "react-polls";
 import useRouterPush from "@/hooks/useRouterPush";
 import { cn } from "@/lib/utils";
-import { unknown } from "zod";
 
 const DATE_FORMAT = `d MMM yyyy, HH:mm`;
 
 type PostTypeProps = {
+  isCommentSectionOpen: boolean;
   postData: PostSchemaType & {
     user: UserWithProfile;
     poll_options: (PollOption & { voters: UserWithProfile[] })[];
@@ -62,7 +62,7 @@ const pollStyle = {
   theme: "blue",
 };
 
-const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
+const Post: React.FC<PostTypeProps> = ({ postData, currentUser, isCommentSectionOpen }) => {
 
   const {redirectTo} = useRouterPush()
   const pollOptions = postData?.poll_options?.map((pollOption) => ({
@@ -71,13 +71,13 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
     votes: pollOption?.votes,
     voters: pollOption.voters,
   }))
-  const [isLiked, setIsLiked] = useState(() => postData.likes.some((like) => like.userId === currentUser?.id))
+  const [isLiked, setIsLiked] = useState(() => postData?.likes?.some((like) => like?.userId === currentUser?.id))
   const [pollOpts, setPollOpts] = useState(() => pollOptions)
   const isVoted = pollOptions?.find((poll) =>
     poll?.voters?.some((voter) => voter?.id == currentUser?.id)
   )
 
-  const [isCommenting, setIsCommenting] = useState(false);
+  const [isCommenting, setIsCommenting] = useState(isCommentSectionOpen);
   const { onOpen } = useModal();
 
   const comments = useQueryProcessor<
@@ -94,6 +94,10 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
       // isCommenting,
     }
   );
+
+  useEffect(() => {
+    comments.refetch()
+  }, [])
   const likePost = useMutateProcessor<null, any>(`/like`, {postId: postData.id}, 'POST', ['like', postData.id])
   const isOwner = currentUser?.id === postData.userId;
   const isAdmin = currentUser?.id === Role.ADMIN;
@@ -112,7 +116,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
     0
   );
 
-    const [likesCount, setLikesCount] = useState(() => postData.likes.length)
+    const [likesCount, setLikesCount] = useState(() => postData?.likes?.length || 0)
   return (
     <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative">
       <div className="flex gap-x-2 items-center">
@@ -120,8 +124,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
         <div className="flex flex-col">
           <span className="font-semibold flex">
             <span>
-              {postData?.user?.name ||
-                `${postData?.user?.profile?.firstname} ${postData?.user?.profile?.lastname}`}
+              {`${postData?.user?.profile?.firstname} ${postData?.user?.profile?.lastname}`}
             </span>
             <Badge className="capitalize ml-2 text-[10px]">
               {postData?.user?.role?.toLowerCase()}
@@ -211,13 +214,14 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser }) => {
       })()}
       <div className="flex py-5 gap-5 flex-wrap gap justify-center">
         {postData?.photos?.map((photo) => (
-          <Image
+          <img
             key={photo.id}
             src={photo.public_url}
-            height={150}
-            width={150}
+            // height={200}
+            // width={200}
             alt="post image"
-            className="rounded-md object-cover"
+            className="rounded-md object-cover h-[200px] w-[200px] cursor-pointer"
+            onClick={() => onOpen('viewPhoto', {photoUrl: photo.public_url})}
           />
         ))}
       </div>

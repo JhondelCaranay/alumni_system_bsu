@@ -20,6 +20,7 @@ import RemoveMemberModal from "../modals/RemoveMemberModal";
 import CreateStudentModal from "../modals/CreateStudentModal";
 import BulkUpdateStudentsModal from "../modals/BulkUpdateStudentsModal";
 import CreateUserModal from "../modals/CreateUserModal";
+import ViewPhotoModal from "../modals/ViewPhotoModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -54,6 +55,7 @@ const ModalProvider = () => {
       <CreateStudentModal />
       <BulkUpdateStudentsModal />
       <CreateUserModal />
+      <ViewPhotoModal />
     </>
   );
 };

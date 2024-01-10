@@ -55,8 +55,7 @@ const Reply: React.FC<ReplyProps> = ({
               className="mr-2 w-6 h-6 rounded-full"
               src={data?.user?.image}
             />
-            {data?.user?.name ||
-              `${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
+            {`${data?.user?.profile?.firstname} ${data?.user?.profile?.lastname}`}
           </p>
           <span className="text-xs">
             <Badge className="capitalize text-[10px]">

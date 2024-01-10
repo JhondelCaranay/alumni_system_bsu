@@ -95,6 +95,16 @@ export default async function handler(
     }
 
     try {
+      const post = await prisma.post.findUnique({
+        where: {
+          id: result.data.postId
+        }
+      })
+
+      if(!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
       const comment = await prisma.comment.create({
         data: {
           ...result.data,
@@ -113,6 +123,35 @@ export default async function handler(
           },
         },
       });
+
+      if(currentUser.id !== post.userId) {
+          const notification = await prisma.notification.create({
+            data: {
+              content: `${currentUser.profile?.firstname} ${currentUser.profile?.lastname} commented on your post`,
+              userId: post.userId,
+              commentId: comment.id,
+              postId: post.id,
+              usersWhoInteract: {
+                connect: {
+                  id: currentUser.id,
+                },
+              },
+              type: 'COMMENT_ON_POST'
+            },
+            include: {
+              comment:true,
+              like:true,
+              post:true,
+              user:true,
+              usersWhoInteract:true
+            }
+          });
+          // socket here (optional)
+          const Key = `notification:${post.userId}:create`;
+          console.log("new notification socket:", Key);
+
+          res.socket?.server?.io.emit(Key, notification);
+      }
 
       const Key = `posts:${result.data.postId}:comments`;
 

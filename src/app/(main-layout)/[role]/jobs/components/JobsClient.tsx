@@ -6,7 +6,7 @@ import JobInfo from "./JobInfo";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { PostSchemaType } from "@/schema/post";
 import { CommentSchemaType } from "@/schema/comment";
-import { SafeUser } from "@/types/types";
+import { SafeUser, UserWithProfile } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import JobSkeletonList from "./JobSkeletonList";
 import { Briefcase } from "lucide-react";
@@ -20,9 +20,9 @@ const JobsClient:React.FC<JobsClientProps> = ({currentUser}) => {
   const jobs = useQueryProcessor<
     (PostSchemaType & {
       comments: CommentSchemaType & {
-        user: SafeUser;
+        user: UserWithProfile;
       };
-      user: SafeUser;
+      user: UserWithProfile;
     })[]
   >(
     "/posts",

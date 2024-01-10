@@ -156,7 +156,7 @@ export async function PATCH(
         userId: studentId,
       },
       data: {
-        studentNumber,
+        studentNumber: Number(studentNumber),
         firstname,
         lastname,
         middlename,

@@ -4,6 +4,7 @@ import { isUserAllowed } from "@/lib/utils";
 import { UpdateCommentSchema, CreateReplySchema } from "@/schema/comment";
 import { allowedUserFields } from "@/schema/users";
 import { NextApiResponseServerIo } from "@/types/types";
+import { update } from "autosize";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -11,10 +12,8 @@ export default async function handler(
   res: NextApiResponseServerIo
 ) {
   const { commentId } = req.query;
-
   // always use this in /pages/api it needs req, res arguments
   const currentUser = await getCurrentUserPages(req, res);
-
   if (!currentUser || !isUserAllowed(currentUser.role, ["ALL"])) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -39,6 +38,7 @@ export default async function handler(
           },
         },
       },
+      post:true
     },
   });
 
@@ -49,7 +49,6 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    console.log("commentId post");
     const result = await CreateReplySchema.safeParseAsync(req.body);
 
     if (!result.success) {
@@ -87,6 +86,64 @@ export default async function handler(
           },
         },
       });
+
+      if(currentUser.id !== updatedComment.userId) {
+        const notificationForWhoGotReplied = await prisma.notification.create({
+          data: {
+            content: `${currentUser.profile?.firstname} ${currentUser.profile?.lastname} replied on your comment`,
+            userId: updatedComment.userId,
+            postId:comment.post?.id,
+            commentId: comment.id,
+            usersWhoInteract: {
+              connect: {
+                id: currentUser.id,
+              },
+            },
+            type: 'REPLY_TO_COMMENT'
+          },
+          include: {
+            comment:true,
+            like:true,
+            post:true,
+            user:true,
+            usersWhoInteract:true
+          }
+        });
+
+        // socket here (optional)
+        // notification for the one who got replied
+        const notificationForWhoGotRepliedKey = `notification:${updatedComment.userId}:create`;
+        res.socket?.server?.io.emit(notificationForWhoGotRepliedKey, notificationForWhoGotReplied);
+
+        if(comment.post?.userId !== updatedComment.userId) {
+          const notificationForWhoPost = await prisma.notification.create({
+            data: {
+              content: `${currentUser.profile?.firstname} ${currentUser.profile?.lastname} replied to a comment on your post`,
+              userId: comment.post?.userId as string,
+              postId:comment.post?.id,
+              commentId: comment.id,
+              usersWhoInteract: {
+                connect: {
+                  id: currentUser.id,
+                },
+              },
+              type: 'REPLY_TO_COMMENT'
+            },
+            include: {
+              comment:true,
+              like:true,
+              post:true,
+              user:true,
+              usersWhoInteract:true
+            }
+          });
+          // socket here (optional)
+         // notification for the one who posted
+          const notificationForWhoPostKey = `notification:${comment.post?.userId}:create`;
+        res.socket?.server?.io.emit(notificationForWhoPostKey, notificationForWhoPost);
+        }
+    }
+
       const Key = `posts:${updatedComment.postId}:reply`;
       res.socket?.server?.io.emit(Key, updatedComment);
       return res.status(200).json(updatedComment);

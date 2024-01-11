@@ -31,7 +31,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
 
     router.push(url);
   };
-
+  console.log(data)
   return (
     <div
       className={cn(

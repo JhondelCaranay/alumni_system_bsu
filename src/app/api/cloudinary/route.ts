@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, { params }: { params: {} }) {
     try {
-
         const formData = await req.formData()
         formData.append('upload_preset', 'next-alumni-system')
         // const file = formData.get('file')

@@ -123,10 +123,10 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser, isCommentSection
         <Avatar src={postData?.user?.image} />
         <div className="flex flex-col">
           <span className="font-semibold flex">
-            <span>
+            <span className="flex text-sm md:text-md">
               {`${postData?.user?.profile?.firstname} ${postData?.user?.profile?.lastname}`}
             </span>
-            <Badge className="capitalize ml-2 text-[10px]">
+            <Badge className="capitalize ml-2 text-[10px] text-white">
               {postData?.user?.role?.toLowerCase()}
             </Badge>
           </span>
@@ -143,7 +143,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser, isCommentSection
 
         {canEditOrDelete && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="absolute top-5 right-5" asChild>
+            <DropdownMenuTrigger className="absolute top-1 right-1 sm:top-5 sm:right-5" asChild>
               <Button
                 className="inline-flex items-center text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-0 focus:outline-none dark:bg-transparent dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                 type="button"
@@ -220,7 +220,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser, isCommentSection
             // height={200}
             // width={200}
             alt="post image"
-            className="rounded-md object-cover h-[200px] w-[200px] cursor-pointer"
+            className="rounded-md object-cover w-full h-[200px] md:w-[200px] cursor-pointer"
             onClick={() => onOpen('viewPhoto', {photoUrl: photo.public_url})}
           />
         ))}

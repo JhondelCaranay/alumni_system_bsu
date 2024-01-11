@@ -66,9 +66,9 @@ const StudentsClient = () => {
   }, [role, department, users]);
 
   return (
-    <div className="flex flex-col p-10">
+    <div className="flex flex-col p-5">
        <div className="flex justify-end gap-x-5">
-        <Button className="text-zinc-500 dark:text-white" variant={"outline"} onClick={() => onModalOpen('createUser')}>
+        <Button className="text-zinc-500 dark:text-white w-full lg:w-fit" variant={"outline"} onClick={() => onModalOpen('createUser')}>
           {" "}
           <UserPlus className="w-5 h-5 mr-2" /> Add user
         </Button>
@@ -92,8 +92,8 @@ const StudentsClient = () => {
 
       </div>
 
-      <div className="flex items-center gap-5 my-10">
-        <div className="border flex items-center rounded-md px-2 w-full flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:md:sm:grid-cols-4 gap-4 py-4">
+        <div className="border flex items-center rounded-md px-2 w-full flex-1 ">
           <Search className="w-5 h-5 font-semibold text-zinc-500 dark:text-white" />
           <Input
             className="inset-0 outline-none border-none active:outline-none hover:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
@@ -104,10 +104,10 @@ const StudentsClient = () => {
           />
         </div>
         <Select value={role} onValueChange={(value: RoleType) => setRole(value)}>
-          <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
+          <SelectTrigger className="w-full sm:flex-1 md:flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
+          <SelectContent className="w-full sm:flex-1 md:flex-[0.3] font-semibold text-zinc-500 dark:text-white">
             <SelectItem value={"All"} key={"All"} className="cursor-pointer">
               {capitalizeWords("All")}
             </SelectItem>
@@ -120,10 +120,10 @@ const StudentsClient = () => {
         </Select>
 
         <Select value={department} onValueChange={(value) => setDepartment(value)}>
-          <SelectTrigger className="w-full flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
+          <SelectTrigger className="w-full sm:flex-1 md:flex-[0.3]  font-semibold text-zinc-500 dark:text-white">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
-          <SelectContent className="w-full flex-[0.3] font-semibold text-zinc-500 dark:text-white">
+          <SelectContent className="w-full sm:flex-1 md:flex-[0.3] font-semibold text-zinc-500 dark:text-white">
             <SelectItem value={"All"} key={"All"} className="cursor-pointer">
               {capitalizeWords("All")}
             </SelectItem>

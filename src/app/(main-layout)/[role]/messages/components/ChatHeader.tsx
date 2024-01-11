@@ -58,10 +58,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data, currentUser }) => {
       </div>
       <div className="flex justify-between w-full items-center">
         <div className="flex flex-col">
-          <h1 className="font-semibold text-[1.3em] text-black dark:text-white">
+          <h1 className="font-semibold text-[1.3em] text-black dark:text-white line-clamp-1">
             {data.name}
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-gray-400">
+          <p className="text-sm text-zinc-500 dark:text-gray-400 line-clamp-1">
             {data.department.name} {data.section.course_year}{" "}
             {data.section.name}
           </p>

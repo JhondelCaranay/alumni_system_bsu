@@ -74,7 +74,6 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
             className={cn(" flex p-3 cursor-pointer hover:bg-zinc-200 rounded-md z-50 gap-x-3 bg-zinc-200 m-1 dark:bg-[#101627] ", notification.isRead && 'bg-white dark:bg-[#020817]')}
             key={notification.id}
             onClick={async () => {
-              
               if (notification?.type === NotificationType.POST_LIKE) {
                 if (notification.post?.type === "FEED") {
                   redirectTo(`forums/${notification?.post.id}`);

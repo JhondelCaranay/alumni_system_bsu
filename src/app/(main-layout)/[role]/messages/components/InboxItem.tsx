@@ -42,7 +42,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
     >
       <div className=" flex justify-center items-center">
         <Avatar
-          src={data?.image || "/images/logo.png"}
+          src={data?.image}
           className="w-12 h-12 object-cover m-auto rounded-full"
         />
       </div>
@@ -51,7 +51,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
           {data?.name}
         </h2>
         <p className="text-[0.9em] line-clamp-2 ">
-          {data?.messages?.[data?.messages?.length - 1]?.message ?? "..."}
+          {data?.messages?.[data?.messages?.length - 1]?.message ?? "This is the start of your group chat conversation"}
         </p>
       </div>
     </div>

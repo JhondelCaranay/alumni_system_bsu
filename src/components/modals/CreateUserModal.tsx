@@ -61,7 +61,8 @@ const CreateUserModal = () => {
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
     null,
-    ["departments"]
+    ["departments"],
+    {enabled: isModalOpen}
   );
 
   form.watch(["departmentId", "role"]);
@@ -84,7 +85,9 @@ const CreateUserModal = () => {
 
   const sections = useQueryProcessor<SectionSchemaType[]>("/sections", null, [
     "sections",
-  ]);
+  ], {
+    enabled: isModalOpen
+  });
 
   const filteredSections = departmentId
     ? sections?.data?.filter((section) => section.departmentId === departmentId)

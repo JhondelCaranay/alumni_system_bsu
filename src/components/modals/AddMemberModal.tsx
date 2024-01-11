@@ -89,7 +89,7 @@ const AddMemberModal = () => {
     `/users`,
     { role: "STUDENT", department: data.groupChat?.department.name },
     ["students"],
-    { enabled: !!data.groupChat?.department.name }
+    { enabled: !!data.groupChat?.department.name && isModalOpen }
   );
 
   // console.log(students.data?.map((student) => student.department.name));

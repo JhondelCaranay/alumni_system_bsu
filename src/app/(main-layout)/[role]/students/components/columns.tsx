@@ -55,7 +55,15 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return studentNumber;
       },
       header: ({ column }) => {
-        return <div className="dark:text-white">Student Number</div>;
+        return <Button
+        variant="ghost"
+        className=" dark:text-white flex justify-center"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Student No.
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+
+      </Button>;
       },
       cell: ({ row }) => {
         const studentNumber = row.original.profile.studentNumber;
@@ -76,7 +84,8 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Email
-            {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+
           </Button>
         );
       },

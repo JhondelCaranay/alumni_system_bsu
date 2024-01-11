@@ -77,7 +77,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({ data }) => {
         />
         <div className="flex justify-between items-center px-2">
           <div className="flex gap-x-5">
-            <Paperclip />
+            {/* <Paperclip /> */}
             <EmojiPicker
               onChange={(emoji) =>
                 form.setValue(

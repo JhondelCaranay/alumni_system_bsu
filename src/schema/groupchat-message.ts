@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const GroupChatMessageSchema = z.object({
   id: z.string(),
-  message: z.string(),
+  message: z.string().min(1, "required"),
   senderId: z.string().cuid(),
   groupChatId: z.string(),
   createdAt: z.date(),

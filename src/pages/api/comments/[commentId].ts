@@ -115,7 +115,7 @@ export default async function handler(
         const notificationForWhoGotRepliedKey = `notification:${updatedComment.userId}:create`;
         res.socket?.server?.io.emit(notificationForWhoGotRepliedKey, notificationForWhoGotReplied);
 
-        if(comment.post?.userId !== updatedComment.userId) {
+        if(comment.post?.userId !== updatedComment.userId && currentUser.id !== comment.post?.userId) {
           const notificationForWhoPost = await prisma.notification.create({
             data: {
               content: `${currentUser.profile?.firstname} ${currentUser.profile?.lastname} replied to a comment on your post`,
@@ -141,7 +141,7 @@ export default async function handler(
          // notification for the one who posted
           const notificationForWhoPostKey = `notification:${comment.post?.userId}:create`;
           res.socket?.server?.io.emit(notificationForWhoPostKey, notificationForWhoPost);
-        }
+        } 
     }
 
       const Key = `posts:${updatedComment.postId}:reply`;

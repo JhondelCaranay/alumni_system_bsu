@@ -55,7 +55,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
         return studentNumber;
       },
       header: ({ column }) => {
-        return <div className="dark:text-white">LRN</div>;
+        return <div className="dark:text-white">Student Number</div>;
       },
       cell: ({ row }) => {
         const studentNumber = row.original.profile.studentNumber;

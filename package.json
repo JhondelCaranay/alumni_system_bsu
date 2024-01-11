@@ -48,6 +48,7 @@
     "autosize": "^6.0.1",
     "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
+    "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^1.41.0",
     "cloudinary-react": "^1.8.1",

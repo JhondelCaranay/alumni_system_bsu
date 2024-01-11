@@ -63,7 +63,7 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
           <Bell className="relative w-5 h-5 fill-orange-300 text-orange-300 cursor-pointer" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="">
+      <DropdownMenuContent align="center" className="w-full max-w-[400px]">
         <DropdownMenuLabel>
           <h1 className="text-sm text-center">Notifications</h1>
         </DropdownMenuLabel>

@@ -88,7 +88,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({ data }) => {
             />
           </div>
           <div>
-            <Button className="rounded-2xl">Send</Button>
+            <Button className="rounded-2xl text-white">Send</Button>
           </div>
         </div>
       </form>

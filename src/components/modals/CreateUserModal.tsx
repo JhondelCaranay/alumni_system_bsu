@@ -106,7 +106,6 @@ const CreateUserModal = () => {
   const onSubmit: SubmitHandler<CreateUserSchemaType> = async (values) => {
     createUser.mutate(values, {
       onSuccess(data, variables, context) {
-        console.log(data);
         toast({
           title: "Student successfully created",
         });
@@ -121,7 +120,7 @@ const CreateUserModal = () => {
       },
     });
   };
-  console.log(form.formState.errors)
+  
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>

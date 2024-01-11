@@ -76,7 +76,6 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
             },
             "image.replaced": function (img: any, response: any) {
               try {
-                // console.log(img, response, '🚀 ~ image replaced ~ 🚀')
                 // const responseData =  JSON.parse(response);
                 // const publicId = responseData.link.split('next-alumni-system/')[1]?.replace('.jpg', '')
                 // handleImageDeleteOrReplace(publicId)
@@ -86,7 +85,6 @@ const Editor: React.FC<EditorProps> = ({ model, onChange }) => {
             },
             "image.removed": async function (img: any, response: any) {
               try {
-                console.log(img, response, "🚀 ~ image removed ~ 🚀");
                 const publicIdFromReplace = img[0]["data-fr-old-src"];
                 if (publicIdFromReplace) {
                   // getting the public id from url and removing file ext

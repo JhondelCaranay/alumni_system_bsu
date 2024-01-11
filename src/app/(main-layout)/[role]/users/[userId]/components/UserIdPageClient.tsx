@@ -107,7 +107,6 @@ const UserIdPageClient = () => {
   const { onOpen } = useModal();
 
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
-    console.log(values);
     mutate(values, {
       onSuccess(data, variables, context) {
         toast.success("User has been updated!");

@@ -92,7 +92,6 @@ const AddMemberModal = () => {
     { enabled: !!data.groupChat?.department.name && isModalOpen }
   );
 
-  // console.log(students.data?.map((student) => student.department.name));
 
   const isLoading =
     addMembers.status === "pending" || form.formState.isSubmitting;

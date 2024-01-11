@@ -92,10 +92,7 @@ const CreateSectionModal = ({ isOpen, onClose }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CreateSectionSchema>) => {
-    console.log(
-      "🚀 ~ file: CreateSectionModal.tsx:48 ~ onSubmit ~ values:",
-      values
-    );
+   
     await new Promise((resolve) => setTimeout(resolve, 500));
     mutation.mutate(values, {
       async onSuccess() {

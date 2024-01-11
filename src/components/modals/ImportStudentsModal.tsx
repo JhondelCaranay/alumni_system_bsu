@@ -129,7 +129,6 @@ const ImportStudentsModal = () => {
           form.reset();
         },
         onSuccess(data, variables, context) {
-          console.log(data);
           toast({
             title: "The excel has been imported",
           });

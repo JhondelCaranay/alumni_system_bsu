@@ -28,8 +28,6 @@ const Reply: React.FC<ReplyProps> = ({
 }) => {
   const canEditOrDeleteComment = currentUserId === data.userId;
 
-  console.log(currentUserId,
-    data.userId)
   const { onOpen } = useModal();
 
   const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] =

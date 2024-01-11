@@ -96,7 +96,6 @@ const BulkUpdateStudentsModal = () => {
       const validatedJsonData = BulkUpdateStudentsSchema.safeParse(jsonData);
 
       if(!validatedJsonData.success) {
-        console.log(validatedJsonData.error)
         return toast({
           title: 'Excel did not import properly',
           description: 'invalid excel format',
@@ -124,7 +123,6 @@ const BulkUpdateStudentsModal = () => {
           form.reset()
         },
         onSuccess(data, variables, context) {
-          console.log(data)
           toast({
             title: 'The excel has been imported',
           })

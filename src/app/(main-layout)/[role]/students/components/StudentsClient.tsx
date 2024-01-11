@@ -59,15 +59,16 @@ const StudentsClient = (props: StudentsClientProps) => {
     students.refetch();
   }, [role, schoolYear, department]);
 
-  console.log(students.data);
   const departmentsQuery = useQuery({
     queryKey: ["departments"],
     queryFn: () => getDeparments(),
   });
 
   if (
-    // studentsQuery.isError || 
-    departmentsQuery.isError || students.isError) {
+    // studentsQuery.isError ||
+    departmentsQuery.isError ||
+    students.isError
+  ) {
     return <div>Error...</div>;
   }
 

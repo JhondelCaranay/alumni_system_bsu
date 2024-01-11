@@ -96,7 +96,6 @@ const CreateStudentModal = () => {
   const onSubmit: SubmitHandler<CreateStudentsSchemaType> = async (values) => {
     createStudent.mutate(values, {
         onSuccess(data, variables, context) {
-            console.log(data)
             toast({
                 title: 'Student successfully created'
             })

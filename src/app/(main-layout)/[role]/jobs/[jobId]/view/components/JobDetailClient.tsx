@@ -220,7 +220,6 @@ const JobDetailPage = ({currentUser}: Props) => {
           </div>
 
           {/* comments */}
-
           {(() => {
             if (comments.status === "pending") return <JobCommentSkeleton />;
 

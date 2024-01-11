@@ -42,7 +42,7 @@ const InboxItemMobile: React.FC<InboxItemProps> = ({ data }) => {
     >
       <div className=" flex justify-center items-center">
         <Avatar
-          src={data?.image || "/images/logo.png"}
+          src={data?.image}
           className="w-12 h-12 object-cover m-auto rounded-full"
         />
       </div>

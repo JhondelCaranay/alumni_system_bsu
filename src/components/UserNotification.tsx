@@ -106,7 +106,7 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
                 {notification.content}
               </span>
               <time className="text-sm text-zinc-500 mt-2">
-                {format(new Date(notification.updatedAt))}
+                {format(new Date(notification.createdAt))}
               </time>
             </div>
           </div>

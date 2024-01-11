@@ -140,7 +140,7 @@ export default async function handler(
           // socket here (optional)
          // notification for the one who posted
           const notificationForWhoPostKey = `notification:${comment.post?.userId}:create`;
-        res.socket?.server?.io.emit(notificationForWhoPostKey, notificationForWhoPost);
+          res.socket?.server?.io.emit(notificationForWhoPostKey, notificationForWhoPost);
         }
     }
 

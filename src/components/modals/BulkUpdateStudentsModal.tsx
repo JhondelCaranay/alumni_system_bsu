@@ -83,7 +83,7 @@ const BulkUpdateStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const updateStudents = useMutateProcessor<BulkUpdateStudentsSchemaType, SafeUser[]>(`/students/bulk-update`, null, 'PATCH', ["students/alumni"],{enabled: isModalOpen});
+  const updateStudents = useMutateProcessor<BulkUpdateStudentsSchemaType, SafeUser[]>(`/students/bulk-update`, null, 'PATCH', ["students/alumni"]);
   const isLoading = updateStudents.isPending || form.formState.isSubmitting
   const {toast} = useToast()
   

@@ -56,6 +56,7 @@
     "convert-excel-to-json": "^1.7.0",
     "date-fns": "^2.30.0",
     "emoji-mart": "^5.5.2",
+    "firebase": "^10.7.1",
     "font-awesome": "^4.7.0",
     "froala-editor": "^4.1.3",
     "generate-password": "^1.7.1",

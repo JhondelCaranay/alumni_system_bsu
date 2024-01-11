@@ -26,6 +26,7 @@ type Props = {
 };
 
 const InboxMobile = ({ currentUser }: Props) => {
+  
   const inboxes = useQueryProcessor<
     (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
   >("/groupchats", { userId: currentUser?.id }, ["groupchats"], {

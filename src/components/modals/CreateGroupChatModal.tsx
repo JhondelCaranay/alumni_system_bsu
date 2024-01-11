@@ -63,17 +63,23 @@ const CreateGuardianModal = () => {
   const advisers = useQueryProcessor<UserProfileWithDepartmentSection[]>(
     "/users",
     { role: Role.ADVISER },
-    ["advisers"]
+    ["advisers"], {
+      enabled: isModalOpen
+    }
   );
 
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
     null,
-    ["departments"]
+    ["departments"], {
+      enabled: isModalOpen
+    }
   );
   const sections = useQueryProcessor<SectionSchemaType[]>("/sections", null, [
     "sections",
-  ]);
+  ], {
+    enabled: isModalOpen
+  });
 
   const createGroupChat = useMutateProcessor("/groupchats", null, "POST", [
     "groupchats",

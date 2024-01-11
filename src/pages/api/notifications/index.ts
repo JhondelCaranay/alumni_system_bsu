@@ -34,6 +34,7 @@ export default async function handler(
           content: true,
           isRead: true,
           createdAt: true,
+          updatedAt:true,
           user: {
             select: {
               id: true,

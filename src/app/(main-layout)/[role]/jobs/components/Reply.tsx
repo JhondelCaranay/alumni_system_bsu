@@ -28,8 +28,6 @@ const Reply: React.FC<ReplyProps> = ({
 }) => {
   const canEditOrDeleteComment = currentUserId === data.userId;
 
-  console.log(currentUserId,
-    data.userId)
   const { onOpen } = useModal();
 
   const [isUpdatingReplyOrComment, setIsUpdatingReplyOrComment] =
@@ -62,7 +60,7 @@ const Reply: React.FC<ReplyProps> = ({
               src={data?.user?.image as string}
               alt="Jese Leos"
             />
-            {data.user.name}
+            {data?.user?.profile?.firstname} {data?.user?.profile?.lastname}
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <time title="February 12th, 2022">

@@ -28,7 +28,6 @@ const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
 
   useEffect(() => {
     if(chatbodyRef.current) {
-      console.log(chatbodyRef.current)
       chatbodyRef.current.scrollTop = chatbodyRef.current?.scrollHeight
     }
   }, [messages])

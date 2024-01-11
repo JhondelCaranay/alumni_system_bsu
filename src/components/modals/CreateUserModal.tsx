@@ -61,7 +61,8 @@ const CreateUserModal = () => {
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
     null,
-    ["departments"]
+    ["departments"],
+    {enabled: isModalOpen}
   );
 
   form.watch(["departmentId", "role"]);
@@ -84,7 +85,9 @@ const CreateUserModal = () => {
 
   const sections = useQueryProcessor<SectionSchemaType[]>("/sections", null, [
     "sections",
-  ]);
+  ], {
+    enabled: isModalOpen
+  });
 
   const filteredSections = departmentId
     ? sections?.data?.filter((section) => section.departmentId === departmentId)
@@ -103,7 +106,6 @@ const CreateUserModal = () => {
   const onSubmit: SubmitHandler<CreateUserSchemaType> = async (values) => {
     createUser.mutate(values, {
       onSuccess(data, variables, context) {
-        console.log(data);
         toast({
           title: "Student successfully created",
         });
@@ -118,7 +120,7 @@ const CreateUserModal = () => {
       },
     });
   };
-  console.log(form.formState.errors)
+  
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>

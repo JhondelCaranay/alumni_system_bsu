@@ -24,7 +24,6 @@ type GeneralInfoProps = {
 };
 
 const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
-  // console.log("🚀 ~ file: GeneralInfoForm.tsx:27 ~ data:", data);
   const formSchema = z.object({
     firstname: z.string().min(1, { message: "Firstname is required" }),
     lastname: z.string().min(1, { message: "Lastname is required" }),

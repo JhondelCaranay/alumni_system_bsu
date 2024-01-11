@@ -78,7 +78,6 @@ const UpdateWorkExperienceModal = () => {
     }
   };
 
-  // console.log(data);
   useEffect(() => {
     setChildren();
   }, [isModalOpen]);

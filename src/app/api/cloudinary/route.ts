@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         formData.append('upload_preset', 'next-alumni-system')
         const file = formData.get('file')
         const compressedFile = await handleImageCompression(file as File)
-        formData.set('file', compressedFile as File)
+        formData.append('file', compressedFile as File)
         const res = await axios.post(`${env.CLOUDINARY_UPLOAD_URL}`, formData,{
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
         });

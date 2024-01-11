@@ -73,7 +73,7 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
           <Button
             variant="ghost"
             className=" dark:text-white flex justify-center"
-            // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Email
             {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}

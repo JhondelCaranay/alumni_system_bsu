@@ -28,7 +28,6 @@ export const authOptions: AuthOptions = {
           You can also use the `req` object to obtain additional parameters
           (i.e., the request IP address) 
         */
-
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials. Please fill in all fields");
         }

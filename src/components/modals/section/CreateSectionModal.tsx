@@ -92,7 +92,6 @@ const CreateSectionModal = ({ isOpen, onClose }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CreateSectionSchema>) => {
-   
     await new Promise((resolve) => setTimeout(resolve, 500));
     mutation.mutate(values, {
       async onSuccess() {
@@ -169,7 +168,7 @@ const CreateSectionModal = ({ isOpen, onClose }: Props) => {
                   name="departmentId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Section Name</FormLabel>
+                      <FormLabel>Department</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -199,7 +198,7 @@ const CreateSectionModal = ({ isOpen, onClose }: Props) => {
                   name="course_year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Section Name</FormLabel>
+                      <FormLabel>Course year</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value?.toString()}

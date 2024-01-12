@@ -1,20 +1,18 @@
 "use client";
 
 import {
-  Bell,
   Briefcase,
   CalendarDays,
-  UserCircle,
   Home,
   MessageCircle,
   TableProperties,
   Users,
-  Megaphone,
 } from "lucide-react";
 import { MdHive } from "react-icons/md";
 import { SidebarItem } from "./SidebarItem";
 import { isUserAllowed } from "@/lib/utils";
 import { Role } from "@prisma/client";
+import { useSidebarModeStore } from "@/hooks/useSidebarModeStore";
 
 type routeListType = {
   icon: any;
@@ -95,10 +93,11 @@ const routesList: routeListType[] = [
 
 type SidebarRoutesProps = {
   role: string;
+  setOpen?: (open: boolean) => void;
 };
 
-export const SidebarRoutes = ({ role }: SidebarRoutesProps) => {
-  // const routes = routesList;
+export const SidebarRoutes = ({ role, setOpen }: SidebarRoutesProps) => {
+  const { mode } = useSidebarModeStore();
 
   return (
     <div className="flex flex-col w-full ">
@@ -109,9 +108,11 @@ export const SidebarRoutes = ({ role }: SidebarRoutesProps) => {
 
         return (
           <SidebarItem
+            mode={mode}
             key={route.href}
             icon={route.icon}
             label={route.label}
+            setOpen={setOpen}
             href={`/${role.toLowerCase()}${route.href}`}
           />
         );

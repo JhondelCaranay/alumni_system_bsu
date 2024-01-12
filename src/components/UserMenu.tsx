@@ -13,6 +13,7 @@ import { signOut } from "next-auth/react";
 import { capitalizeWords } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SidebarModeSwitch } from "./SidebarModeSwitch";
 
 type UserMenuProps = {
   currentUser?: SafeUser | null;
@@ -43,7 +44,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
-          {capitalizeWords(currentUser?.role!).replace('_', ' ')}
+          {capitalizeWords(currentUser?.role!).replace("_", " ")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -55,6 +56,9 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <ModeToggle />
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <SidebarModeSwitch />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
       </DropdownMenuContent>

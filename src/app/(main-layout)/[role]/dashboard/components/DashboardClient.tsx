@@ -61,7 +61,7 @@ const DashboardClient = ({ tab = "students" }: DashboardClientProps) => {
   return (
     <div className="p-6">
       {dashboardTotalsQuery.data ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           <div onClick={() => handleSelectedTab("students")}>
             <Widget
               title="STUDENTS"

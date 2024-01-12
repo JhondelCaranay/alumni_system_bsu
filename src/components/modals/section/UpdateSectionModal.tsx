@@ -175,7 +175,7 @@ const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
                   name="departmentId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Section Name</FormLabel>
+                      <FormLabel>Department</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -205,7 +205,7 @@ const UpdateSectionModal = ({ section, isOpen, onClose }: Props) => {
                   name="course_year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Section Name</FormLabel>
+                      <FormLabel>Course year</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value?.toString()}

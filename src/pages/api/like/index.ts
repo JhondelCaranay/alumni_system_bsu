@@ -88,6 +88,7 @@ export default async function hanlder(
                       id: currentUser.id,
                     },
                   },
+                  // createdAt: new Date().toISOString()
                 },
                 include: {
                   comment:true,
@@ -168,6 +169,7 @@ export default async function hanlder(
                     id: currentUser.id,
                   },
                 },
+                createdAt: new Date().toISOString()
               },
               include: {
                 comment:true,

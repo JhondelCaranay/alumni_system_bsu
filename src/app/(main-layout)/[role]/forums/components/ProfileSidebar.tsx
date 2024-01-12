@@ -1,5 +1,6 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import Avatar from "@/components/Avatar";
+import { profile } from "console";
 import { Mail, MapPin, Pin, Waypoints } from "lucide-react";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -17,7 +18,7 @@ const ProfileSidebar = async () => {
           className="h-[80px] w-[80px] rounded-md object-contain"
         />
         <span className="font-semibold text-md text-black dark:text-white">
-          {user.name}
+          {user.profile?.firstname} {user.profile?.lastname}
         </span>
       </div>
       <div className="flex flex-col gap-y-1">

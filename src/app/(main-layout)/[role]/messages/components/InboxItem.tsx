@@ -7,6 +7,8 @@ import qs from "query-string";
 import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { cn } from "@/lib/utils";
 import Avatar from "@/components/Avatar";
+import { Clock } from "lucide-react";
+import { format } from "timeago.js";
 
 type InboxItemProps = {
   data: GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] };
@@ -31,7 +33,9 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
 
     router.push(url);
   };
-  console.log(data)
+  
+  const lastMessage = data?.messages?.[data?.messages?.length - 1]
+
   return (
     <div
       className={cn(
@@ -51,11 +55,13 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
           {data?.name}
         </h2>
         <p className="text-[0.9em] line-clamp-2 ">
-          {data?.messages?.[data?.messages?.length - 1]?.message ?? "This is the start of your group chat conversation"}
+          {lastMessage?.message ?? "This is the start of your group chat conversation"}
         </p>
+        <time className={cn("text-xs flex items-center gap-x-1")}>
+         <Clock className="w-3 h-3 fill-zinc-200"/> {format(lastMessage?.createdAt || new Date())}
+        </time>
       </div>
     </div>
   );
 };
-
 export default InboxItem;

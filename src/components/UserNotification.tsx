@@ -42,14 +42,19 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
     })[]
   >("/notifications", null, ["notifications"]);
 
-    const unreadMessagesCount =  notifications?.data?.reduce((currentTotal, notification) => notification.isRead == false ? currentTotal + 1 : currentTotal,0) || 0
+  const unreadMessagesCount =
+    notifications?.data?.reduce(
+      (currentTotal, notification) =>
+        notification.isRead == false ? currentTotal + 1 : currentTotal,
+      0
+    ) || 0;
 
   useNotificationSocket({
     notificationCreateKey: `notification:${currentUser?.id}:create`,
     notificationUpdateKey: `notification:${currentUser?.id}:update`,
     queryKey: ["notifications"],
   });
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="mr-10">
@@ -63,7 +68,10 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
           <Bell className="relative w-5 h-5 fill-orange-300 text-orange-300 cursor-pointer" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className=" max-w-[300px] md:max-w-[412px]">
+      <DropdownMenuContent
+        align="end"
+        className=" max-w-[300px] md:max-w-[412px]"
+      >
         <DropdownMenuLabel>
           <h1 className="text-sm text-center">Notifications</h1>
         </DropdownMenuLabel>
@@ -71,7 +79,10 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
 
         {notifications?.data?.map((notification) => (
           <div
-            className={cn(" flex p-3 cursor-pointer hover:bg-zinc-200 rounded-md z-50 gap-x-3 bg-zinc-200 m-1 dark:bg-[#101627] ", notification.isRead && 'bg-white dark:bg-[#020817]')}
+            className={cn(
+              " flex p-3 cursor-pointer hover:bg-zinc-200 rounded-md z-50 gap-x-3 bg-zinc-200 m-1 dark:bg-[#101627] ",
+              notification.isRead && "bg-white dark:bg-[#020817]"
+            )}
             key={notification.id}
             onClick={async () => {
               if (notification?.type === NotificationType.POST_LIKE) {
@@ -82,16 +93,25 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
                 }
               }
 
-              if (notification?.type === NotificationType.COMMENT_ON_POST || notification?.type === NotificationType.REPLY_TO_COMMENT) {
+              if (
+                notification?.type === NotificationType.COMMENT_ON_POST ||
+                notification?.type === NotificationType.REPLY_TO_COMMENT
+              ) {
                 if (notification.post?.type === "FEED") {
-                  redirectTo(`forums/${notification?.post.id}#${notification.comment.id}`);
+                  redirectTo(
+                    `forums/${notification?.post.id}#${notification.comment.id}`
+                  );
                 } else {
-                  redirectTo(`jobs/${notification?.post?.id}/view#${notification.comment.id}`);
+                  redirectTo(
+                    `jobs/${notification?.post?.id}/view#${notification.comment.id}`
+                  );
                 }
               }
 
-              await apiClient.patch(`/notifications/${notification.id}`, {isRead:true})
-              notifications.refetch()
+              await apiClient.patch(`/notifications/${notification.id}`, {
+                isRead: true,
+              });
+              notifications.refetch();
             }}
           >
             <Avatar

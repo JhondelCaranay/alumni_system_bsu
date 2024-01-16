@@ -48,7 +48,7 @@ export default function StudentChart({ data }: StudentChartProps) {
         <XAxis dataKey="name" />
         {windowSize.width > 768 ? <YAxis /> : null}
         <Tooltip />
-        <Area
+        {/* <Area
           type="monotone"
           dataKey="total"
           name="All Students"
@@ -56,7 +56,7 @@ export default function StudentChart({ data }: StudentChartProps) {
           stroke="#4caf50"
           fillOpacity={1}
           fill="url(#StudentsColor)"
-        />
+        /> */}
         <Area
           type="monotone"
           dataKey="male"

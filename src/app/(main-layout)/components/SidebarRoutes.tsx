@@ -63,19 +63,19 @@ const routesList: routeListType[] = [
     icon: CalendarDays,
     label: "Events",
     href: "/events",
-    roles: ["ALL"],
+    roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
   },
   {
     icon: MdHive,
-    label: "CitZen",
+    label: "CIT-zen",
     href: "/forums",
-    roles: ["ALL"],
+    roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
   },
   {
     icon: MessageCircle,
     label: "Message",
     href: "/messages",
-    roles: ["ALL"],
+    roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
   },
   // {
   //   icon: Bell,

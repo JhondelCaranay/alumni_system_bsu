@@ -23,9 +23,9 @@ export const SidebarItem = ({
   setOpen,
 }: SidebarItemProps) => {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
-  const isActive = pathname === href;
+  const isActive = pathname?.startsWith(href);
 
   const onClick = () => {
     if (setOpen) {

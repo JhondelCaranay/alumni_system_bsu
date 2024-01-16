@@ -32,12 +32,12 @@ const ForumsPage = async (props: ForumsPageProps) => {
         <div className="hidden lg:inline-block">
           <ProfileSidebar />
         </div>
-        <div className="col-span-4 lg:col-span-2 lg:px-10">
+        <div className="col-span-4 lg:col-span-3 lg:px-10">
           <Feed currentUser={currentUser} />
         </div>
-        <div className="hidden lg:inline-block">
+        {/* <div className="hidden lg:inline-block">
           <OtherSidebar />
-        </div>
+        </div> */}
       </div>
     </HydrationBoundary>
   );

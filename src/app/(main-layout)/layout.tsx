@@ -3,6 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
 import PageWrapper from "./components/PageWrapper";
 import SidebarWrapper from "./components/SidebarWrapper";
+import NavbarWrapper from "./components/NavbarWrapper";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const currentUser = await getCurrentUser();
@@ -13,9 +14,9 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="h-full">
-      <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
+      <NavbarWrapper>
         <Navbar currentUser={currentUser} />
-      </div>
+      </NavbarWrapper>
 
       <SidebarWrapper>
         <Sidebar currentUser={currentUser} />

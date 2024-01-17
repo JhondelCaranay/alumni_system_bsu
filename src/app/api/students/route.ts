@@ -6,7 +6,7 @@ import { isUserAllowed } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { z } from "zod";
 import { CreateStudentsSchema } from "@/schema/students";
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt";
 
 export async function GET(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   }
 
   const GetStudentsQueriesSchema = z.object({
-    role: z.enum([Role.STUDENT, Role.ALUMNI]).optional(),
+    role: z.enum([Role.STUDENT, Role.ALUMNI, "ALL"]).optional(),
     schoolYear: z.coerce.number().optional(),
     department: z.string().optional(),
   });
@@ -32,8 +32,10 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 
   const { role, schoolYear, department } = result.data;
 
-  const allowedRoles =
-    role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
+  const selectedRoles =
+    role === "ALL" || role === undefined ? [Role.STUDENT, Role.ALUMNI] : [role];
+  const selectedSchoolYear = schoolYear === 0 ? undefined : schoolYear;
+  const selectedDepartment = department === "ALL" ? undefined : department;
 
   try {
     const students = await prisma.user.findMany({
@@ -42,13 +44,13 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
       },
       where: {
         role: {
-          in: allowedRoles,
+          in: selectedRoles,
         },
         profile: {
-          schoolYear: schoolYear || undefined,
+          schoolYear: selectedSchoolYear,
         },
         department: {
-          name: department || undefined,
+          name: selectedDepartment,
         },
         isArchived: false,
       },
@@ -113,23 +115,24 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     street,
   } = result.data;
 
-  const bday = new Date(dateOfBirth)
+  const bday = new Date(dateOfBirth);
   const saltRounds = await bcrypt.genSalt(10);
-  const pass = `@${firstname}${bday.getDate()}${(bday.getMonth() + 1) < 10 ? `0${bday.getMonth() + 1}`: (bday.getMonth() + 1)}${bday.getFullYear()}`
-  const hashedPassword = await bcrypt.hash(pass,saltRounds)
+  const pass = `@${firstname}${bday.getDate()}${
+    bday.getMonth() + 1 < 10 ? `0${bday.getMonth() + 1}` : bday.getMonth() + 1
+  }${bday.getFullYear()}`;
+  const hashedPassword = await bcrypt.hash(pass, saltRounds);
   try {
-
     const section = await prisma.section.findUnique({
       where: {
-        id: sectionId
-      }
-    })
+        id: sectionId,
+      },
+    });
 
     const user = await prisma.user.create({
       data: {
         email,
         role,
-        name: firstname + " " + lastname, 
+        name: firstname + " " + lastname,
         hashedPassword,
         department: {
           connect: {

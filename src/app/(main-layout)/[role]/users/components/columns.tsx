@@ -43,6 +43,38 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     },
   },
   {
+    accessorKey: "name",
+    accessorFn: (row) => {
+      const { firstname, middlename, lastname } = row.profile || {};
+      if (!firstname && !middlename && !lastname) {
+        return row.name;
+      }
+
+      const fullname = `${firstname} ${middlename?.charAt(0)}. ${lastname}`;
+      return `${firstname} ${middlename} ${lastname}`;
+    },
+    header: ({ column }) => (
+      <div
+        className="text-[#003171]  flex items-center cursor-pointer dark:text-white flex-1"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
+    cell: ({ row }) => {
+      // const {firstname, middlename, lastname} = row.original.profile
+      const { firstname, middlename, lastname } = row.original.profile || {};
+
+      if (!firstname && !middlename && !lastname) {
+        return <div className={` flex items-center`}> {row.original.name}</div>;
+      }
+
+      const fullname = `${firstname} ${middlename?.charAt(0)}. ${lastname}`;
+
+      return <div className={` flex items-center`}>{fullname}</div>;
+    },
+  },
+  {
     accessorKey: "email",
     accessorFn: (row) => {
       const { email } = row;
@@ -67,39 +99,6 @@ export const columns: ColumnDef<UserProfileWithDepartmentSection>[] = [
     },
   },
 
-  {
-    accessorKey: "name",
-    accessorFn: (row) => {
-      const { firstname, middlename, lastname } = row.profile || {};
-      if (!firstname && !middlename && !lastname) {
-        return row.name;
-      }
-      return `${firstname} ${middlename} ${lastname}`;
-    },
-    header: ({ column }) => (
-      <div
-        className="text-[#003171]  flex items-center cursor-pointer dark:text-white flex-1"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </div>
-    ),
-    cell: ({ row }) => {
-      // const {firstname, middlename, lastname} = row.original.profile
-      const { firstname, middlename, lastname } = row.original.profile || {};
-      if (!firstname && !middlename && !lastname) {
-        return (
-          <div className={` flex items-center`}> {row.original?.name}</div>
-        );
-      }
-      return (
-        <div className={` flex items-center`}>
-          {" "}
-          {`${firstname} ${middlename} ${lastname}`}
-        </div>
-      );
-    },
-  },
   {
     accessorKey: "profile.province",
     accessorFn: (row) => {

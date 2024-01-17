@@ -57,7 +57,8 @@ const AuthForm = () => {
 
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
-        window.location.reload();
+        // window.location.reload();
+        router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong.");
@@ -133,13 +134,15 @@ const AuthForm = () => {
 
         <div className="w-fit flex self-start mt-5 items-center gap-x-3">
           <Checkbox
-          id="showPass"
+            id="showPass"
             checked={showPass === true}
             onCheckedChange={(checked) => {
               setShowPass((prev) => !prev);
             }}
           />
-          <label htmlFor="showPass" className="text-sm cursor-pointer">Show Password</label>
+          <label htmlFor="showPass" className="text-sm cursor-pointer">
+            Show Password
+          </label>
         </div>
         <button
           disabled={isLoading}

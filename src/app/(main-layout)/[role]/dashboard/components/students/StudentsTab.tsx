@@ -35,7 +35,7 @@ const years = Array.from({ length: 11 }, (_, index) =>
 
 const StudentTab = () => {
   const [departmentId, setDepartmentId] = useState<string>("");
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [year, setYear] = useState<number>(0); //new Date().getFullYear()
   const { data: departmentData } = useQuery({
     queryKey: ["departments"],
     queryFn: getDeparments,
@@ -103,6 +103,7 @@ const StudentTab = () => {
               <SelectValue placeholder="Select Years" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={"0"}>ALL</SelectItem>
               {years.map((year) => (
                 <SelectItem value={year} key={year}>
                   {year}

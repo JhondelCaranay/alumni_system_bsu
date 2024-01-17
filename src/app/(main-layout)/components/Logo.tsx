@@ -10,7 +10,7 @@ export const Logo = () => {
       width={80}
       alt="logo"
       className="object-contain"
-      src={"/images/logo.png"}
+      src={"/images/CIT.png"}
     />
   );
 };

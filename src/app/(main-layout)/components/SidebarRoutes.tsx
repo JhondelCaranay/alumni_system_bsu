@@ -54,6 +54,12 @@ const routesList: routeListType[] = [
     roles: ["ADMIN"],
   },
   {
+    icon: MdHive,
+    label: "CIT-zen",
+    href: "/forums",
+    roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
+  },
+  {
     icon: Briefcase,
     label: "Jobs",
     href: "/jobs",
@@ -63,12 +69,6 @@ const routesList: routeListType[] = [
     icon: CalendarDays,
     label: "Events",
     href: "/events",
-    roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
-  },
-  {
-    icon: MdHive,
-    label: "CIT-zen",
-    href: "/forums",
     roles: ["ADMIN", "ADVISER", "STUDENT", "ALUMNI"],
   },
   {

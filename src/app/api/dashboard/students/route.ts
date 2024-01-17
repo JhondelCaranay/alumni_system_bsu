@@ -36,6 +36,8 @@ export async function GET(req: NextRequest) {
     const school_course_year = ["1ST YEAR", "2ND YEAR", "3RD YEAR", "4TH YEAR"];
 
     for (let i = 0; i < school_course_year.length; i++) {
+      const isYearZero = year === 0;
+
       const startDate = new Date(year, 0, 1, 0, 0, 0, 0); // January 1st, 00:00:00
       const endDate = new Date(year + 1, 0, 1, 0, 0, 0, 0); // January 1st of the next year, 00:00:00
 
@@ -43,13 +45,17 @@ export async function GET(req: NextRequest) {
         where: {
           user: {
             departmentId: departmentId,
+            role: "STUDENT",
           },
+
           gender: "MALE",
           schoolYear: i + 1,
-          yearEnrolled: {
-            gte: startDate,
-            lt: endDate,
-          },
+          yearEnrolled: isYearZero
+            ? undefined
+            : {
+                gte: startDate,
+                lt: endDate,
+              },
         },
       });
 
@@ -57,13 +63,16 @@ export async function GET(req: NextRequest) {
         where: {
           user: {
             departmentId: departmentId,
+            role: "STUDENT",
           },
           gender: "FEMALE",
           schoolYear: i + 1,
-          yearEnrolled: {
-            gte: startDate,
-            lt: endDate,
-          },
+          yearEnrolled: isYearZero
+            ? undefined
+            : {
+                gte: startDate,
+                lt: endDate,
+              },
         },
       });
 
@@ -71,12 +80,15 @@ export async function GET(req: NextRequest) {
         where: {
           user: {
             departmentId: departmentId,
+            role: "STUDENT",
           },
           schoolYear: i + 1,
-          yearEnrolled: {
-            gte: startDate,
-            lt: endDate,
-          },
+          yearEnrolled: isYearZero
+            ? undefined
+            : {
+                gte: startDate,
+                lt: endDate,
+              },
         },
       });
 

@@ -45,7 +45,7 @@ export default function StudentChart({ data }: StudentChartProps) {
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
+        <XAxis dataKey="year" />
         {windowSize.width > 768 ? <YAxis /> : null}
         <Tooltip />
         {/* <Area
@@ -60,7 +60,7 @@ export default function StudentChart({ data }: StudentChartProps) {
         <Area
           type="monotone"
           dataKey="male"
-          stackId="1"
+          // stackId="1"
           stroke="#007bff" // Blue color for male
           fillOpacity={1}
           fill="url(#MalesColor)"
@@ -68,7 +68,7 @@ export default function StudentChart({ data }: StudentChartProps) {
         <Area
           type="monotone"
           dataKey="female"
-          stackId="1"
+          // stackId="1"
           stroke="#ff69b4" // Pink color for female
           fillOpacity={1}
           fill="url(#FemalesColor)"

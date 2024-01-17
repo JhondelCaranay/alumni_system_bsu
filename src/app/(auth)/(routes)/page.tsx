@@ -5,7 +5,11 @@ import { redirect } from "next/navigation";
 const LoginPage = async () => {
   const currentUser = await getCurrentUser();
   if (currentUser) {
-    redirect(`/${currentUser.role.toLowerCase()}/profile`);
+    if (["STUDENT", "ALUMNI"].includes(currentUser.role)) {
+      redirect(`/${currentUser.role.toLowerCase()}/forums`);
+    } else {
+      redirect(`/${currentUser.role.toLowerCase()}/profile`);
+    }
   }
 
   return (

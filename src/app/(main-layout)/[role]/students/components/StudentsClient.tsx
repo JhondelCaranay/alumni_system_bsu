@@ -27,9 +27,9 @@ import { SafeUserWithProfileWithDapartmentWithSection } from "@/types/types";
 type StudentsClientProps = {};
 const StudentsClient = (props: StudentsClientProps) => {
   const [globalFilter, setGlobalFilter] = useState("");
-  const [role, setRole] = useState("");
-  const [schoolYear, setSchoolYear] = useState("");
-  const [department, setDepartment] = useState("");
+  const [role, setRole] = useState("ALL");
+  const [schoolYear, setSchoolYear] = useState("0");
+  const [department, setDepartment] = useState("ALL");
   const { onOpen } = useModal();
 
   const queries: getStudentsQuery = {
@@ -117,9 +117,9 @@ const StudentsClient = (props: StudentsClientProps) => {
             variant="outline"
             size="sm"
             onClick={() => {
-              setRole("");
-              setSchoolYear("");
-              setDepartment("");
+              setRole("ALL");
+              setSchoolYear("0");
+              setDepartment("ALL");
             }}
           >
             Clear Filters
@@ -143,28 +143,25 @@ const StudentsClient = (props: StudentsClientProps) => {
           }}
           className="w-full"
         />
-        <Select
-          value={role}
-          onValueChange={(value) => setRole(value === "All" ? "" : value)}
-        >
+        <Select value={role} onValueChange={(value) => setRole(value)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All</SelectItem>
+            <SelectItem value="ALL">All Students & Alumni</SelectItem>
             <SelectItem value="STUDENT">Student</SelectItem>
             <SelectItem value="ALUMNI">Alumni</SelectItem>
           </SelectContent>
         </Select>
         <Select
           value={schoolYear}
-          onValueChange={(value) => setSchoolYear(value === "All" ? "" : value)}
+          onValueChange={(value) => setSchoolYear(value)}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="School Year" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All</SelectItem>
+            <SelectItem value="0">All Years</SelectItem>
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>
@@ -173,13 +170,13 @@ const StudentsClient = (props: StudentsClientProps) => {
         </Select>
         <Select
           value={department}
-          onValueChange={(value) => setDepartment(value === "All" ? "" : value)}
+          onValueChange={(value) => setDepartment(value)}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All</SelectItem>
+            <SelectItem value="ALL">All Departments</SelectItem>
             {departmentsQuery.data.map((department) => (
               <SelectItem value={department.name} key={department.id}>
                 {department.name}

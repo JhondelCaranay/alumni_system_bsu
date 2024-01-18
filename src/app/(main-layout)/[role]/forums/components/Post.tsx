@@ -118,7 +118,7 @@ const Post: React.FC<PostTypeProps> = ({ postData, currentUser, isCommentSection
 
     const [likesCount, setLikesCount] = useState(() => postData?.likes?.length || 0)
   return (
-    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative">
+    <div className="bg-white shadow-md flex flex-col w-full p-5 rounded-lg gap-y-5 px-5 dark:bg-[#1F2937] relative ">
       <div className="flex gap-x-2 items-center">
         <Avatar src={postData?.user?.image} />
         <div className="flex flex-col">

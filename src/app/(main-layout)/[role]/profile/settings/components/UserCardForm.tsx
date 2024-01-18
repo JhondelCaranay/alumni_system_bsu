@@ -95,7 +95,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
                       if(file) {
                         const previousImg = data?.image
                         ?.split("next-alumni-system/")[1]
-                        .substring(
+                        ?.substring(
                           0,
                           data?.image?.split("next-alumni-system/")[1].lastIndexOf(".")
                         );

@@ -308,12 +308,12 @@ export const columns: ColumnDef<SafeUserWithProfileWithDapartmentWithSection>[] 
                 <DropdownMenuItem onClick={() => id && onCopy(id)}>
                   <Copy className="mr-2 h-4 w-4" /> Copy ID
                 </DropdownMenuItem>
-                {/* <Link href={`/dashboard/students/${id}`}>
+                <Link href={`/admin/students/${id}`}>
                   <DropdownMenuItem>
                     <Eye className="h-4 w-4 mr-2" />
                     View
                   </DropdownMenuItem>
-                </Link> */}
+                </Link>
                 {/* <Link href={`/dashboard/students/${id}`}>
                   <DropdownMenuItem>
                     <Pencil className="h-4 w-4 mr-2" />

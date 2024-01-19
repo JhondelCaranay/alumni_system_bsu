@@ -62,7 +62,7 @@ const CreateUserModal = () => {
     "/departments",
     null,
     ["departments"],
-    {enabled: isModalOpen}
+    { enabled: isModalOpen }
   );
 
   form.watch(["departmentId", "role"]);
@@ -75,19 +75,22 @@ const CreateUserModal = () => {
   }, [isModalOpen]);
 
   useEffect(() => {
-    if(form.getValues('role') !== 'ADVISER') {
-      form.setValue('sectionId', "")
-      form.setValue('departmentId', "")
+    if (form.getValues("role") !== "ADVISER") {
+      form.setValue("sectionId", "");
+      form.setValue("departmentId", "");
     }
-  }, [form.getValues('role')])
+  }, [form.getValues("role")]);
 
   const departmentId = form.getValues("departmentId");
 
-  const sections = useQueryProcessor<SectionSchemaType[]>("/sections", null, [
-    "sections",
-  ], {
-    enabled: isModalOpen
-  });
+  const sections = useQueryProcessor<SectionSchemaType[]>(
+    "/sections",
+    null,
+    ["sections"],
+    {
+      enabled: isModalOpen,
+    }
+  );
 
   const filteredSections = departmentId
     ? sections?.data?.filter((section) => section.departmentId === departmentId)
@@ -120,7 +123,7 @@ const CreateUserModal = () => {
       },
     });
   };
-  
+
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
@@ -381,7 +384,7 @@ const CreateUserModal = () => {
                                     {Role.ADVISER}
                                   </SelectItem>
                                   <SelectItem value={Role.BULSU_PARTNER}>
-                                    {Role.BULSU_PARTNER.replace('_', ' ')}
+                                    {Role.BULSU_PARTNER.replace("_", " ")}
                                   </SelectItem>
                                   <SelectItem value={Role.COORDINATOR}>
                                     {Role.COORDINATOR}

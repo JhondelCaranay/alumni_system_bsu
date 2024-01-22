@@ -60,43 +60,56 @@ export const UpdateUsersSchema = UserSchema.extend({
 
 export type UpdateUserSchemaType = z.infer<typeof UpdateUsersSchema>;
 
-export const CreateUserSchema = z.object({
-  firstname: z.string().min(1, "Required"),
-  lastname: z.string().min(1, "Required"),
-  middlename: z.string().min(1, "Required"),
-  homeNo: z.string().min(1, "Required"),
-  street: z.string().min(1, "Required"),
-  barangay: z.string().min(1, "Required"),
-  city: z.string().min(1, "Required"),
-  province: z.string().min(1, "Required"),
-  contactNo: z.string().min(1, "Required"),
-  gender: z.enum([Gender.MALE, Gender.FEMALE]),
-  dateOfBirth: z.string(),
-  email: z.string().email().min(1, "Required"),
-  role: z.enum([Role.BULSU_PARTNER, Role.ADVISER, Role.COORDINATOR,Role.PESO]),
-  departmentId: z.string().optional(),
-  sectionId: z.string().optional(),
-})
-.refine((field) => {
-  if (field.role === Role.ADVISER) {
-    return field.departmentId !== undefined;
-  } else {
-    return true;
-  }
-}, {
-  message: "Required",
-  path: ["departmentId"],
-})
-.refine((field) => {
-  if (field.role === Role.ADVISER) {
-    return field.sectionId !== undefined;
-  } else {
-    return true;
-  }
-}, {
-  message: "Required",
-  path: ["sectionId"],
-})
-  
+export const CreateUserSchema = z
+  .object({
+    firstname: z.string().min(1, "Required"),
+    lastname: z.string().min(1, "Required"),
+    middlename: z.string().optional(),
+    homeNo: z.string().min(1, "Required"),
+    street: z.string().min(1, "Required"),
+    barangay: z.string().min(1, "Required"),
+    city: z.string().min(1, "Required"),
+    province: z.string().min(1, "Required"),
+    contactNo: z.string().min(1, "Required"),
+    gender: z.enum([Gender.MALE, Gender.FEMALE]),
+    dateOfBirth: z.string(),
+    email: z.string().email().min(1, "Required"),
+    role: z.enum([
+      Role.BULSU_PARTNER,
+      Role.TEACHER,
+      Role.ADVISER,
+      Role.COORDINATOR,
+      Role.PESO,
+    ]),
+    departmentId: z.string().optional(),
+    sectionId: z.string().optional(),
+  })
+  .refine(
+    (field) => {
+      console.log("🚀 ~ field:", field);
+      if (field.role === Role.ADVISER) {
+        return field.departmentId !== undefined;
+      } else {
+        return true;
+      }
+    },
+    {
+      message: "Required",
+      path: ["departmentId"],
+    }
+  )
+  .refine(
+    (field) => {
+      if (field.role === Role.ADVISER) {
+        return field.sectionId !== undefined;
+      } else {
+        return true;
+      }
+    },
+    {
+      message: "Required",
+      path: ["sectionId"],
+    }
+  );
 
 export type CreateUserSchemaType = z.infer<typeof CreateUserSchema>;

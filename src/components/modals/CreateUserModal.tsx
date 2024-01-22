@@ -43,6 +43,7 @@ import { useToast } from "../ui/use-toast";
 
 const CreateUserModal = () => {
   const { isOpen, type, onClose, data } = useModal();
+
   const isModalOpen = isOpen && type === "createUser";
   const { toast } = useToast();
 
@@ -67,6 +68,8 @@ const CreateUserModal = () => {
 
   form.watch(["departmentId", "role"]);
 
+  const watchfields = form.watch();
+
   useEffect(() => {
     return () => {
       form.reset();
@@ -78,6 +81,21 @@ const CreateUserModal = () => {
     if (form.getValues("role") !== "ADVISER") {
       form.setValue("sectionId", "");
       form.setValue("departmentId", "");
+    } else {
+      // validate department
+      if (!form.getValues("departmentId")) {
+        form.setError("departmentId", {
+          type: "manual",
+          message: "Department is (required)",
+        });
+      }
+      // validate section
+      if (!form.getValues("sectionId")) {
+        form.setError("sectionId", {
+          type: "manual",
+          message: "Section is (required)",
+        });
+      }
     }
   }, [form.getValues("role")]);
 
@@ -127,7 +145,7 @@ const CreateUserModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add user
@@ -156,7 +174,8 @@ const CreateUserModal = () => {
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  First Name
+                                  First Name{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -168,7 +187,7 @@ const CreateUserModal = () => {
                                     value={field.value}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
@@ -182,7 +201,8 @@ const CreateUserModal = () => {
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Last Name
+                                  Last Name{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -192,7 +212,7 @@ const CreateUserModal = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
@@ -207,7 +227,8 @@ const CreateUserModal = () => {
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Middlename
+                                  Middlename{" "}
+                                  <span className="lowercase">(optional)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -217,7 +238,7 @@ const CreateUserModal = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
@@ -226,12 +247,40 @@ const CreateUserModal = () => {
                         <div className="w-full">
                           <FormField
                             control={form.control}
+                            name="email"
+                            key="email"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Email{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter email`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-x-3">
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
                             name="gender"
                             key={"gender"}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Select gender
+                                  Select gender{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
@@ -251,65 +300,11 @@ const CreateUserModal = () => {
                                     </SelectItem>
                                   </SelectContent>
                                 </Select>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
                         </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            key="email"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Email
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter email`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="contactNo"
-                            key="contactNo"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Contact No.
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    type="number"
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter contact number`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
                         <div className="w-full">
                           <FormField
                             control={form.control}
@@ -318,7 +313,8 @@ const CreateUserModal = () => {
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Birthday
+                                  Birthday{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -329,7 +325,7 @@ const CreateUserModal = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
@@ -337,67 +333,27 @@ const CreateUserModal = () => {
                         {/* <div className="w-full">
                           <FormField
                             control={form.control}
-                            name="age"
-                            key="age"
+                            name="contactNo"
+                            key="contactNo"
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Age
+                                  Contact No. *
                                 </FormLabel>
                                 <FormControl>
                                   <Input
                                     disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
                                     type="number"
-                                    placeholder={`Enter age`}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter contact number`}
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
                         </div> */}
-                      </div>
-
-                      <div className="w-full">
-                        <FormField
-                          control={form.control}
-                          name="role"
-                          key={"role"}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                Select Privilege
-                              </FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select a privilege" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value={Role.ADVISER}>
-                                    {Role.ADVISER}
-                                  </SelectItem>
-                                  <SelectItem value={Role.BULSU_PARTNER}>
-                                    {Role.BULSU_PARTNER.replace("_", " ")}
-                                  </SelectItem>
-                                  <SelectItem value={Role.COORDINATOR}>
-                                    {Role.COORDINATOR}
-                                  </SelectItem>
-                                  <SelectItem value={Role.PESO}>
-                                    {Role.PESO}
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
                       </div>
                     </>
                   );
@@ -410,12 +366,38 @@ const CreateUserModal = () => {
                         <div className="w-full">
                           <FormField
                             control={form.control}
+                            name="contactNo"
+                            key="contactNo"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Contact No.{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    type="number"
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter contact number`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
                             name="homeNo"
                             key="homeNo"
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Home No.
+                                  Home No.{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -427,12 +409,14 @@ const CreateUserModal = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
                         </div>
+                      </div>
 
+                      <div className="flex gap-x-3">
                         <div className="w-full">
                           <FormField
                             control={form.control}
@@ -441,7 +425,8 @@ const CreateUserModal = () => {
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Street
+                                  Street{" "}
+                                  <span className="lowercase">(required)</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -451,13 +436,139 @@ const CreateUserModal = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
+                            name="barangay"
+                            key="barangay"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Barangay{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter barangay`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
                               </FormItem>
                             )}
                           />
                         </div>
                       </div>
 
+                      <div className="flex gap-x-3">
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
+                            name="city"
+                            key="city"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  City{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter city`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
+                            name="province"
+                            key="province"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Province{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    placeholder={`Enter province`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  );
+                }
+
+                if (page === 3) {
+                  return (
+                    <>
+                      <div className="flex gap-x-3">
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
+                            name="role"
+                            key={"role"}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Select Privilege{" "}
+                                  <span className="lowercase">(required)</span>
+                                </FormLabel>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a privilege" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value={Role.TEACHER}>
+                                      {Role.TEACHER}
+                                    </SelectItem>
+                                    <SelectItem value={Role.ADVISER}>
+                                      {Role.ADVISER}
+                                    </SelectItem>
+                                    <SelectItem value={Role.BULSU_PARTNER}>
+                                      {Role.BULSU_PARTNER.replace("_", " ")}
+                                    </SelectItem>
+                                    <SelectItem value={Role.COORDINATOR}>
+                                      {Role.COORDINATOR}
+                                    </SelectItem>
+                                    <SelectItem value={Role.PESO}>
+                                      {Role.PESO}
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage className="text-xs" />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
                       {form.getValues("role") === "ADVISER" && (
                         <div className="flex gap-x-3">
                           <div className="w-full">
@@ -468,7 +579,10 @@ const CreateUserModal = () => {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                    Select department
+                                    Select department{" "}
+                                    <span className="lowercase">
+                                      (required)
+                                    </span>
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
@@ -490,7 +604,7 @@ const CreateUserModal = () => {
                                       ))}
                                     </SelectContent>
                                   </Select>
-                                  <FormMessage />
+                                  <FormMessage className="text-xs" />
                                 </FormItem>
                               )}
                             />
@@ -504,7 +618,10 @@ const CreateUserModal = () => {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                    Select section
+                                    Select section{" "}
+                                    <span className="lowercase">
+                                      (required)
+                                    </span>
                                   </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
@@ -526,89 +643,13 @@ const CreateUserModal = () => {
                                       ))}
                                     </SelectContent>
                                   </Select>
-                                  <FormMessage />
+                                  <FormMessage className="text-xs" />
                                 </FormItem>
                               )}
                             />
                           </div>
                         </div>
                       )}
-
-                      <div className="flex gap-x-3">
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="city"
-                            key="city"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  City
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter city`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="province"
-                            key="province"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Province
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter province`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-x-3">
-                        <div className="w-full">
-                          <FormField
-                            control={form.control}
-                            name="barangay"
-                            key="barangay"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                                  Barangay
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    disabled={isLoading}
-                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-                                    placeholder={`Enter barangay`}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
                     </>
                   );
                 }
@@ -619,7 +660,17 @@ const CreateUserModal = () => {
                   if (page === 1) {
                     return (
                       <div className="flex justify-between">
-                        <Button type="button" onClick={() => setPage(2)}>
+                        <Button
+                          type="button"
+                          onClick={() => setPage(2)}
+                          disabled={
+                            !watchfields.firstname ||
+                            !watchfields.lastname ||
+                            !watchfields.email ||
+                            !watchfields.gender ||
+                            !watchfields.dateOfBirth
+                          }
+                        >
                           Next
                         </Button>
                       </div>
@@ -630,6 +681,47 @@ const CreateUserModal = () => {
                     return (
                       <div className="flex justify-between w-full">
                         <Button type="button" onClick={() => setPage(1)}>
+                          Prev
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => setPage(3)}
+                          disabled={
+                            !watchfields.contactNo ||
+                            !watchfields.homeNo ||
+                            !watchfields.street ||
+                            !watchfields.barangay ||
+                            !watchfields.city ||
+                            !watchfields.province
+                          }
+                        >
+                          Next
+                        </Button>
+                        {/* <Button
+                          variant={"default"}
+                          type="submit"
+                          className=" dark:text-white"
+                          disabled={isLoading}
+                        >
+                          {(() => {
+                            if (isLoading)
+                              return (
+                                <div className="flex items-center gap-x-3">
+                                  {" "}
+                                  Saving <Loader2 size={20} />
+                                </div>
+                              );
+                            return "Add user";
+                          })()}
+                        </Button> */}
+                      </div>
+                    );
+                  }
+
+                  if (page === 3) {
+                    return (
+                      <div className="flex justify-between w-full">
+                        <Button type="button" onClick={() => setPage(2)}>
                           Prev
                         </Button>
                         <Button

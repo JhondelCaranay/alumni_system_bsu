@@ -92,7 +92,6 @@ const AddMemberModal = () => {
     { enabled: !!data.groupChat?.department.name && isModalOpen }
   );
 
-
   const isLoading =
     addMembers.status === "pending" || form.formState.isSubmitting;
 
@@ -117,7 +116,7 @@ const AddMemberModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add new member

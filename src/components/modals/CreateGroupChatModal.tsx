@@ -63,23 +63,28 @@ const CreateGuardianModal = () => {
   const advisers = useQueryProcessor<UserProfileWithDepartmentSection[]>(
     "/users",
     { role: Role.ADVISER },
-    ["advisers"], {
-      enabled: isModalOpen
+    ["advisers"],
+    {
+      enabled: isModalOpen,
     }
   );
 
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
     null,
-    ["departments"], {
-      enabled: isModalOpen
+    ["departments"],
+    {
+      enabled: isModalOpen,
     }
   );
-  const sections = useQueryProcessor<SectionSchemaType[]>("/sections", null, [
-    "sections",
-  ], {
-    enabled: isModalOpen
-  });
+  const sections = useQueryProcessor<SectionSchemaType[]>(
+    "/sections",
+    null,
+    ["sections"],
+    {
+      enabled: isModalOpen,
+    }
+  );
 
   const createGroupChat = useMutateProcessor("/groupchats", null, "POST", [
     "groupchats",
@@ -162,7 +167,7 @@ const CreateGuardianModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add group chat

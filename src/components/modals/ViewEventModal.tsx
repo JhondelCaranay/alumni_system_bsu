@@ -55,12 +55,19 @@ const ViewEventModal = () => {
     mode: "all",
   });
 
-  const updateEvent = useMutateProcessor<formCalendarSchemaType, Event>(`/events/${calendarApi?.event?._def.publicId}`, null, 'PUT', ['events'], {
-    enabled: typeof calendarApi !== 'undefined' && typeof calendarApi?.event?._def?.publicId !== 'undefined' 
-  })
+  const updateEvent = useMutateProcessor<formCalendarSchemaType, Event>(
+    `/events/${calendarApi?.event?._def.publicId}`,
+    null,
+    "PUT",
+    ["events"],
+    {
+      enabled:
+        typeof calendarApi !== "undefined" &&
+        typeof calendarApi?.event?._def?.publicId !== "undefined",
+    }
+  );
 
   const isUpdateLoading = form.formState.isSubmitting || updateEvent.isPending;
-
 
   useEffect(() => {
     if (calendarApi) {
@@ -80,25 +87,25 @@ const ViewEventModal = () => {
 
   const onSubmit: SubmitHandler<formCalendarSchemaType> = async (values) => {
     updateEvent.mutate(values, {
-        onSuccess(data, variables, context) {
-            setEdit(false)
-            toast.success('Event updated')
-        },
-        onError(error, variables, context) {
-            toast.error('Event did not update')
-        },
-    })
+      onSuccess(data, variables, context) {
+        setEdit(false);
+        toast.success("Event updated");
+      },
+      onError(error, variables, context) {
+        toast.error("Event did not update");
+      },
+    });
   };
 
   const onDelete = () => {
     calendarApi.event.remove();
-    onClose()
+    onClose();
   };
 
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="bg-white text-black max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Event
@@ -231,9 +238,12 @@ const ViewEventModal = () => {
                           {(() => {
                             if (isUpdateLoading)
                               return (
-                                <div className="flex items-center gap-x-3"> Updating <Loader2 size={20} /></div>
-                              )
-                            return "Save update"
+                                <div className="flex items-center gap-x-3">
+                                  {" "}
+                                  Updating <Loader2 size={20} />
+                                </div>
+                              );
+                            return "Save update";
                           })()}
                         </Button>
                       </div>
@@ -247,7 +257,7 @@ const ViewEventModal = () => {
                       className=" dark:text-white"
                       onClick={onDelete}
                     >
-                     delete event
+                      delete event
                     </Button>
                   );
                 })()}

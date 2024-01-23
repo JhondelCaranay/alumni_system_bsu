@@ -22,7 +22,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
-import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType } from "@/schema/guardian";
+import {
+  CreateGuardianInput,
+  CreateGuardianSchema,
+  GuardianSchemaType,
+} from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
 
@@ -46,30 +50,34 @@ const CreateGuardianModal = () => {
   });
 
   const setChildren = () => {
-    form.setValue('childrenId', data?.user?.profile?.id as string)
-  }
+    form.setValue("childrenId", data?.user?.profile?.id as string);
+  };
 
   useEffect(() => {
-    setChildren()
-  }, [isModalOpen])
+    setChildren();
+  }, [isModalOpen]);
 
-  const createGuardian = useMutateProcessor<CreateGuardianInput, GuardianSchemaType>('/guardians', null, 'POST', ['guardians'])
-  const isLoading = form.formState.isSubmitting || createGuardian.status === 'pending';
+  const createGuardian = useMutateProcessor<
+    CreateGuardianInput,
+    GuardianSchemaType
+  >("/guardians", null, "POST", ["guardians"]);
+  const isLoading =
+    form.formState.isSubmitting || createGuardian.status === "pending";
 
   const onSubmit: SubmitHandler<CreateGuardianInput> = async (values) => {
     createGuardian.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Information has been added')
-        form.reset()
-        setChildren()
+        toast.success("Information has been added");
+        form.reset();
+        setChildren();
       },
-    })
+    });
   };
 
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add Guardian
@@ -175,7 +183,6 @@ const CreateGuardianModal = () => {
                     </FormItem>
                   )}
                 />
-
               </div>
 
               <DialogFooter className="py-4">
@@ -188,7 +195,10 @@ const CreateGuardianModal = () => {
                   {(() => {
                     if (isLoading)
                       return (
-                        <div className="flex items-center gap-x-3"> Saving <Loader2 size={20} /></div>
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Saving <Loader2 size={20} />
+                        </div>
                       );
                     return "Add guardian";
                   })()}

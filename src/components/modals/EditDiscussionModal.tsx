@@ -215,7 +215,7 @@ const EditDiscussionModal = () => {
             onHandleClose();
           },
           onError(error, variables, context) {
-            console.log(error)
+            console.log(error);
             toast({
               variant: "destructive",
               description: "Something went wrong...",
@@ -235,7 +235,7 @@ const EditDiscussionModal = () => {
             onHandleClose();
           },
           onError(error, variables, context) {
-            console.log(error)
+            console.log(error);
             toast({
               variant: "destructive",
               description: "Something went wrong...",
@@ -257,7 +257,7 @@ const EditDiscussionModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto bg-white text-black dark:bg-[#020817] dark:text-white">
           <DialogHeader className=" ">
             <DialogTitle className="text-2xl text-center font-bold dark:text-white">
               Edit Discussion
@@ -508,7 +508,13 @@ const EditDiscussionModal = () => {
                   disabled={isLoading}
                 >
                   {(() => {
-                    if (isLoading) return <div className="flex items-center gap-x-3"> Saving <Loader2 size={20} /></div>
+                    if (isLoading)
+                      return (
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Saving <Loader2 size={20} />
+                        </div>
+                      );
                     return "Update";
                   })()}
                 </Button>

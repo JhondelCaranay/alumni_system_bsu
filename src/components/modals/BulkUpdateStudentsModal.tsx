@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import {
   Dialog,
@@ -29,7 +29,10 @@ import { SafeUser } from "@/types/types";
 import { Loader2 } from "../ui/loader";
 import { useToast } from "../ui/use-toast";
 import axios, { AxiosError } from "axios";
-import { BulkUpdateStudentsSchema, BulkUpdateStudentsSchemaType } from "@/schema/students";
+import {
+  BulkUpdateStudentsSchema,
+  BulkUpdateStudentsSchemaType,
+} from "@/schema/students";
 
 export const formSchema = z.object({
   excelFile: z.any().refine((val) => val?.length > 0, "File is required"),
@@ -83,58 +86,60 @@ const BulkUpdateStudentsModal = () => {
     }
   };
   // we use ['users'] so we can update the data in the users route not in alumni or student route
-  const updateStudents = useMutateProcessor<BulkUpdateStudentsSchemaType, SafeUser[]>(`/students/bulk-update`, null, 'PATCH', ["students/alumni"]);
-  const isLoading = updateStudents.isPending || form.formState.isSubmitting
-  const {toast} = useToast()
-  
+  const updateStudents = useMutateProcessor<
+    BulkUpdateStudentsSchemaType,
+    SafeUser[]
+  >(`/students/bulk-update`, null, "PATCH", ["students/alumni"]);
+  const isLoading = updateStudents.isPending || form.formState.isSubmitting;
+  const { toast } = useToast();
+
   const onSubmit: SubmitHandler<formType> = async (values) => {
     const data = values.excelFile[0];
     // callback pattern
     uploadData(data, (jsonData: BulkUpdateStudentsSchemaType) => {
-
       // validation
       const validatedJsonData = BulkUpdateStudentsSchema.safeParse(jsonData);
 
-      if(!validatedJsonData.success) {
+      if (!validatedJsonData.success) {
         return toast({
-          title: 'Excel did not import properly',
-          description: 'invalid excel format',
-          variant: 'destructive'
-        })
+          title: "Excel did not import properly",
+          description: "invalid excel format",
+          variant: "destructive",
+        });
       }
 
       // api request here...
-      
+
       updateStudents.mutate(validatedJsonData.data, {
         onError(error, variables, context) {
-          if(axios.isAxiosError(error)) {
-          form.reset()
-           return  toast({
-              title: 'Excel did not import properly',
+          if (axios.isAxiosError(error)) {
+            form.reset();
+            return toast({
+              title: "Excel did not import properly",
               description: error?.response?.data,
-              variant: 'destructive'
-            })
+              variant: "destructive",
+            });
           }
           toast({
-            title: 'Excel did not import properly',
-            description: 'Invallid excel format',
-            variant: 'destructive'
-          })
-          form.reset()
+            title: "Excel did not import properly",
+            description: "Invallid excel format",
+            variant: "destructive",
+          });
+          form.reset();
         },
         onSuccess(data, variables, context) {
           toast({
-            title: 'The excel has been imported',
-          })
-          form.reset()
+            title: "The excel has been imported",
+          });
+          form.reset();
         },
-      })
+      });
     });
   };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden dark:bg-[#020817] dark:text-white">
+      <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto bg-white text-black p-0 dark:bg-[#020817] dark:text-white">
         <DialogHeader className="pt-3 px-6">
           <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
             Update Students{" "}
@@ -161,10 +166,14 @@ const BulkUpdateStudentsModal = () => {
                             <label
                               htmlFor="upload"
                               className=" hover:bg-zinc-200 w-[60%] transition-all m-auto cursor-pointer py-5 border-zinc-300 border-2 rounded-lg flex flex-col justify-center items-center gap-5 "
-                              >
+                            >
                               <Download className=" text-gray-400 ml-2 h-10 w-10 " />
-                              <span className="text-[#42579E] text-sm font-semibold">Choose a file</span>
-                              <span className="text-xs text-zinc-500 font-semibold">Excel (xlsx, xls)</span>
+                              <span className="text-[#42579E] text-sm font-semibold">
+                                Choose a file
+                              </span>
+                              <span className="text-xs text-zinc-500 font-semibold">
+                                Excel (xlsx, xls)
+                              </span>
                             </label>
                             <FormControl>
                               <Input
@@ -207,7 +216,7 @@ const BulkUpdateStudentsModal = () => {
               </div>
             </div>
             <DialogFooter className="px-6 py-4">
-            <a
+              <a
                 href="/assets/update-students-sample-file.xlsx"
                 download="update-students-sample-file.xlsx"
               >
@@ -216,11 +225,18 @@ const BulkUpdateStudentsModal = () => {
                 </Button>
               </a>
 
-              <Button variant={"default"} className=" dark:text-white" disabled={isLoading}>
+              <Button
+                variant={"default"}
+                className=" dark:text-white"
+                disabled={isLoading}
+              >
                 {(() => {
                   if (isLoading)
                     return (
-                      <div className="flex items-center gap-x-3"> Updating <Loader2 size={20} /></div>
+                      <div className="flex items-center gap-x-3">
+                        {" "}
+                        Updating <Loader2 size={20} />
+                      </div>
                     );
 
                   return "Update";

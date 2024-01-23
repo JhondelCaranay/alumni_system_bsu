@@ -18,7 +18,12 @@ const DeleteGurdianModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "deleteGuardian";
 
-  const deleteGuardian = useMutateProcessor<string, GuardianSchemaType>(`/guardians/${data.guardian?.id}`, null, "DELETE", ["guardians"]);
+  const deleteGuardian = useMutateProcessor<string, GuardianSchemaType>(
+    `/guardians/${data.guardian?.id}`,
+    null,
+    "DELETE",
+    ["guardians"]
+  );
 
   const onCancel = () => {
     onClose();
@@ -26,7 +31,7 @@ const DeleteGurdianModal = () => {
 
   const onConfirm = async () => {
     try {
-        deleteGuardian.mutate(data.guardian?.id as string, {
+      deleteGuardian.mutate(data.guardian?.id as string, {
         onSuccess() {
           toast.success(`Information has been deleted`);
           onClose();
@@ -42,9 +47,11 @@ const DeleteGurdianModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto bg-white text-black p-0">
         <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">Delete Guardian</DialogTitle>
+          <DialogTitle className="text-2xl text-center font-bold">
+            Delete Guardian
+          </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
             Are you sure you want to do this?
             <br />

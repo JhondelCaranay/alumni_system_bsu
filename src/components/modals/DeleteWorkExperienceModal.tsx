@@ -18,7 +18,12 @@ const DeleteWorkExperienceModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "deleteWorkExperience";
 
-  const deleteWorkExperience = useMutateProcessor<string, JobSchemaType>(`/users/${data.user?.id}/jobs/${data.workExperience?.id}`, null, "DELETE", ["users", 'jobs', data.user?.id]);
+  const deleteWorkExperience = useMutateProcessor<string, JobSchemaType>(
+    `/users/${data.user?.id}/jobs/${data.workExperience?.id}`,
+    null,
+    "DELETE",
+    ["users", "jobs", data.user?.id]
+  );
 
   const onCancel = () => {
     onClose();
@@ -26,7 +31,7 @@ const DeleteWorkExperienceModal = () => {
 
   const onConfirm = async () => {
     try {
-        deleteWorkExperience.mutate(data.workExperience?.id as string, {
+      deleteWorkExperience.mutate(data.workExperience?.id as string, {
         onSuccess() {
           toast.success(`Work experience has been deleted`);
           onClose();
@@ -42,9 +47,11 @@ const DeleteWorkExperienceModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto bg-white text-black p-">
         <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">Delete Work Experience</DialogTitle>
+          <DialogTitle className="text-2xl text-center font-bold">
+            Delete Work Experience
+          </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
             Are you sure you want to do this?
             <br />

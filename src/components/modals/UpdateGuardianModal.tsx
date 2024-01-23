@@ -22,7 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
-import { CreateGuardianInput, CreateGuardianSchema, GuardianSchemaType, UpdateGuardianInput } from "@/schema/guardian";
+import {
+  CreateGuardianInput,
+  CreateGuardianSchema,
+  GuardianSchemaType,
+  UpdateGuardianInput,
+} from "@/schema/guardian";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
 
@@ -33,7 +38,7 @@ const UpdateGuardianModal = () => {
   const onHandleClose = () => {
     onClose();
   };
-  
+
   const form = useForm<CreateGuardianInput>({
     resolver: zodResolver(CreateGuardianSchema),
     defaultValues: {
@@ -46,34 +51,38 @@ const UpdateGuardianModal = () => {
   });
 
   const setChildren = () => {
-    form.setValue('childrenId', data?.guardian?.childrenId as string)
-    form.setValue('firstname', data?.guardian?.firstname as string)
-    form.setValue('lastname', data?.guardian?.lastname as string)
-    form.setValue('occupation', data?.guardian?.occupation as string)
-    form.setValue('relationship', data?.guardian?.relationship as string)
-  }
+    form.setValue("childrenId", data?.guardian?.childrenId as string);
+    form.setValue("firstname", data?.guardian?.firstname as string);
+    form.setValue("lastname", data?.guardian?.lastname as string);
+    form.setValue("occupation", data?.guardian?.occupation as string);
+    form.setValue("relationship", data?.guardian?.relationship as string);
+  };
 
   useEffect(() => {
-    setChildren()
-  }, [isModalOpen])
+    setChildren();
+  }, [isModalOpen]);
 
-  const updateGuardian = useMutateProcessor<UpdateGuardianInput, GuardianSchemaType>(`/guardians/${data.guardian?.id}`, null, 'PATCH', ['guardians'])
-  const isLoading = form.formState.isSubmitting || updateGuardian.status === 'pending';
+  const updateGuardian = useMutateProcessor<
+    UpdateGuardianInput,
+    GuardianSchemaType
+  >(`/guardians/${data.guardian?.id}`, null, "PATCH", ["guardians"]);
+  const isLoading =
+    form.formState.isSubmitting || updateGuardian.status === "pending";
 
   const onSubmit: SubmitHandler<CreateGuardianInput> = async (values) => {
     updateGuardian.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Information has been updated')
-        form.reset()
-        onClose()
+        toast.success("Information has been updated");
+        form.reset();
+        onClose();
       },
-    })
+    });
   };
 
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Edit Guardian
@@ -179,7 +188,6 @@ const UpdateGuardianModal = () => {
                     </FormItem>
                   )}
                 />
-
               </div>
 
               <DialogFooter className="py-4">
@@ -192,7 +200,10 @@ const UpdateGuardianModal = () => {
                   {(() => {
                     if (isLoading)
                       return (
-                        <div className="flex items-center gap-x-3"> Saving <Loader2 size={20} /></div>
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Saving <Loader2 size={20} />
+                        </div>
                       );
                     return "Update guardian";
                   })()}

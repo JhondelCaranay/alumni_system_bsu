@@ -72,7 +72,7 @@ const CreateDiscussionModal = () => {
   const onHandleClose = () => {
     onClose();
     setFilesToDisPlay([]);
-    setIsPolling(false)
+    setIsPolling(false);
     form.reset();
   };
   const [open, setOpen] = useState(false);
@@ -87,16 +87,23 @@ const CreateDiscussionModal = () => {
         message: "You have to select at least one department",
       }),
     photos: z.array(z.any()).optional(),
-  
-      pollOptions: z.array(z.object({
-        id: z.string(),
-        value: z.string().min(1, "required"),
-      })).refine(options => {
-        const filteredOptions = options.map((option) => option.value);
-        return new Set(filteredOptions).size === filteredOptions?.length
-      }, {
-        message: 'Options must be unique"',
-    }),
+
+    pollOptions: z
+      .array(
+        z.object({
+          id: z.string(),
+          value: z.string().min(1, "required"),
+        })
+      )
+      .refine(
+        (options) => {
+          const filteredOptions = options.map((option) => option.value);
+          return new Set(filteredOptions).size === filteredOptions?.length;
+        },
+        {
+          message: 'Options must be unique"',
+        }
+      ),
   });
 
   type formSchemaType = z.infer<typeof formSchema>;
@@ -275,7 +282,7 @@ const CreateDiscussionModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto bg-white text-black dark:bg-[#020817] dark:text-white">
           <DialogHeader className=" ">
             <DialogTitle className="text-2xl text-center font-bold dark:text-white">
               Create Discussion

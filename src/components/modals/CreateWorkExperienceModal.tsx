@@ -24,7 +24,11 @@ import { Loader2 } from "../ui/loader";
 import { useModal } from "@/hooks/useModalStore";
 import { useMutateProcessor } from "@/hooks/useTanstackQuery";
 import toast from "react-hot-toast";
-import { CreateJobSchema, CreateJobSchemaType, JobSchemaType } from "@/schema/jobs";
+import {
+  CreateJobSchema,
+  CreateJobSchemaType,
+  JobSchemaType,
+} from "@/schema/jobs";
 import { Checkbox } from "../ui/checkbox";
 
 const CreateWorkExperienceModal = () => {
@@ -34,7 +38,7 @@ const CreateWorkExperienceModal = () => {
   const onHandleClose = () => {
     onClose();
   };
-  
+
   const form = useForm<CreateJobSchemaType>({
     resolver: zodResolver(CreateJobSchema),
     defaultValues: {
@@ -46,14 +50,21 @@ const CreateWorkExperienceModal = () => {
     mode: "all",
   });
 
-  const createJobExperience = useMutateProcessor<CreateJobSchemaType, JobSchemaType> (`/users/${data.user?.id}/jobs`, null, 'POST', ['users', 'jobs', data.user?.id]);
+  const createJobExperience = useMutateProcessor<
+    CreateJobSchemaType,
+    JobSchemaType
+  >(`/users/${data.user?.id}/jobs`, null, "POST", [
+    "users",
+    "jobs",
+    data.user?.id,
+  ]);
 
   const onSubmit: SubmitHandler<CreateJobSchemaType> = async (values) => {
     createJobExperience.mutate(values, {
       onSuccess(data, variables, context) {
-        toast.success('Work experience has been added')
-        form.reset()
-        onHandleClose()
+        toast.success("Work experience has been added");
+        form.reset();
+        onHandleClose();
       },
     });
   };
@@ -63,7 +74,7 @@ const CreateWorkExperienceModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add work experience
@@ -207,7 +218,9 @@ const CreateWorkExperienceModal = () => {
                         <FormControl>
                           <Input
                             type="month"
-                            disabled={isLoading || form.getValues('isCurrentJob')}
+                            disabled={
+                              isLoading || form.getValues("isCurrentJob")
+                            }
                             className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
                             placeholder={`Enter the year you left the job`}
                             {...field}
@@ -230,7 +243,10 @@ const CreateWorkExperienceModal = () => {
                   {(() => {
                     if (isLoading)
                       return (
-                        <div className="flex items-center gap-x-3"> Adding <Loader2 size={20} /></div>
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Adding <Loader2 size={20} />
+                        </div>
                       );
                     return "Add work experience";
                   })()}

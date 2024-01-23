@@ -19,7 +19,7 @@ const ViewOnylyEventModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="bg-white text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="bg-white text-black max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Event

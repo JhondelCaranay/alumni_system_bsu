@@ -140,7 +140,7 @@ const ImportStudentsModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden dark:bg-[#020817] dark:text-white">
+      <DialogContent className="bg-white text-black p-0 max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
         <DialogHeader className="pt-3 px-6">
           <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
             Import Students{" "}
@@ -225,7 +225,11 @@ const ImportStudentsModal = () => {
                   Download sample
                 </Button>
               </a>
-              <Button variant={"default"} className=" dark:text-white" disabled={isLoading}>
+              <Button
+                variant={"default"}
+                className=" dark:text-white"
+                disabled={isLoading}
+              >
                 {(() => {
                   if (isLoading)
                     return (

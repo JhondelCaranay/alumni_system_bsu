@@ -71,8 +71,8 @@ const CreateEventModal = () => {
     }
 
     return () => {
-        form.reset();
-    }
+      form.reset();
+    };
   }, [calendarApi, form]);
 
   const onSubmit: SubmitHandler<formCalendarSchemaType> = async (values) => {
@@ -82,7 +82,7 @@ const CreateEventModal = () => {
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className="text-black overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="text-black max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Create Event{" "}
@@ -106,7 +106,7 @@ const CreateEventModal = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                        disabled={isLoading}
+                          disabled={isLoading}
                           className="focus-visible:ring-0 focus-visible:ring-offset-0"
                           type="type"
                           placeholder={`Enter title`}
@@ -130,9 +130,9 @@ const CreateEventModal = () => {
                       </FormLabel>
                       <FormControl>
                         <Textarea
-                        disabled={isLoading}
-                        cols={7}
-                        rows={7}
+                          disabled={isLoading}
+                          cols={7}
+                          rows={7}
                           className="focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
                           placeholder={`Enter description`}
                           {...field}
@@ -145,16 +145,22 @@ const CreateEventModal = () => {
               </div>
 
               <DialogFooter className=" py-4">
-                <Button variant={"default"} type="submit" className=" dark:text-white"
-                disabled={isLoading}>
-
-                  {
-                    (() => {
-                      if(isLoading) return <div className="flex items-center gap-x-3"> Adding event <Loader2 size={20} /></div>
-                      return 'Add event'
-                    })()
-                  }
-
+                <Button
+                  variant={"default"}
+                  type="submit"
+                  className=" dark:text-white"
+                  disabled={isLoading}
+                >
+                  {(() => {
+                    if (isLoading)
+                      return (
+                        <div className="flex items-center gap-x-3">
+                          {" "}
+                          Adding event <Loader2 size={20} />
+                        </div>
+                      );
+                    return "Add event";
+                  })()}
                 </Button>
               </DialogFooter>
             </form>

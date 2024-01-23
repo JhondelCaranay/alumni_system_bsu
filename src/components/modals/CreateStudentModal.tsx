@@ -47,21 +47,20 @@ import { useToast } from "../ui/use-toast";
 const CreateStudentModal = () => {
   const { isOpen, type, onClose, data } = useModal();
   const isModalOpen = isOpen && type === "createStudent";
-  const {toast} = useToast()
+  const { toast } = useToast();
 
   const onHandleClose = () => {
     onClose();
-    form.reset()
+    form.reset();
   };
   const [page, setPage] = useState(1);
   const form = useForm<CreateStudentsSchemaType>({
     resolver: zodResolver(CreateStudentsSchema),
     defaultValues: {
-        role: 'STUDENT',
+      role: "STUDENT",
     },
     mode: "all",
   });
-
 
   const departments = useQueryProcessor<DepartmentSchemaType[]>(
     "/departments",
@@ -71,13 +70,13 @@ const CreateStudentModal = () => {
   form.watch(["departmentId"]);
 
   useEffect(() => {
-    form.setValue('role', 'STUDENT')
+    form.setValue("role", "STUDENT");
 
     return () => {
-        form.reset()
-        setPage(1)
-    }
-  }, [isModalOpen])
+      form.reset();
+      setPage(1);
+    };
+  }, [isModalOpen]);
 
   const departmentId = form.getValues("departmentId");
 
@@ -89,34 +88,42 @@ const CreateStudentModal = () => {
     ? sections?.data?.filter((section) => section.departmentId === departmentId)
     : sections.data;
 
-  const createStudent = useMutateProcessor<CreateStudentsSchemaType, unknown>('/students', null, 'POST', ['students/alumni'])
+  const createStudent = useMutateProcessor<CreateStudentsSchemaType, unknown>(
+    "/students",
+    null,
+    "POST",
+    ["students/alumni"]
+  );
 
-  const isLoading = form.formState.isSubmitting || createStudent.status === 'pending';
+  const isLoading =
+    form.formState.isSubmitting || createStudent.status === "pending";
 
   const onSubmit: SubmitHandler<CreateStudentsSchemaType> = async (values) => {
     createStudent.mutate(values, {
-        onSuccess(data, variables, context) {
-            toast({
-                title: 'Student successfully created'
-            })
-            onHandleClose()
-        },
-        onError(error, variables, context) {
-            console.error(error)
-            toast({
-                title: 'Student did not create',
-                variant: 'destructive'
-            })
-        },
-    })
+      onSuccess(data, variables, context) {
+        toast({
+          title: "Student successfully created",
+        });
+        onHandleClose();
+      },
+      onError(error, variables, context) {
+        console.error(error);
+        toast({
+          title: "Student did not create",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
-  const selectedDepartment = departments.data?.find((department) => department.id === departmentId )
+  const selectedDepartment = departments.data?.find(
+    (department) => department.id === departmentId
+  );
 
   return (
     <div>
       <Dialog open={isModalOpen} onOpenChange={onHandleClose}>
-        <DialogContent className=" overflow-hidden dark:bg-[#020817] dark:text-white">
+        <DialogContent className="max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white">
           <DialogHeader className="pt-3 px-6">
             <DialogTitle className="text-2xl text-center font-bold m-2 dark:text-white">
               Add student
@@ -149,7 +156,7 @@ const CreateStudentModal = () => {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                  key={'firstname'}
+                                    key={"firstname"}
                                     disabled={isLoading}
                                     className="focus-visible:ring-0  focus-visible:ring-offset-0"
                                     placeholder={`Enter firstname`}
@@ -192,7 +199,7 @@ const CreateStudentModal = () => {
                           <FormField
                             control={form.control}
                             name="middlename"
-                            key={'middlename'}
+                            key={"middlename"}
                             render={({ field }) => (
                               <FormItem className="w-full">
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
@@ -216,7 +223,7 @@ const CreateStudentModal = () => {
                           <FormField
                             control={form.control}
                             name="gender"
-                            key={'gender'}
+                            key={"gender"}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
@@ -348,11 +355,6 @@ const CreateStudentModal = () => {
                           />
                         </div> */}
                       </div>
-
-                     
-
-                      
-
                     </>
                   );
                 }
@@ -360,34 +362,32 @@ const CreateStudentModal = () => {
                 if (page === 2) {
                   return (
                     <>
-                    
-                    <div className="flex gap-x-3">
-
-<div className="w-full">
-    <FormField
-      control={form.control}
-      name="studentNumber"
-      key="studentNumber"
-      render={({ field }) => (
-        <FormItem className="w-full">
-          <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
-            Student Number
-          </FormLabel>
-          <FormControl>
-            <Input
-              disabled={isLoading}
-              className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
-              type="number"
-              placeholder={`Enter student number`}
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  </div>
-</div>
+                      <div className="flex gap-x-3">
+                        <div className="w-full">
+                          <FormField
+                            control={form.control}
+                            name="studentNumber"
+                            key="studentNumber"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                  Student Number
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    disabled={isLoading}
+                                    className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
+                                    type="number"
+                                    placeholder={`Enter student number`}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
 
                       <div className="flex gap-x-3">
                         <div className="w-full">
@@ -451,7 +451,7 @@ const CreateStudentModal = () => {
                                         value={section.id}
                                         key={section.id}
                                       >
-                                        {section.course_year} {section.name} 
+                                        {section.course_year} {section.name}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -462,7 +462,6 @@ const CreateStudentModal = () => {
                           />
                         </div>
                       </div>
-
 
                       <div className="flex gap-x-3">
                         <div className="w-full">
@@ -527,7 +526,7 @@ const CreateStudentModal = () => {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                  key={'homeNo'}
+                                    key={"homeNo"}
                                     type="number"
                                     disabled={isLoading}
                                     className=" focus-visible:ring-0  focus-visible:ring-offset-0 resize-none"
@@ -601,7 +600,9 @@ const CreateStudentModal = () => {
                   if (page === 1) {
                     return (
                       <div className="flex justify-between">
-                        <Button type="button" onClick={() => setPage(2)}>Next</Button>
+                        <Button type="button" onClick={() => setPage(2)}>
+                          Next
+                        </Button>
                       </div>
                     );
                   }
@@ -609,7 +610,9 @@ const CreateStudentModal = () => {
                   if (page === 2) {
                     return (
                       <div className="flex justify-between w-full">
-                        <Button  type="button" onClick={() => setPage(1)}>Prev</Button>
+                        <Button type="button" onClick={() => setPage(1)}>
+                          Prev
+                        </Button>
                         <Button
                           variant={"default"}
                           type="submit"

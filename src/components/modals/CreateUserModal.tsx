@@ -547,9 +547,15 @@ const CreateUserModal = () => {
                                   </FormControl>
                                   <SelectContent>
                                     <SelectItem
+                                      // @ts-nocheck
+                                      // @ts-ignore
                                       value={Role.TEACHER}
                                     >
-                                      {Role.TEACHER}
+                                      {
+                                        // @ts-nocheck
+                                        // @ts-ignore
+                                        Role.TEACHER
+                                      }
                                     </SelectItem>
                                     <SelectItem value={Role.ADVISER}>
                                       {Role.ADVISER}

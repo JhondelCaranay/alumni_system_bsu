@@ -37,7 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        updatedAt: "desc",
       },
       include: {
         messages:true,

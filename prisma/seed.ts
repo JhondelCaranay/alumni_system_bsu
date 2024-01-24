@@ -300,7 +300,7 @@ async function main() {
       async (year) =>
         await Promise.all(
           Array.from({
-            length: faker.number.int({ min: 100, max: 200 }),
+            length: faker.number.int({ min: 50, max: 100 }),
           }).map(() =>
             createUser({
               role: "ALUMNI",

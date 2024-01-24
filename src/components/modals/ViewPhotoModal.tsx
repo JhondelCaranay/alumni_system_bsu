@@ -14,7 +14,7 @@ const ViewPhotoModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white text-black p-0 max-h-[95vh] max-w-[90vw] md:w-[550px] overflow-y-auto dark:bg-[#020817] dark:text-white w-[95%] h-[80%] rounded-md ">
+      <DialogContent className="bg-transparent text-black p-0 max-h-[90vh] max-w-[90vw] md:max-w-[70vw] md:max-h-[70vh] overflow-y-auto dark:bg-[#020817] dark:text-white rounded-md ">
         <img
           src={data?.photoUrl || ""}
           alt="photo"

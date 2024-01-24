@@ -18,7 +18,7 @@ const ViewPhotoModal = () => {
         <img
           src={data?.photoUrl || ""}
           alt="photo"
-          className="h-full w-full z-50 object-contain"
+          className="h-full w-full z-50 object-cover"
         />
       </DialogContent>
     </Dialog>

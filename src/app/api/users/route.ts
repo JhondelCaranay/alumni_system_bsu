@@ -4,7 +4,8 @@ import { isUserAllowed } from "@/lib/utils";
 import { CreateUserSchema } from "@/schema/users";
 import { Role } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt";
+import sendMail from "@/lib/smtp";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
@@ -55,7 +56,6 @@ export async function GET(request: Request) {
   }
 }
 
-
 export async function POST(req: NextRequest, { params }: { params: {} }) {
   const currentUser = await getCurrentUser();
 
@@ -95,29 +95,35 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     street,
   } = result.data;
 
-  const bday = new Date(dateOfBirth || new Date())
+  const bday = new Date(dateOfBirth || new Date());
   const saltRounds = await bcrypt.genSalt(10);
-  console.log(bday)
-  const pass = `@${firstname}${bday.getDate()}${(bday.getMonth() + 1) < 10 ? `0${bday.getMonth() + 1}`: (bday.getMonth() + 1)}${bday.getFullYear()}`
-  console.log(pass)
-  const hashedPassword = await bcrypt.hash(pass,saltRounds)
+  console.log(bday);
+  const pass = `@${firstname}${bday.getDate()}${
+    bday.getMonth() + 1 < 10 ? `0${bday.getMonth() + 1}` : bday.getMonth() + 1
+  }${bday.getFullYear()}`;
+  console.log(pass);
+  const hashedPassword = await bcrypt.hash(pass, saltRounds);
   try {
     const user = await prisma.user.create({
       data: {
         email,
         role,
         hashedPassword,
-        name: firstname + " " + lastname, 
-        department: departmentId ? {
-          connect: {
-            id: departmentId,
-          },
-        } : undefined,
-        section: sectionId ? {
-          connect: {
-            id: sectionId,
-          },
-        } : undefined,
+        name: firstname + " " + lastname,
+        department: departmentId
+          ? {
+              connect: {
+                id: departmentId,
+              },
+            }
+          : undefined,
+        section: sectionId
+          ? {
+              connect: {
+                id: sectionId,
+              },
+            }
+          : undefined,
       },
       select: {
         id: true,
@@ -135,7 +141,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     });
 
     // create profile
-    await prisma.profile.create({
+    const profile = await prisma.profile.create({
       data: {
         firstname,
         lastname,
@@ -144,7 +150,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         barangay,
         city,
         contactNo,
-        dateOfBirth: bday ,
+        dateOfBirth: bday,
         gender,
         homeNo,
         province,
@@ -156,6 +162,24 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
         },
       },
     });
+
+    const content = `<div>
+    <h3> hello ${profile.firstname} ${profile.lastname} </h3>
+
+    <h4>These are your credentials</h4>
+
+    <section>
+      <div> <strong> Contact: </strong> <label> ${profile.contactNo} </label> </div>
+      <div> <strong> Email: </strong> <label> ${user.email} </label> </div>
+      <div> <strong> Password: </strong> <label> ${pass} </label> </div>
+    </section>
+
+    <p> please keep this credentials secure and dont share it to other people, Thank you!  </p>
+
+    <small> - CIT-ADMIN </small>
+</div>`;
+
+    sendMail({ content, subject: "CIT", emailTo: user.email || "" });
 
     return NextResponse.json(user);
   } catch (error) {

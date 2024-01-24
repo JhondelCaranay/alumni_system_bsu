@@ -35,7 +35,7 @@ const JobTab = () => {
     if (departmentData && departmentId === "") {
       setDepartmentId(departmentData[0].id);
     }
-  }, [departmentData]);
+  }, [departmentData, departmentId]);
 
   if (!departmentData || !jobsData) {
     return null;

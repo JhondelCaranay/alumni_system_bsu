@@ -56,7 +56,7 @@ const StudentTab = () => {
     if (departmentData && departmentId === "") {
       setDepartmentId(departmentData[0].id);
     }
-  }, [departmentData]);
+  }, [departmentData, departmentId]);
 
   const getSelectedDepartmentName = useMemo(
     () =>

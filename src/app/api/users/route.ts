@@ -95,7 +95,7 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
     street,
   } = result.data;
 
-  const bday = new Date(dateOfBirth)
+  const bday = new Date(dateOfBirth || new Date())
   const saltRounds = await bcrypt.genSalt(10);
   console.log(bday)
   const pass = `@${firstname}${bday.getDate()}${(bday.getMonth() + 1) < 10 ? `0${bday.getMonth() + 1}`: (bday.getMonth() + 1)}${bday.getFullYear()}`

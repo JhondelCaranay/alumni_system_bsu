@@ -20,6 +20,7 @@ import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { Role } from "@prisma/client";
 import InboxItemMobile from "./InboxItemMobile";
 import { Hint } from "@/components/hint";
+import { useInboxSocket } from "@/hooks/useInboxSocket";
 
 type Props = {
   currentUser: GetCurrentUserType;
@@ -29,9 +30,16 @@ const InboxMobile = ({ currentUser }: Props) => {
   
   const inboxes = useQueryProcessor<
     (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
-  >("/groupchats", { userId: currentUser?.id }, ["groupchats"], {
+  >("/groupchats", { userId: currentUser?.id }, ["groupchats", currentUser?.id], {
     enabled: !!currentUser?.id,
   });
+  
+  const inboxKey = `inbox:${currentUser?.id}:sort`
+
+  useInboxSocket({
+    queryKey:  ["groupchats", currentUser?.id],
+    inboxKey: inboxKey
+  })
 
   const { onOpen } = useModal();
   return (

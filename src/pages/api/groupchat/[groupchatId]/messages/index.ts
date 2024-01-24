@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { isUserAllowed } from "@/lib/utils";
 import { CreateGroupChatMessageSchema } from "@/schema/groupchat-message";
 import { NextApiResponseServerIo } from "@/types/types";
+import { Role } from "@prisma/client";
 import { NextApiRequest } from "next";
 import { z } from "zod";
 
@@ -86,6 +87,7 @@ export default async function handler(
 
     // create groupchat message
     try {
+
       const groupChatMessage = await prisma.groupChatMessage.create({
         data: {
           message: bodyResult.data.message,
@@ -101,6 +103,33 @@ export default async function handler(
           },
         },
       });
+
+      const groupChat = await prisma.groupChat.update({
+        where: {
+          id: queryResult.data.groupchatId
+        },
+        data: {
+          updatedAt: new Date()
+        },
+        include: {
+          messages:true,
+          users: true,
+          section: true,
+          department: true,
+        },
+      })
+      // since admin are not joined to any groupchat we need to manually socket to him the new updatedGroupchat
+      if(currentUser.role === Role.ADMIN) {
+        const Key = `inbox:${currentUser.id}:sort`;
+        res.socket?.server?.io.emit(Key, groupChat);
+      }
+      
+      groupChat.users.forEach((user) => {
+        const Key = `inbox:${user.id}:sort`;
+        console.log('user::', Key)
+        res.socket?.server?.io.emit(Key, groupChat);
+      })
+
       const Key = `chats:${groupChatMessage.groupChatId}:messages`;
 
       console.log(Key)

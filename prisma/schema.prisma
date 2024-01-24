@@ -183,6 +183,7 @@ model Comment {
 
   @@index([userId])
   @@index([postId])
+  @@index([commentId])
 }
 
 model Like {
@@ -225,6 +226,8 @@ model Notification {
   like             Like?   @relation(fields: [likeId], references: [id])
   likeId           String?
   usersWhoInteract User[]  @relation("usersWhoInteract")
+
+  @@index([commentId])
 }
 
 enum NotificationType {

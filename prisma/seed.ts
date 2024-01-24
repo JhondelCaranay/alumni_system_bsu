@@ -114,7 +114,7 @@ const getFullEmail = (firstName: string, lastName: string) => {
   return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${faker.number.int(
     {
       min: 0,
-      max: 99,
+      max: 99999,
     }
   )}@bulsu.edu.ph`;
 };

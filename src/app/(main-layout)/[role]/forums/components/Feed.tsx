@@ -35,7 +35,7 @@ const Feed:React.FC<FeedProps> = ({currentUser}) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col  gap-y-5 max-h-[87vh] overflow-y-auto max-w-[95%] md:max-w-[700px]">
+    <div className="flex-1 flex flex-col  gap-y-5 max-h-[87vh] overflow-y-auto max-w-[95%] md:max-w-[700px] items-center">
       <CreateFeedInput />
     
       {feed.data.map((feedData) => (

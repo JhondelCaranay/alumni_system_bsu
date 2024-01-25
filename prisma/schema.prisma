@@ -46,6 +46,36 @@ enum PostType {
 //   GUARDIAN
 // }
 
+
+model Conversation {
+  id           String          @id @default(uuid())
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  participants User[]          @relation("userConversations") // Many-to-many relationship with participants (users)
+  messages     DirectMessage[] // One-to-many relationship with messages in the conversation
+}
+
+// Define the DirectMessage model
+model DirectMessage {
+  id        String   @id @default(uuid()) 
+  content   String   @db.Text 
+  fileUrl   String?  @db.Text 
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+
+  // Relationships
+  sender         User         @relation(fields: [senderId], references: [id]) 
+  senderId       String // ID of the sender (user)
+  conversation   Conversation @relation(fields: [conversationId], references: [id]) 
+  conversationId String 
+
+  @@index([senderId])
+  @@index([conversationId])
+}
+
 model GroupChatMessage {
   id String @id @default(cuid())
 
@@ -236,7 +266,6 @@ model Notification {
   likeId           String?
   usersWhoInteract User[]  @relation("usersWhoInteract")
 
-
   @@index([userId])
   @@index([postId])
   @@index([commentId])
@@ -412,11 +441,15 @@ model User {
   likes         Like[]
   notifications Notification[]
 
-  interactedNotifications Notification[] @relation("usersWhoInteract")
+  interactedNotifications Notification[]  @relation("usersWhoInteract")
+  conversations           Conversation[]  @relation("userConversations")
+  directMessages          DirectMessage[]
 
   @@index([sectionId])
   @@index([departmentId])
 }
+
+
 
 // Necessary for Next auth
 model Account {
@@ -446,6 +479,7 @@ model Session {
   userId       String   @unique
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
@@ -457,3 +491,5 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// Define the DirectMessage model

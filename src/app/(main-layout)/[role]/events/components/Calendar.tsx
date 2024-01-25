@@ -121,7 +121,6 @@ const Calendar = () => {
   };
 
   const handleDeleteEvent = ({ event }: any) => {
-    console.log("deleting event");
     deleteEvent(event.id);
   };
 

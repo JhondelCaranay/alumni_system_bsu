@@ -14,7 +14,6 @@ export const cloudinaryDestroy = async (public_id: string) => {
       key
     );
 
-    console.log(result);
     return result;
   } catch (error) {
     console.error("error cloudinary upload", error);

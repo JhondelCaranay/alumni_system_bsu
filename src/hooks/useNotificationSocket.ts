@@ -46,7 +46,6 @@ export const useNotificationSocket = ({
               user: UserWithProfile;
             })[]
           ) => {
-            console.log('notificationCreateKey', data, oldData)
             if(typeof oldData === 'undefined' || oldData?.length <= 0) {
                 const newData = [data];
                 return newData;
@@ -60,7 +59,6 @@ export const useNotificationSocket = ({
     );
 
     socket.on(notificationUpdateKey, (data: any) => {
-      console.log("notification update", data);
     });
 
     return () => {

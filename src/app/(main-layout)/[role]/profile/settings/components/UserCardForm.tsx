@@ -37,7 +37,6 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
     mode: "all",
   });
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
-    console.log(values)
   };
 
   const updateProfile = useMutateProcessor<UpdateUserSchemaType, UserWithProfile>(

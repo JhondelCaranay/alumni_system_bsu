@@ -116,23 +116,23 @@ export async function POST(req: NextRequest) {
         },
       });
       // email sending here
-      // const content = `<div>
-      //     <h3> hello ${data["First Name"]} ${data['Last Name']} </h3>
+      const content = `<div>
+          <h3> hello ${data["First Name"]} ${data["Last Name"]} </h3>
 
-      //     <h4>These are your credentials</h4>
+          <h4>These are your credentials</h4>
 
-      //     <section>
-      //       <div> <strong> Contact: </strong> <label> ${data["Contact Number"]} </label> </div>
-      //       <div> <strong> Email: </strong> <label> ${data["Email"]} </label> </div>
-      //       <div> <strong> Password: </strong> <label> ${password} </label> </div>
-      //     </section>
+          <section>
+            <div> <strong> Contact: </strong> <label> ${data["Contact Number"]} </label> </div>
+            <div> <strong> Email: </strong> <label> ${data["Email"]} </label> </div>
+            <div> <strong> Password: </strong> <label> ${pass} </label> </div>
+          </section>
 
-      //     <p> please keep this credentials secure and dont share it to other people, Thank you!  </p>
+          <p> please keep this credentials secure and dont share it to other people, Thank you!  </p>
 
-      //     <small> - BSU-FACULTY-ADMIN </small>
-      // </div>`;
+          <small> - CIT-ADMIN </small>
+      </div>`;
 
-      // sendMail({ content, subject: "Almuni Bsu", emailTo: data["Email"] });
+      sendMail({ content, subject: "CIT", emailTo: data["Email"] });
 
       const { hashedPassword, ...rest } = student;
 

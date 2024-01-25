@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  relationMode = "foreignKeys"
+  relationMode = "prisma"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -61,6 +61,7 @@ model GroupChatMessage {
   updatedAt DateTime @updatedAt
 
   @@index([groupChatId])
+  @@index([senderId])
 }
 
 model GroupChat {
@@ -82,6 +83,7 @@ model GroupChat {
   updatedAt DateTime @updatedAt
 
   @@index([departmentId])
+  @@index([sectionId])
 }
 
 model Event {
@@ -114,6 +116,8 @@ model Photos {
 
   Post   Post?   @relation(fields: [postId], references: [id])
   postId String?
+
+  @@index([postId])
 }
 
 model PollOption {
@@ -128,6 +132,8 @@ model PollOption {
 
   Post   Post?   @relation(fields: [postId], references: [id])
   postId String?
+
+  @@index([postId])
 }
 
 model Post {
@@ -177,12 +183,13 @@ model Comment {
   postId String?
 
   commentId     String?
-  comment       Comment?       @relation("CommentReply", fields: [commentId], references: [id])
+  comment       Comment?       @relation("CommentReply", fields: [commentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies       Comment[]      @relation("CommentReply")
   notifications Notification[]
 
   @@index([userId])
   @@index([postId])
+  @@index([commentId])
 }
 
 model Like {
@@ -196,6 +203,9 @@ model Like {
   post          Post           @relation(fields: [postId], references: [id])
   postId        String
   notifications Notification[]
+
+  @@index([userId])
+  @@index([postId])
 }
 
 model Notification {
@@ -225,6 +235,12 @@ model Notification {
   like             Like?   @relation(fields: [likeId], references: [id])
   likeId           String?
   usersWhoInteract User[]  @relation("usersWhoInteract")
+
+
+  @@index([userId])
+  @@index([postId])
+  @@index([commentId])
+  @@index([likeId])
 }
 
 enum NotificationType {
@@ -420,6 +436,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 // Necessary for Next auth
@@ -429,6 +446,7 @@ model Session {
   userId       String   @unique
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
 }
 
 // Necessary for Next auth

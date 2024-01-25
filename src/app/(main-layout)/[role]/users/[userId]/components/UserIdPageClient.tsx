@@ -50,7 +50,7 @@ const UserIdPageClient = () => {
       .string()
       .min(1, { message: "Required field" })
       .email({ message: "Invalid email" }),
-    middlename: z.string().min(1, { message: "Required field" }),
+      middlename: z.string().optional(),
     city: z.string().min(1, { message: "Required field" }),
     homeNo: z.string().min(1, { message: "Required field" }),
     street: z.string().min(1, { message: "Required field" }),

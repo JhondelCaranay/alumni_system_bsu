@@ -27,7 +27,7 @@ const GeneralInfo: React.FC<GeneralInfoProps> = ({ data }) => {
   const formSchema = z.object({
     firstname: z.string().min(1, { message: "Firstname is required" }),
     lastname: z.string().min(1, { message: "Lastname is required" }),
-    middlename: z.string().min(1, { message: "Middlename is required" }),
+    middlename: z.string().optional(),
     personal_email: z
       .string()
       .email()

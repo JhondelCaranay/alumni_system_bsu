@@ -119,16 +119,17 @@ export default async function handler(
         },
       })
       // since admins are not joined to any groupchat we need to manually socket to them the new updatedGroupchat
-        const admins = await prisma.user.findMany({
-          where: {
-            role: 'ADMIN',
-          }
-        })
 
-        admins.forEach(user => {
-          const Key = `inbox:${user.id}:sort`;
-          res.socket?.server?.io.emit(Key, groupChat);
-        })
+      const admins = await prisma.user.findMany({
+        where: {
+          role: Role.ADMIN
+        }
+      });
+
+      admins.forEach(user => {
+        const Key = `inbox:${user.id}:sort`;
+        res.socket?.server?.io.emit(Key, groupChat);
+      })
       
       groupChat.users.forEach((user) => {
         const Key = `inbox:${user.id}:sort`;
@@ -136,6 +137,8 @@ export default async function handler(
       })
 
       const Key = `chats:${groupChatMessage.groupChatId}:messages`;
+
+      console.log(Key)
 
       res.socket?.server?.io.emit(Key, groupChatMessage);
       res.status(200).json(groupChatMessage);

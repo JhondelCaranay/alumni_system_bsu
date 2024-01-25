@@ -44,6 +44,7 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
         users: true,
         section: true,
         department: true,
+        
       },
     });
 

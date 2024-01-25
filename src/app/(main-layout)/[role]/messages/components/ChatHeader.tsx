@@ -50,9 +50,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ data, currentUser }) => {
   return (
     <div className="border border-b-1 border-x-0 border-t-0 w-full flex p-3 gap-x-3 items-center">
       <div className="">
-        <img
-          src={data?.image || "/images/logo.png"}
-          alt="chat header profile"
+        <Avatar
+          src={data?.image}
           className="w-12 h-12 object-cover rounded-full"
         />
       </div>

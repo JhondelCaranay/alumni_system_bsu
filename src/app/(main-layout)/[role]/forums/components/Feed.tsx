@@ -25,7 +25,7 @@ const Feed:React.FC<FeedProps> = ({currentUser}) => {
 
   if (feed.status === "pending" || feed.isFetching) {
     return (
-      <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto max-w-[95%] sm:max-w-[80%] md:max-w-[700px]">
         <JobSkeletonList />
       </div>
     );
@@ -35,7 +35,7 @@ const Feed:React.FC<FeedProps> = ({currentUser}) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col  gap-y-5 max-h-[87vh] overflow-y-auto max-w-[95%] md:max-w-[700px] items-center">
+    <div className="flex-1 flex flex-col items-center gap-y-5 max-h-[87vh] overflow-y-auto max-w-[95%] sm:max-w-[80%] md:max-w-[700px]">
       <CreateFeedInput />
     
       {feed.data.map((feedData) => (

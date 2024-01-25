@@ -163,23 +163,23 @@ export async function POST(req: NextRequest, { params }: { params: {} }) {
       },
     });
 
-    const content = `<div>
-    <h3> hello ${profile.firstname} ${profile.lastname} </h3>
+    //     const content = `<div>
+    //     <h3> hello ${profile.firstname} ${profile.lastname} </h3>
 
-    <h4>These are your credentials</h4>
+    //     <h4>These are your credentials</h4>
 
-    <section>
-      <div> <strong> Contact: </strong> <label> ${profile.contactNo} </label> </div>
-      <div> <strong> Email: </strong> <label> ${user.email} </label> </div>
-      <div> <strong> Password: </strong> <label> ${pass} </label> </div>
-    </section>
+    //     <section>
+    //       <div> <strong> Contact: </strong> <label> ${profile.contactNo} </label> </div>
+    //       <div> <strong> Email: </strong> <label> ${user.email} </label> </div>
+    //       <div> <strong> Password: </strong> <label> ${pass} </label> </div>
+    //     </section>
 
-    <p> please keep this credentials secure and dont share it to other people, Thank you!  </p>
+    //     <p> please keep this credentials secure and dont share it to other people, Thank you!  </p>
 
-    <small> - CIT-ADMIN </small>
-</div>`;
+    //     <small> - CIT-ADMIN </small>
+    // </div>`;
 
-    sendMail({ content, subject: "CIT", emailTo: user.email || "" });
+    //     sendMail({ content, subject: "CIT", emailTo: user.email || "" });
 
     return NextResponse.json(user);
   } catch (error) {

@@ -33,7 +33,7 @@ export const UpdateUsersSchema = UserSchema.extend({
   bsu_email: z.string().email(),
   personal_email: z.string().email(),
   image: z.string(),
-  middlename: z.string(),
+  middlename: z.string().optional(),
   city: z.string(),
   homeNo: z.string(),
   street: z.string(),

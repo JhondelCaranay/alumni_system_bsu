@@ -7,6 +7,7 @@ type WidgetProps = {
   total: number;
   icon: LucideIcon;
 };
+
 const Widget = ({ title, total, icon }: WidgetProps) => {
   return (
     <div className="group hover:shadow-md hover:shadow-primary transition overflow-hidden border rounded-lg p-3 h-full cursor-pointer dark:shadow-none dark:bg-slate-900 dark:text-white">

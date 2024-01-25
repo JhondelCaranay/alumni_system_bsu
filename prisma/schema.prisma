@@ -183,7 +183,6 @@ model Comment {
 
   @@index([userId])
   @@index([postId])
-  @@index([commentId])
 }
 
 model Like {
@@ -226,8 +225,6 @@ model Notification {
   like             Like?   @relation(fields: [likeId], references: [id])
   likeId           String?
   usersWhoInteract User[]  @relation("usersWhoInteract")
-
-  @@index([commentId])
 }
 
 enum NotificationType {
@@ -408,7 +405,7 @@ model User {
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
@@ -429,7 +426,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       String   @unique
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -32,7 +32,7 @@ const ForumsPage = async (props: ForumsPageProps) => {
         <div className="hidden lg:inline-block">
           <ProfileSidebar />
         </div>
-        <div className="col-span-4 lg:col-span-3  lg:px-10  flex justify-center ">
+        <div className="col-span-4 lg:col-span-3 max-w-[80%] lg:px-10 place-self-center">
           <Feed currentUser={currentUser} />
         </div>
         {/* <div className="hidden lg:inline-block">

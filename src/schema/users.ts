@@ -76,8 +76,6 @@ export const CreateUserSchema = z
     email: z.string().email().min(1, "Required"),
     role: z.enum([
       Role.BULSU_PARTNER,
-      // @ts-nocheck
-      // @ts-ignore
       Role.TEACHER,
       Role.ADVISER,
       Role.COORDINATOR,

@@ -236,6 +236,7 @@ model Notification {
   likeId           String?
   usersWhoInteract User[]  @relation("usersWhoInteract")
 
+
   @@index([userId])
   @@index([postId])
   @@index([commentId])
@@ -420,7 +421,7 @@ model User {
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
@@ -442,7 +443,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
+  userId       String   @unique
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])

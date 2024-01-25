@@ -58,7 +58,7 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
           {lastMessage?.message ?? "This is the start of your group chat conversation"}
         </p>
         <time className={cn("text-xs flex items-center gap-x-1")}>
-         <Clock className="w-3 h-3 fill-zinc-200"/> {format(lastMessage?.createdAt || new Date())}
+         <Clock className="w-3 h-3 fill-zinc-200"/> {format(lastMessage?.createdAt || data.updatedAt || new Date())}
         </time>
       </div>
     </div>

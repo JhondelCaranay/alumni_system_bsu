@@ -23,7 +23,6 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommen
     socket.on(
       commentsKey,
       (data: CommentSchema) => {
-        console.log(commentsKey)
         queryClient.setQueryData(
           queryKey,
           (oldData:CommentSchema[]) => {
@@ -44,7 +43,6 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommen
     socket.on(
       repliesKey,
       (data:CommentSchema) => {
-        console.log(repliesKey)
         queryClient.setQueryData(
           queryKey,
           (oldData:CommentSchema[]) => {
@@ -67,7 +65,6 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommen
     socket.on(
       editCommentsKey,
       (data:CommentSchema & {comment: CommentSchema}) => {
-        console.log(editCommentsKey)
         queryClient.setQueryData(
           queryKey,
           (oldData:(CommentSchema & {replies: CommentSchema[]})[]) => {
@@ -97,7 +94,6 @@ export const useCommentSocket = ({ queryKey, repliesKey, commentsKey, editCommen
     socket.on(
       deleteCommentsKey,
       (data:CommentSchema & {comment: CommentSchema}) => {
-        console.log(deleteCommentsKey)
         queryClient.setQueryData(
           queryKey,
           (oldData:(CommentSchema & {replies: CommentSchema[]})[]) => {

@@ -36,7 +36,6 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
     inboxKey: inboxKey
   })
 
-  console.log(inboxes.data)
   const { onOpen } = useModal();
   return (
     <div className="hidden md:flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl dark:bg-slate-900">

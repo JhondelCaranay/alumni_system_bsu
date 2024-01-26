@@ -7,8 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
-import InboxItem from "./InboxItem";
+import React, { useEffect } from "react";
+import InboxItem from "./groupchat/InboxGroupchatItem";
 import { Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
@@ -17,25 +17,24 @@ import { GroupChatSchemaType } from "@/schema/groupchats";
 import { Loader2 } from "@/components/ui/loader";
 import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { Role } from "@prisma/client";
-import { useInboxSocket } from "@/hooks/useInboxSocket";
+import { useInboxGroupchatSocket } from "@/hooks/useInboxGroupchatSocket";
+import useRouterPush from "@/hooks/useRouterPush";
+import InboxGroupchat from "./groupchat/InboxGroupchat";
+import { usePathname } from "next/navigation";
 
 type InboxProps = {
   currentUser: GetCurrentUserType;
 };
 const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
-  const inboxes = useQueryProcessor<
-    (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
-  >("/groupchats", { userId: currentUser?.id }, ["groupchats", currentUser?.id], {
-    enabled: !!currentUser?.id,
-  });
   
-  const inboxKey = `inbox:${currentUser?.id}:sort`
+  
+  const {redirectTo} = useRouterPush()
 
-  useInboxSocket({
-    queryKey:  ["groupchats", currentUser?.id],
-    inboxKey: inboxKey
-  })
+  const onSelect = (page:string) => {
+      redirectTo(`messages/${page}`)
+  }
 
+  const pathname = usePathname()
   const { onOpen } = useModal();
   return (
     <div className="hidden md:flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl dark:bg-slate-900">
@@ -50,40 +49,29 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
             />
           )}
         </div>
-        <Select>
+        <Select onValueChange={(e) => onSelect(e)}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Filter" />
+            <SelectValue placeholder="Select"  />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="Inbox">Inbox</SelectItem>
-              <SelectItem value="Archive">Archive</SelectItem>
-              <SelectItem value="Spam">Spam</SelectItem>
+              <SelectItem value="groupchats" >Groupchat</SelectItem>
+              <SelectItem value="conversations">Conversations</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-col">
-        {(() => {
-          if (inboxes.status === "pending" || inboxes.isFetching) {
-            return (
-              <Loader2
-                size={30}
-                className="mx-auto mt-20"
-                color="#3498db"
-              ></Loader2>
-            );
-          }
 
-          if (inboxes.status === "error") {
-            return <div>errror...</div>;
-          }
+      {
+        (() => {
+          if(pathname?.includes('groupchats'))
+          return <InboxGroupchat currentUser={currentUser}/>
 
-          return inboxes.data.map((inbox) => (
-            <InboxItem data={inbox} key={inbox?.id} />
-          ));
-        })()}
-      </div>
+          if(pathname?.includes('conversations'))
+          return null
+        })()
+      }
+      
     </div>
   );
 };

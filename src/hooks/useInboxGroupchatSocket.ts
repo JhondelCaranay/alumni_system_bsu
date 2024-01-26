@@ -5,12 +5,12 @@ import { User } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-type InboxSocketProps = {
+type InboxGroupchatSocketProps = {
   inboxKey: string;
   queryKey: (string | any)[];
 };
 
-export const useInboxSocket = ({ queryKey, inboxKey }: InboxSocketProps) => {
+export const useInboxGroupchatSocket = ({ queryKey, inboxKey }: InboxGroupchatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 

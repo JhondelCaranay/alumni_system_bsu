@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import ChatMessage from './ChatMessage'
 import { useQueryProcessor } from '@/hooks/useTanstackQuery'
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { GroupChatMessageSchemaType } from '@/schema/groupchat-message'
 import { GetCurrentUserType } from '@/actions/getCurrentUser'
 import { useChatSocket } from '@/hooks/useChatSocket'
@@ -14,13 +14,13 @@ type ChatBodyProps = {
 }
 
 const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
-  const searchParams = useSearchParams()
-  const groupchatId = searchParams?.get('id')
+  const params = useParams()
+  const groupchatId = params?.groupchatId
   const messagesQueryKey = [`groupchat`, groupchatId, 'messages']
   const chatKey = `chats:${groupchatId}:messages`
   const chatbodyRef = useRef<HTMLDivElement>(null);
   const messages = useQueryProcessor<(GroupChatMessageSchemaType & {sender: UserWithProfile})[]>(`/groupchat/${groupchatId}/messages`, null, messagesQueryKey)
-
+  
   useChatSocket({
     chatKey: chatKey,
     queryKey: messagesQueryKey

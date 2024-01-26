@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import React from "react";
-import InboxItem from "./InboxItem";
+import InboxItem from "./groupchat/InboxGroupchatItem";
 import { Filter, Plus } from "lucide-react";
 import { useModal } from "@/hooks/useModalStore";
 import { GetCurrentUserType } from "@/actions/getCurrentUser";
@@ -18,8 +18,11 @@ import { GroupChatSchemaType } from "@/schema/groupchats";
 import { Loader2 } from "@/components/ui/loader";
 import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { Role } from "@prisma/client";
-import InboxItemMobile from "./InboxItemMobile";
+import InboxGroupchatItemMobile from "./groupchat/InboxGroupchatItemMobile";
 import { Hint } from "@/components/hint";
+import useRouterPush from "@/hooks/useRouterPush";
+import InboxGroupchatMobile from "./groupchat/InboxGroupchatMobile";
+import { usePathname } from "next/navigation";
 
 type Props = {
   currentUser: GetCurrentUserType;
@@ -27,12 +30,13 @@ type Props = {
 
 const InboxMobile = ({ currentUser }: Props) => {
   
-  const inboxes = useQueryProcessor<
-    (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
-  >("/groupchats", { userId: currentUser?.id }, ["groupchats"], {
-    enabled: !!currentUser?.id,
-  });
+  
+  const {redirectTo} = useRouterPush()
 
+  const onSelect = (page:string) => {
+    redirectTo(`messages/${page}`)
+}
+const pathname = usePathname()
   const { onOpen } = useModal();
   return (
     <div className="flex md:hidden flex-col h-full w-[70px] bg-[#FFFFFF] rounded-xl dark:bg-slate-900 overflow-auto">
@@ -50,7 +54,7 @@ const InboxMobile = ({ currentUser }: Props) => {
         </div>
 
         <div className="flex items-center justify-center">
-          <Select>
+          <Select onValueChange={(e) => onSelect(e)}>
             <Hint label={"Filter"} side="right" asChild>
               <SelectTrigger className="w-12 h-12 text-xs rounded-full">
                 <Filter className="w-10 h-10" />
@@ -58,37 +62,23 @@ const InboxMobile = ({ currentUser }: Props) => {
             </Hint>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="Inbox">Inbox</SelectItem>
-                <SelectItem value="Archive">Archive</SelectItem>
-                <SelectItem value="Spam">Spam</SelectItem>
+              <SelectItem value="groupchats" >Groupchat</SelectItem>
+              <SelectItem value="conversations">Conversations</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
       </div>
-      <div className="flex flex-col">
-        {(() => {
-          if (inboxes.status === "pending" || inboxes.isFetching) {
-            return (
-              <Loader2
-                size={30}
-                className="mx-auto mt-20"
-                color="#3498db"
-              ></Loader2>
-            );
-          }
 
-          if (inboxes.status === "error") {
-            return <div>errror...</div>;
-          }
+      {
+        (() => {
+          if(pathname?.includes('groupchats'))
+          return <InboxGroupchatMobile currentUser={currentUser}/>
 
-          return inboxes.data.map((inbox) => (
-            <Hint label={inbox.name} side="right" key={inbox.id}>
-              <InboxItemMobile data={inbox} />
-            </Hint>
-          ));
-        })()}
-      </div>
+          if(pathname?.includes('conversations'))
+          return null
+        })()
+      }
     </div>
   );
 };

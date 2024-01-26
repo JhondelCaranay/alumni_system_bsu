@@ -7,34 +7,21 @@ import qs from "query-string";
 import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
 import { cn } from "@/lib/utils";
 import Avatar from "@/components/Avatar";
-import { Clock } from "lucide-react";
-import { format } from "timeago.js";
+import useRouterPush from "@/hooks/useRouterPush";
 
 type InboxItemProps = {
   data: GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] };
 };
 
-const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
+const InboxGroupchatItemMobile: React.FC<InboxItemProps> = ({ data }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const id = searchParams?.get("id");
-  const router = useRouter();
+  const {redirectTo} = useRouterPush()
 
   const onClick = () => {
-    const url = qs.stringifyUrl(
-      {
-        url: pathname || "",
-        query: {
-          id: data.id,
-        },
-      },
-      { skipNull: true }
-    );
-
-    router.push(url);
+    redirectTo(`/messages/groupchats/${data?.id}`)
   };
-  
-  const lastMessage = data?.messages?.[data?.messages?.length - 1]
 
   return (
     <div
@@ -50,18 +37,8 @@ const InboxItem: React.FC<InboxItemProps> = ({ data }) => {
           className="w-12 h-12 object-cover m-auto rounded-full"
         />
       </div>
-      <div className="flex flex-col">
-        <h2 className="text-[1.2em] font-semibold text-zinc-600 dark:text-gray-400">
-          {data?.name}
-        </h2>
-        <p className="text-[0.9em] line-clamp-2 ">
-          {lastMessage?.message ?? "This is the start of your group chat conversation"}
-        </p>
-        <time className={cn("text-xs flex items-center gap-x-1")}>
-         <Clock className="w-3 h-3 fill-zinc-200"/> {format(lastMessage?.createdAt || data.updatedAt  || new Date())}
-        </time>
-      </div>
     </div>
   );
 };
-export default InboxItem;
+
+export default InboxGroupchatItemMobile;

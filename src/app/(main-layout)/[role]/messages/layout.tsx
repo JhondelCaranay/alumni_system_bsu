@@ -9,9 +9,8 @@ import { queryFn } from "@/hooks/useTanstackQuery";
 import MessagesClient from "./groupchats/components/MessagesClient";
 import InboxMobile from "./components/InboxMobile";
 import Inbox from "./components/Inbox";
-import { MessageSquareDashed } from "lucide-react";
 
-const Page = async () => {
+const Page = async ({ children }: { children: React.ReactNode }) => {
   const currentUser = await getCurrentUser();
   const queryClient = new QueryClient();
   if (!currentUser) {
@@ -24,12 +23,12 @@ const Page = async () => {
   });
 
   return (
-    <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl dark:bg-slate-900 h-full">
-      <h1 className="text-zinc-500 text-center w-full flex items-center justify-center gap-x-2 text-sm md:text-md">
-        {" "}
-        <MessageSquareDashed className="w-10 h-10" />{" "}
-        <span>No chats selected</span>{" "}
-      </h1>
+    <div className="bg-[#F6F6F6] h-full flex flex-row p-3 md:p-10 md:px-20 gap-x-1 md:gap-x-5 dark:bg-[#020817]">
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <InboxMobile currentUser={currentUser} />
+        <Inbox currentUser={currentUser} />
+        <div className="flex-1 h-full">{children}</div>
+      </HydrationBoundary>
     </div>
   );
 };

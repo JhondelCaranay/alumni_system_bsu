@@ -125,14 +125,14 @@ export default async function handler(
           role: Role.ADMIN
         }
       });
-
+      
       admins.forEach(user => {
-        const Key = `inbox:${user.id}:sort`;
+        const Key = `inbox-groupchat:${user.id}:sort`;
         res.socket?.server?.io.emit(Key, groupChat);
       })
       
       groupChat.users.forEach((user) => {
-        const Key = `inbox:${user.id}:sort`;
+        const Key = `inbox-groupchat:${user.id}:sort`;
         res.socket?.server?.io.emit(Key, groupChat);
       })
 

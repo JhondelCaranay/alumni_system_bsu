@@ -3,7 +3,7 @@ import React from "react";
 import ChatHeader from "./ChatHeader";
 import ChatBody from "./ChatBody";
 import ChatFooter from "./ChatFooter";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { MessageSquareDashed } from "lucide-react";
 import { useQueryProcessor } from "@/hooks/useTanstackQuery";
 import { Loader, Loader2 } from "@/components/ui/loader";
@@ -17,14 +17,14 @@ type ChatBoxProps = {
 };
 
 const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
-  const searchParams = useSearchParams();
-  const id = searchParams?.get("id");
+  const params = useParams();
+  const groupchatId = params?.groupchatId
 
   const groupChat = useQueryProcessor<
     GroupChatSchemaType & { users: UserWithProfile[] }
-  >(`/groupchats/${id}`, null, ["groupchats", id], { enabled: !!id });
+  >(`/groupchats/${groupchatId}`, null, ["groupchats", groupchatId], { enabled: !!groupchatId });
 
-  if (!id) {
+  if (!groupchatId) {
     return (
       <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl dark:bg-slate-900">
         <h1 className="text-zinc-500 text-center w-full flex items-center justify-center gap-x-2 text-sm md:text-md">
@@ -38,7 +38,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
 
   if (groupChat.status === "pending") {
     return (
-      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl justify-center items-center dark:bg-slate-900">
+      <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl justify-center items-center dark:bg-slate-900 h-full">
         <Loader2 color="#3498db" size={30} />
       </div>
     );
@@ -54,7 +54,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
   }
 
   return (
-    <div className="flex flex-1 gap-x-3 ">
+    <div className="flex flex-1 gap-x-3 h-full">
       <div className="flex flex-col h-full bg-[#FFFFFF] rounded-xl flex-1 dark:dark:bg-slate-900">
         <ChatHeader data={groupChat.data} currentUser={currentUser} />
         <ChatBody currentUser={currentUser} />

@@ -21,6 +21,7 @@ import { useInboxGroupchatSocket } from "@/hooks/useInboxGroupchatSocket";
 import useRouterPush from "@/hooks/useRouterPush";
 import InboxGroupchat from "./groupchat/InboxGroupchat";
 import { usePathname } from "next/navigation";
+import InboxConversation from "./conversation/InboxConvesation";
 
 type InboxProps = {
   currentUser: GetCurrentUserType;
@@ -36,22 +37,35 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
 
   const pathname = usePathname()
   const { onOpen } = useModal();
+
+  const isConversation = pathname?.includes("conversations")
+
   return (
     <div className="hidden md:flex flex-col h-full bg-[#FFFFFF] flex-[0.4] rounded-xl dark:bg-slate-900">
       <div className="flex flex-col p-5 gap-y-5 border border-x-0 border-t-0 border-b-1">
         <div className="flex items-center">
           <h1 className="text-[1.5em]">Messages</h1>
-          {(currentUser?.role === Role.ADMIN ||
-            currentUser?.role === Role.ADVISER) && (
-            <Plus
-              className="h-6 w-6 ml-auto cursor-pointer"
-              onClick={() => onOpen("createGroupChat", { user: currentUser })}
-            />
-          )}
+          {
+            (() =>{
+              if(!isConversation && (currentUser?.role === Role.ADMIN || currentUser?.role === Role.ADVISER)) {
+                return <Plus
+                className="h-6 w-6 ml-auto cursor-pointer"
+                onClick={() => onOpen("createGroupChat", { user: currentUser })}
+              />
+              }
+
+              if(isConversation && (currentUser?.role === Role.ADMIN)) {
+                return <Plus
+                className="h-6 w-6 ml-auto cursor-pointer"
+                onClick={() => onOpen("createConversation", { user: currentUser })}
+              />
+              }
+            })()
+          }
         </div>
-        <Select onValueChange={(e) => onSelect(e)}>
+        <Select onValueChange={(e) => onSelect(e)} defaultValue={isConversation ? 'conversations' : 'groupchats'}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select"  />
+            <SelectValue placeholder="Select"   />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -64,11 +78,11 @@ const Inbox: React.FC<InboxProps> = ({ currentUser }) => {
 
       {
         (() => {
-          if(pathname?.includes('groupchats'))
+          if(!isConversation)
           return <InboxGroupchat currentUser={currentUser}/>
 
-          if(pathname?.includes('conversations'))
-          return null
+          if(isConversation)
+          return <InboxConversation currentUser={currentUser}/>
         })()
       }
       

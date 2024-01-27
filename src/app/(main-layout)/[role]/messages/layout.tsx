@@ -6,7 +6,6 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import { queryFn } from "@/hooks/useTanstackQuery";
-import MessagesClient from "./groupchats/components/MessagesClient";
 import InboxMobile from "./components/InboxMobile";
 import Inbox from "./components/Inbox";
 
@@ -18,8 +17,13 @@ const Page = async ({ children }: { children: React.ReactNode }) => {
   }
 
   await queryClient.prefetchQuery({
-    queryKey: ["groupchats"],
+    queryKey: ["groupchats", currentUser?.id],
     queryFn: () => queryFn(`/groupchats`, { userId: currentUser?.id }),
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: ["conversations", currentUser?.id],
+    queryFn: () => queryFn(`/conversations`, { userId: currentUser?.id }),
   });
 
   return (

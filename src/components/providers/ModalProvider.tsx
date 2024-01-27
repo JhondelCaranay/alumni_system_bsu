@@ -21,6 +21,7 @@ import CreateStudentModal from "../modals/CreateStudentModal";
 import BulkUpdateStudentsModal from "../modals/BulkUpdateStudentsModal";
 import CreateUserModal from "../modals/CreateUserModal";
 import ViewPhotoModal from "../modals/ViewPhotoModal";
+import CreateConversationModal from "../modals/CreateConversationModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -56,6 +57,7 @@ const ModalProvider = () => {
       <BulkUpdateStudentsModal />
       <CreateUserModal />
       <ViewPhotoModal />
+      <CreateConversationModal />
     </>
   );
 };

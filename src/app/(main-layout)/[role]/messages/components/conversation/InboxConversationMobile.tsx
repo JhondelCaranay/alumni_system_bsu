@@ -5,9 +5,11 @@ import { useQueryProcessor } from '@/hooks/useTanstackQuery';
 import { GroupChatMessageSchemaType } from '@/schema/groupchat-message';
 import { GroupChatSchemaType } from '@/schema/groupchats';
 import React from 'react'
-import InboxGroupchatItemMobile from './InboxGroupchatItemMobile';
+import InboxConversationItemMobile from './InboxConversationItemMobile';
 import { useInboxGroupchatSocket } from '@/hooks/useInboxGroupchatSocket';
-import { MessageSquareDashed } from 'lucide-react';
+import { ConversationSchemaType } from '@/schema/conversation';
+import { UserWithProfile } from '@/types/types';
+import { DirectMessage } from '@prisma/client';
 
 
 type Props = {
@@ -25,8 +27,8 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
   })
   
   const inboxes = useQueryProcessor<
-    (GroupChatSchemaType & { messages: GroupChatMessageSchemaType[] })[]
-  >("/groupchats", { userId: currentUser?.id }, ["groupchats", currentUser?.id], {
+    (ConversationSchemaType & { participants: UserWithProfile[], messages: DirectMessage[] })[]
+  >("/conversations", { userId: currentUser?.id }, ["conversations", currentUser?.id], {
     enabled: !!currentUser?.id,
   });
   
@@ -47,15 +49,12 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
             return <div>errror...</div>;
           }
 
-          if (inboxes.data.length <= 0) {
-            return <div className='text-center font-semibold m-10 text-zinc-500 flex items-center justify-center gap-x-3'> <MessageSquareDashed className="w-10 h-10" />{" "} No messages yet</div>;
-          }
-
-          return inboxes.data.map((inbox) => (
-            <Hint label={inbox.name} side="right" key={inbox.id}>
-              <InboxGroupchatItemMobile data={inbox} />
+          return inboxes.data.map((inbox) => {
+            const otherUser = inbox?.participants?.find((user) => user.id != currentUser?.id)
+            return <Hint label={`${otherUser?.profile.firstname} ${otherUser?.profile.lastname} `} side="right" key={inbox.id}>
+              <InboxConversationItemMobile data={inbox} currentUser={currentUser} />
             </Hint>
-          ));
+          });
         })()}
       </div>
   )

@@ -33,6 +33,7 @@ export type ModalType =
   | "bulkUpdateStudents"
   | "createUser"
   | "viewPhoto"
+  | "createConversation"
 // you can extend this type if you have more modal
 
 // export type ModalType = "..." | "...." | "...."

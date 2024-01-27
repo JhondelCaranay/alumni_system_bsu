@@ -13,15 +13,9 @@ import { MessageSquareDashed } from "lucide-react";
 
 const Page = async () => {
   const currentUser = await getCurrentUser();
-  const queryClient = new QueryClient();
   if (!currentUser) {
     return redirect("/");
   }
-
-  await queryClient.prefetchQuery({
-    queryKey: ["groupchats"],
-    queryFn: () => queryFn(`/groupchats`, { userId: currentUser?.id }),
-  });
 
   return (
     <div className="flex flex-1 gap-x-3 bg-[#FFFFFF] rounded-xl dark:bg-slate-900 h-full">

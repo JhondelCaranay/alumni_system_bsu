@@ -10,20 +10,20 @@ import { useInboxGroupchatSocket } from '@/hooks/useInboxGroupchatSocket';
 import { ConversationSchemaType } from '@/schema/conversation';
 import { UserWithProfile } from '@/types/types';
 import { DirectMessage } from '@prisma/client';
+import { useInboxConversationSocket } from '@/hooks/useInboxConversationSocket';
 
 
 type Props = {
     currentUser: GetCurrentUserType;
   };
 
-const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
+const InboxConversationMobile:React.FC<Props> = ({currentUser}) => {
 
+  const inboxConversationKey = `inbox-conversation:${currentUser?.id}:sort`
 
-  const inboxGroupchatKey = `inbox-groupchat:${currentUser?.id}:sort`
-
-  useInboxGroupchatSocket({
-    queryKey:  ["groupchats", currentUser?.id],
-    inboxKey: inboxGroupchatKey
+  useInboxConversationSocket({
+    queryKey:  ["conversations", currentUser?.id],
+    inboxKey: inboxConversationKey
   })
   
   const inboxes = useQueryProcessor<
@@ -31,7 +31,6 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
   >("/conversations", { userId: currentUser?.id }, ["conversations", currentUser?.id], {
     enabled: !!currentUser?.id,
   });
-  
   return (
     <div className="flex flex-col">
         {(() => {
@@ -60,4 +59,4 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
   )
 }
 
-export default InboxGroupchatMobile
+export default InboxConversationMobile

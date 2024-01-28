@@ -10,6 +10,7 @@ import { ConversationSchemaType } from '@/schema/conversation';
 import { DirectMessage } from '@prisma/client';
 import { UserWithProfile } from '@/types/types';
 import { MessageSquareDashed } from 'lucide-react';
+import { useInboxConversationSocket } from '@/hooks/useInboxConversationSocket';
 
 type InboxConversationProps = {
   currentUser: GetCurrentUserType;
@@ -19,10 +20,10 @@ const InboxConversation:React.FC<InboxConversationProps> = ({currentUser}) => {
 
   const inboxConversationKey = `inbox-conversation:${currentUser?.id}:sort`
 
-  // useInboxConversationSocket({
-  //   queryKey:  ["conversations", currentUser?.id],
-  //   inboxKey: inboxConversationKey
-  // })
+  useInboxConversationSocket({
+    queryKey:  ["conversations", currentUser?.id],
+    inboxKey: inboxConversationKey
+  })
   
   const inboxes = useQueryProcessor<
     (ConversationSchemaType & { participants: UserWithProfile[], messages: DirectMessage[] })[]

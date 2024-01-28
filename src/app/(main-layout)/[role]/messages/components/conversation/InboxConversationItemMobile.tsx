@@ -23,12 +23,11 @@ const InboxConversationItem: React.FC<InboxConversationItemProps> = ({ data, cur
   const conversationId = params?.conversationId
   const {redirectTo} = useRouterPush()
   const onClick = () => {
-    redirectTo(`/messages/conversations/${conversationId}`)
+    redirectTo(`/messages/conversations/${data.id}`)
   };
   
   const lastMessage = data?.messages?.[data?.messages?.length - 1]
   const otherUser = data?.participants?.find((user) => user.id != currentUser?.id)
-
   return (
     <div
       className={cn(

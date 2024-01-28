@@ -288,6 +288,8 @@ const CreateGuardianModal = () => {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled={isLoading}
+                          
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -324,6 +326,8 @@ const CreateGuardianModal = () => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={isLoading}
+
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -357,6 +361,8 @@ const CreateGuardianModal = () => {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled={isLoading}
+
                         >
                           <FormControl>
                             <SelectTrigger>

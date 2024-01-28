@@ -100,7 +100,7 @@ const CreateConversationModal = () => {
   );
 
   const isLoading =
-    form.formState.isSubmitting;
+    form.formState.isSubmitting || createConversation.isPending;
 
   const filteredUsers = users.data?.filter(
     (user) =>

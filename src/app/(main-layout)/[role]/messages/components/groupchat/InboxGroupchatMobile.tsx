@@ -47,10 +47,6 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
             return <div>errror...</div>;
           }
 
-          if (inboxes.data.length <= 0) {
-            return <div className='text-center font-semibold m-10 text-zinc-500 flex items-center justify-center gap-x-3'> <MessageSquareDashed className="w-10 h-10" />{" "} No messages yet</div>;
-          }
-
           return inboxes.data.map((inbox) => (
             <Hint label={inbox.name} side="right" key={inbox.id}>
               <InboxGroupchatItemMobile data={inbox} />

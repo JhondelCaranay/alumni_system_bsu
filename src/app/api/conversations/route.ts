@@ -46,7 +46,11 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
             profile:true,
           },
         },
-        messages:true,
+        messages:{
+          orderBy: {
+            createdAt: 'asc'
+          }
+        },
       }
     });
 

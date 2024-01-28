@@ -11,11 +11,11 @@ export async function GET(
     params,
   }: {
     params: {
-      groupchatId: string;
+      conversationId: string;
     };
   }
 ) {
-  const { groupchatId } = params;
+  const { conversationId } = params;
 
   const currentUser = await getCurrentUser();
 
@@ -26,58 +26,56 @@ export async function GET(
   try {
     // can view the group chat if admin
     if(currentUser.role === Role.ADMIN) {
-      const groupChats = await prisma.groupChat.findUnique({
+      const conversation = await prisma.conversation.findUnique({
         where: {
-          id: groupchatId,
+          id: conversationId,
         },
         include: {
-          users: {
+          participants: {
             include: {
               profile: true
             }
           },
-          section: true,
-          department: true,
+          messages:true,
         },
       });
 
-      if (!groupChats) {
+      if (!conversation) {
         return NextResponse.json(
           { message: "GrougroupChat not found" },
           { status: 404 }
         );
       }
-      return NextResponse.json(groupChats);
+      return NextResponse.json(conversation);
 
     } 
 
       // if not we should check if he's member of the groupchat
-      const groupChats = await prisma.groupChat.findUnique({
+      const conversation = await prisma.conversation.findUnique({
         where: {
-          id: groupchatId,
-          users: {
+          id: conversationId,
+          participants: {
             some: {
               id: currentUser.id
             }
           }
         },
         include: {
-          users: {
+          participants: {
             include: {
               profile: true
             }
           },
-          section: true,
-          department: true,
+          messages: true,
         },
       });
-      if (!groupChats) {
+      if (!conversation) {
         return NextResponse.json(
           { message: "GrougroupChat not found" },
           { status: 404 }
         );
       }
-      return NextResponse.json(groupChats);
+      return NextResponse.json(conversation);
 
   } catch (error) {
     console.log("[GROUgroupChat_GET]", error);

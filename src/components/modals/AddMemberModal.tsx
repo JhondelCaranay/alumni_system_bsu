@@ -38,7 +38,7 @@ import {
   UploadStudentsSchema,
   UploadStudentsSchemaType,
 } from "@/schema/groupchats";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 const AddMemberModal = () => {
   const { isOpen, type, onClose, data } = useModal();
@@ -63,8 +63,8 @@ const AddMemberModal = () => {
     setMemberToDisplay([]);
   };
 
-  const groupchatId = searchParams?.get("id");
-
+  const params = useParams()
+  const groupchatId = params?.groupchatId
   const addMembers = useMutateProcessor<
     UploadStudentsSchemaType,
     GroupChatSchemaType

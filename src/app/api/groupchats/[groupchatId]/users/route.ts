@@ -43,6 +43,7 @@ export async function POST(
     }
 
     const { userIds } = result.data;
+    console.log(userIds, params)
 
     // Check if groupChat  exists
     const groupChatExists = await prisma.groupChat.findUnique({
@@ -50,6 +51,8 @@ export async function POST(
         id: params.groupchatId,
       },
     });
+
+    console.log(params.groupchatId, groupChatExists)
 
     if (!groupChatExists) {
       return NextResponse.json(

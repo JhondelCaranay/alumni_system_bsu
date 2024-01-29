@@ -26,7 +26,7 @@ export const useInboxConversationSocket = ({ queryKey, inboxKey }: InboxConversa
           queryKey,
           (oldData:(ConversationSchemaType & { participants: UserWithProfile[], messages: DirectMessage[] })[]) => {
             const filteredConversation = oldData?.filter((conversation) => conversation.id != data.id) as (ConversationSchemaType & { participants: UserWithProfile[], messages: DirectMessage[] })[]
-            return [, ...filteredConversation, data]
+            return [data, ...filteredConversation]
           }
         );
       }

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const DirectMessageSchema = z.object({
   id: z.string(),
-  content:z.string(),
+  content:z.string().min(1, "required"),
   fileUrl:z.string().nullable(),
   isDeleted:z.boolean(),
   conversationId: z.string(),

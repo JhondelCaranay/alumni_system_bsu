@@ -1,7 +1,7 @@
 "use client";
 
 import { GroupChatSchemaType } from "@/schema/groupchats";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useSearchParams, usePathname, useRouter, useParams } from "next/navigation";
 import React from "react";
 import qs from "query-string";
 import { GroupChatMessageSchemaType } from "@/schema/groupchat-message";
@@ -14,9 +14,9 @@ type InboxItemProps = {
 };
 
 const InboxGroupchatItemMobile: React.FC<InboxItemProps> = ({ data }) => {
-  const searchParams = useSearchParams();
+  const params = useParams();
   const pathname = usePathname();
-  const id = searchParams?.get("id");
+  const groupchatId = params?.groupchatId
   const {redirectTo} = useRouterPush()
 
   const onClick = () => {
@@ -27,7 +27,7 @@ const InboxGroupchatItemMobile: React.FC<InboxItemProps> = ({ data }) => {
     <div
       className={cn(
         "flex max-h-[95px] overflow-hidden border border-x-0 border-t-0 border-b-1 p-2 gap-x-2 cursor-pointer",
-        id === data?.id && "bg-zinc-100 dark:bg-slate-800 "
+        groupchatId === data?.id && "bg-zinc-100 dark:bg-slate-800 "
       )}
       onClick={onClick}
     >

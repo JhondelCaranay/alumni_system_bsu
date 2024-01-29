@@ -23,6 +23,10 @@ const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
   const chatbodyRef = useRef<HTMLDivElement>(null);
   const messages = useQueryProcessor<(DirectMessageSchemaType & {sender: UserWithProfile})[]>(`/conversations/${conversationId}/messages`, null, messagesQueryKey)
   
+  useEffect(() => {
+    messages.refetch()
+  }, [])
+  
   useConversationChatSocket({
     chatKey: chatKey,
     queryKey: messagesQueryKey

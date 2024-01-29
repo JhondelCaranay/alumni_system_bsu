@@ -4,7 +4,7 @@ import { Loader2 } from '@/components/ui/loader';
 import { useQueryProcessor } from '@/hooks/useTanstackQuery';
 import { GroupChatMessageSchemaType } from '@/schema/groupchat-message';
 import { GroupChatSchemaType } from '@/schema/groupchats';
-import React from 'react'
+import React, { useEffect } from 'react'
 import InboxConversationItemMobile from './InboxConversationItemMobile';
 import { useInboxGroupchatSocket } from '@/hooks/useInboxGroupchatSocket';
 import { ConversationSchemaType } from '@/schema/conversation';
@@ -31,6 +31,10 @@ const InboxConversationMobile:React.FC<Props> = ({currentUser}) => {
   >("/conversations", { userId: currentUser?.id }, ["conversations", currentUser?.id], {
     enabled: !!currentUser?.id,
   });
+
+  useEffect(() => {
+    inboxes.refetch()
+  }, [])
   return (
     <div className="flex flex-col">
         {(() => {

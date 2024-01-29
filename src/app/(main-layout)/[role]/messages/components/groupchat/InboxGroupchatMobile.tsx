@@ -4,7 +4,7 @@ import { Loader2 } from '@/components/ui/loader';
 import { useQueryProcessor } from '@/hooks/useTanstackQuery';
 import { GroupChatMessageSchemaType } from '@/schema/groupchat-message';
 import { GroupChatSchemaType } from '@/schema/groupchats';
-import React from 'react'
+import React, { useEffect } from 'react'
 import InboxGroupchatItemMobile from './InboxGroupchatItemMobile';
 import { useInboxGroupchatSocket } from '@/hooks/useInboxGroupchatSocket';
 import { MessageSquareDashed } from 'lucide-react';
@@ -29,6 +29,10 @@ const InboxGroupchatMobile:React.FC<Props> = ({currentUser}) => {
   >("/groupchats", { userId: currentUser?.id }, ["groupchats", currentUser?.id], {
     enabled: !!currentUser?.id,
   });
+
+  useEffect(() => {
+    inboxes.refetch()
+  }, [])
   
   return (
     <div className="flex flex-col">

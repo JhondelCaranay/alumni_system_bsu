@@ -21,6 +21,10 @@ const ChatBody:React.FC<ChatBodyProps> = ({currentUser}) => {
   const chatbodyRef = useRef<HTMLDivElement>(null);
   const messages = useQueryProcessor<(GroupChatMessageSchemaType & {sender: UserWithProfile})[]>(`/groupchat/${groupchatId}/messages`, null, messagesQueryKey)
   
+  useEffect(() => {
+    messages.refetch()
+  }, [])
+  
   useChatSocket({
     chatKey: chatKey,
     queryKey: messagesQueryKey

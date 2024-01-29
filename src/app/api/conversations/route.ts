@@ -89,6 +89,7 @@ const createOrUpdateConversation = async (currentUserId:string, userId: string, 
           id: conversation.id,
         },
         data: {
+          updatedAt: new Date(),
           messages: {
             create: {
               content: message,

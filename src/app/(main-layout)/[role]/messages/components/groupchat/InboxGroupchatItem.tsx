@@ -18,7 +18,7 @@ type InboxGroupchatItemProps = {
 const InboxGroupchatItem: React.FC<InboxGroupchatItemProps> = ({ data }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const id = searchParams?.get("id");
+  const id = searchParams?.get("groupchatId");
   const router = useRouter();
   const {redirectTo} = useRouterPush()
   const onClick = () => {

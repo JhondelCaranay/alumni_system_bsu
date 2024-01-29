@@ -112,7 +112,11 @@ export default async function handler(
           updatedAt: new Date()
         },
         include: {
-          messages:true,
+          messages:{
+            orderBy: {
+              createdAt: 'asc'
+            }
+          },
           participants: {
             include: {
               profile:true

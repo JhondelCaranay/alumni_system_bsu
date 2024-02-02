@@ -104,7 +104,7 @@ const CreateConversationModal = () => {
 
   const filteredUsers = users.data?.filter(
     (user) =>
-      user.profile.firstname
+      user.profile?.firstname
         ?.toLowerCase()
         ?.includes(search.toLowerCase()) ||
       user.profile.lastname?.toLowerCase()?.includes(search.toLowerCase()) ||

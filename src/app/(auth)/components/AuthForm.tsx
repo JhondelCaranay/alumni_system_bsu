@@ -57,8 +57,9 @@ const AuthForm = () => {
 
       if (response?.ok && !response.error) {
         toast.success("Logged In!");
-        // window.location.reload();
-        router.refresh();
+        window.location.reload(); // need ko to i refresh kasi yung ibang data di nag rerefetch 
+        // from login to users route, create user modal then check mo yung adviser section at department di mag rerefetch pati sa iba
+        // router.refresh();
       }
     } catch (error) {
       toast.error("Something went wrong.");

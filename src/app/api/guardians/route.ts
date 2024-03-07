@@ -24,10 +24,6 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
   }
 
   const { studentProfileId } = result.data;
-  console.log(
-    "🚀 ~ file: route.ts:27 ~ GET ~ studentProfileId:",
-    studentProfileId
-  );
 
   try {
     const guardians = await prisma.guardian.findMany({

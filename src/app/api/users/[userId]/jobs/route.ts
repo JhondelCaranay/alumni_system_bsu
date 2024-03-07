@@ -13,8 +13,6 @@ export async function GET(
 
     const { userId } = params;
 
-    // console.log("userId", userId);
-
     if (!userId) return new NextResponse("User ID missing", { status: 400 });
 
     // if (userId !== currentUser?.id)
@@ -100,7 +98,6 @@ export async function POST(
     const { jobTitle, company, location, yearStart, yearEnd, isCurrentJob } =
       result.data;
 
-    console.log(result.data);
     /* 
         if user add new current job, set all previous job to isCurrentJob false
     */

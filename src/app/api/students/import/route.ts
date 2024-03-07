@@ -37,7 +37,6 @@ export async function POST(req: NextRequest) {
       });
 
       if (isUserExist) {
-        console.log("Student already exists");
         throw new Error("Student already exists");
       }
 

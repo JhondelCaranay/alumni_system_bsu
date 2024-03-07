@@ -83,10 +83,6 @@ export async function PATCH(
     );
   }
 
-  console.log("====================================");
-  console.log(sections.name, sections.school_year, sections.departmentId);
-  console.log("====================================");
-
   // check if section already exists
   const section = await prisma.section.findFirst({
     where: {

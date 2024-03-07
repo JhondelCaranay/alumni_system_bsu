@@ -29,7 +29,7 @@ export async function PATCH(req: NextRequest, { params }: { params: {} }) {
 
   try {
     // check if all students exists
-    const studentNumbers = students.map((student) => student['Student Number']);
+    const studentNumbers = students.map((student) => student["Student Number"]);
 
     const existingStudents = await prisma.profile.findMany({
       where: {
@@ -48,9 +48,9 @@ export async function PATCH(req: NextRequest, { params }: { params: {} }) {
       students.map(async (student) => {
         const studentdata = await prisma.profile.findFirst({
           where: {
-            studentNumber: student['Student Number'],
-            firstname: student['First Name'],
-            lastname: student['Last Name'],
+            studentNumber: student["Student Number"],
+            firstname: student["First Name"],
+            lastname: student["Last Name"],
           },
           select: {
             user: {
@@ -73,7 +73,7 @@ export async function PATCH(req: NextRequest, { params }: { params: {} }) {
           !studentdata.schoolYear ||
           !studentdata?.user?.department?.courseYear
         ) {
-          throw new Error('Students not found');
+          throw new Error("Students not found");
         }
 
         const department = studentdata.user.department;
@@ -83,7 +83,8 @@ export async function PATCH(req: NextRequest, { params }: { params: {} }) {
           },
           data: {
             schoolYear: {
-              increment: studentdata.schoolYear < Number(department.courseYear) ? 1 : 0,
+              increment:
+                studentdata.schoolYear < Number(department.courseYear) ? 1 : 0,
             },
             user: {
               update: {
@@ -97,18 +98,13 @@ export async function PATCH(req: NextRequest, { params }: { params: {} }) {
         });
 
         if (!updatedStudent) {
-          throw new Error('Students not found');
+          throw new Error("Students not found");
         }
-
-        console.log("====================================");
-        console.log("schoolYear", studentdata.schoolYear + 1);
-        console.log("courseYear", department.courseYear);
-        console.log("====================================");
       })
     );
 
     return new NextResponse("Successfully updated students", { status: 200 });
-  } catch (error:any) {
+  } catch (error: any) {
     console.log("[POST_POST]", error);
     return new NextResponse(error, { status: 500 });
   }

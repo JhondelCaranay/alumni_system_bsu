@@ -6,13 +6,9 @@ import { isUserAllowed } from "./lib/utils";
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
   function middleware(request: NextRequestWithAuth) {
-    // console.log(request.nextUrl.pathname)
-    // console.log(request.nextauth.token)
     const role = request.nextauth.token?.role || "";
     const roleLowerCase = role.toLowerCase();
     const pathname = request.nextUrl.pathname;
-    // console.log("🚀 ~ file: middleware.ts:13 role:", role);
-    // console.log("🚀 ~ file: middleware.ts:14 pathname:", pathname);
 
     /* 
       check if role in path name is valid

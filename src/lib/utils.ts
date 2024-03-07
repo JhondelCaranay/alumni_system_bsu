@@ -40,7 +40,7 @@ export const handleImageDeleteOrReplace = async (publicId: string) => {
 
 export const uploadPhoto = async (file: File) => {
   const formData = new FormData();
-  const compressedFile = await handleImageCompression(file) as File
+  const compressedFile = (await handleImageCompression(file)) as File;
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", compressedFile);
 
@@ -54,7 +54,7 @@ export const uploadPhoto = async (file: File) => {
 
   return {
     url: res.data.url,
-    public_id:  res.data.url
+    public_id: res.data.url,
   };
 };
 
@@ -63,7 +63,7 @@ export const uploadPhotoForum = async (data: {
   id: number | string;
 }) => {
   const formData = new FormData();
-  const compressedFile = await handleImageCompression(data.file) as File
+  const compressedFile = (await handleImageCompression(data.file)) as File;
   formData.append("upload_preset", "next-alumni-system");
   formData.append("file", compressedFile);
   const res = await axios.post(
@@ -80,41 +80,38 @@ export const uploadPhotoForum = async (data: {
   };
 };
 
-export const dataURItoBlob = (dataURI:string) => {
+export const dataURItoBlob = (dataURI: string) => {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-  const byteString = atob(dataURI.split(',')[1]);
+  const byteString = atob(dataURI.split(",")[1]);
 
   // separate out the mime component
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
   // write the bytes of the string to an ArrayBuffer
   const ab = new ArrayBuffer(byteString.length);
   const ia = new Uint8Array(ab);
   for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    ia[i] = byteString.charCodeAt(i);
   }
 
-  return new Blob([ab], {type: mimeString});
+  return new Blob([ab], { type: mimeString });
+};
 
-}
-
-
-export const handleImageCompression = async (file:File) => {
+export const handleImageCompression = async (file: File) => {
   const options = {
     maxSizeMB: 1,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
-  }
+  };
   try {
-    console.log('before compressed', file.size / 1024 / 1024 + 'MB')
+    // console.log('before compressed', file.size / 1024 / 1024 + 'MB')
     const compressedFile = await imageCompression(file, options);
-    console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+    // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
 
-    console.log('compressed file', compressedFile)
-    return compressedFile
+    // console.log('compressed file', compressedFile)
+    return compressedFile;
   } catch (error) {
     console.log(error);
   }
-
-}
+};

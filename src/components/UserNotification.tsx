@@ -76,6 +76,7 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
           <h1 className="text-sm text-center">Notifications</h1>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <div className="max-h-[370px] overflow-y-auto flex flex-col">
 
         {notifications?.data?.map((notification) => (
           <div
@@ -131,6 +132,7 @@ const UserNotification = ({ currentUser }: UserNotificationProps) => {
             </div>
           </div>
         ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

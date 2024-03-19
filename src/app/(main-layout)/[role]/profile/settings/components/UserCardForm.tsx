@@ -16,6 +16,7 @@ import { UpdateUserSchemaType } from "@/schema/users";
 import { UserWithProfile } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadCloud } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -38,7 +39,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
   });
   const onSubmit: SubmitHandler<formSchemaType> = (values) => {
   };
-
+  const router = useRouter()
   const updateProfile = useMutateProcessor<UpdateUserSchemaType, UserWithProfile>(
     `/users/${data?.id}`,
     null,
@@ -106,6 +107,7 @@ const UserCard: React.FC<UserCardProps> = ({ data }) => {
                         }, {
                           onSuccess(data, variables, context) {
                             toast.success('Image updated')
+                            router.refresh()
                           },
                         })
                       }
